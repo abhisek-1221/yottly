@@ -93,13 +93,24 @@ async function fetchPlaylistDetails(playlistId: string): Promise<PlaylistDetails
     };
   }
 
+  function extractPlaylistId(url: string): string | null {
+    const regex = /[?&]list=([a-zA-Z0-9_-]+)/;
+    const match = url.match(regex);
+    return match ? match[1] : null;
+  }
+
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
-  const playlistId = searchParams.get("id");
+  const playlistUrl = searchParams.get("id");
+    if (!playlistUrl) {
+        return NextResponse.json({ error: "Missing playlist URL" }, { status: 400 });
+    }
+
+    const playlistId = extractPlaylistId(playlistUrl);
 
     if (!playlistId) {
         return NextResponse.json({ error: "Missing playlist ID" }, { status: 400 });
-    }   
+    }
 
     try {
         const playlistDetails = await fetchPlaylistDetails(playlistId);

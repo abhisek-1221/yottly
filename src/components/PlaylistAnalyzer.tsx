@@ -13,7 +13,7 @@ import { Youtube, Clock, SortAsc, PlayCircle, AlertCircle, Search } from "lucide
 
 
 export default function PlaylistAnalyzer() {
-  const [playlistId, setPlaylistId] = useState("")
+  const [playlistUrl, setplaylistUrl] = useState("")
   const [playlistData, setPlaylistData] = useState<{
     playlistDetails: PlaylistDetails
     videos: VideoItem[]
@@ -32,7 +32,7 @@ export default function PlaylistAnalyzer() {
     setLoading(true)
     setError(null)
     try {
-      const response = await fetch(`/api/playlist?id=${playlistId}`)
+      const response = await fetch(`/api/playlist?id=${playlistUrl}`)
       const data = await response.json()
       if (!response.ok) {
         throw new Error(data.error || "Failed to fetch playlist data")
@@ -101,8 +101,8 @@ export default function PlaylistAnalyzer() {
               <Youtube className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
               <Input
                 placeholder="Enter YouTube Playlist ID"
-                value={playlistId}
-                onChange={(e) => setPlaylistId(e.target.value)}
+                value={playlistUrl}
+                onChange={(e) => setplaylistUrl(e.target.value)}
                 className="pl-10"
               />
             </div>
