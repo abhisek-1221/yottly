@@ -4,6 +4,25 @@ import { PlaylistDetails } from "@/lib/youtube";
 const YOUTUBE_API_BASE_URL = "https://www.googleapis.com/youtube/v3";
 const YOUTUBE_API_KEY = process.env.NEXT_PUBLIC_YOUTUBE_API_KEY;
 
+
+async function fetchPlaylistVideoIds(playlistId: string): Promise<string[]> {
+    const videoIds: string[] = [];
+    let nextPageToken: string | undefined;
+  
+    do {
+      const response = await fetch(
+        `${YOUTUBE_API_BASE_URL}/playlistItems?part=contentDetails&playlistId=${playlistId}&key=${YOUTUBE_API_KEY}&maxResults=50${
+          nextPageToken ? `&pageToken=${nextPageToken}` : ""
+        }`
+      );
+      const data = await response.json();
+      videoIds.push(...data.items.map((item: any) => item.contentDetails.videoId));
+      nextPageToken = data.nextPageToken;
+    } while (nextPageToken);
+  
+    return videoIds;
+  }
+  
 async function fetchPlaylistDetails(playlistId: string): Promise<PlaylistDetails> {
     const response = await fetch(
       `${YOUTUBE_API_BASE_URL}/playlists?part=snippet&id=${playlistId}&key=${YOUTUBE_API_KEY}`
