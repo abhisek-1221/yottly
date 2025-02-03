@@ -4,13 +4,13 @@ import { useState, useMemo } from "react"
 import { motion } from "framer-motion"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { VideoCard } from "./VideoCard"
-import { formatDuration, formatNumber } from "@/lib/youtube"
+import { formatDuration } from "@/lib/youtube"
 import type { PlaylistDetails, VideoItem } from "@/lib/youtube"
 import { Youtube, Clock, SortAsc, PlayCircle, AlertCircle, Search } from "lucide-react"
 import FeatureSearchBar from "./featurebar"
+import { Toast } from "./searchbar/toast"
 
 
 export default function PlaylistAnalyzer() {
@@ -24,30 +24,44 @@ export default function PlaylistAnalyzer() {
   const [rangeStart, setRangeStart] = useState("1")
   const [rangeEnd, setRangeEnd] = useState("100")
   const [sortBy, setSortBy] = useState("position")
-  const [playbackSpeed, setPlaybackSpeed] = useState("1")
-  const [loading, setLoading] = useState(false)
+  const [state, setState] = useState<"initial" | "loading" | "success">("initial")
   const [error, setError] = useState<string | null>(null)
+  const [playbackSpeed, setPlaybackSpeed] = useState("1")
   const [searchQuery, setSearchQuery] = useState("")
 
   const handleAnalyze = async () => {
-    setLoading(true)
-    setError(null)
+    setState("loading")
     try {
       const response = await fetch(`/api/playlist?id=${playlistUrl}`)
       const data = await response.json()
+      
       if (!response.ok) {
         throw new Error(data.error || "Failed to fetch playlist data")
       }
       
       setPlaylistData(data)
-      setRangeEnd(data.totalVideos.toString())
-    } catch (error) {
+      
+   
+      
+      setState("success")
+      
+      setTimeout(() => {
+        setState("initial")
+      }, 2000)
+    } catch (error: any) {
       console.error("Error analyzing playlist:", error)
-      setError(error instanceof Error ? error.message : "An unknown error occurred")
-    } finally {
-      setLoading(false)
+      setError(error.message)
+      
+      setTimeout(() => {
+        setState("initial")
+      }, 2000)
     }
   }
+
+  const handleReset = () => {
+    setState("initial")
+  }
+
 
   const filteredVideos = useMemo(() => {
     if (!playlistData) return []
@@ -110,9 +124,11 @@ export default function PlaylistAnalyzer() {
                 className="pl-10"
               />
             </div>
-            <Button onClick={handleAnalyze} disabled={loading} className="min-w-[120px]">
-              {loading ? "Analyzing..." : "Analyze"}
-            </Button>
+            <Toast
+        state={state} 
+        onSave={handleAnalyze} 
+        onReset={handleReset}
+      />
           </div>
           {error && (
             <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4 flex items-center">
