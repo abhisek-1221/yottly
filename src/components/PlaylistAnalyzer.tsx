@@ -10,6 +10,7 @@ import { VideoCard } from "./VideoCard"
 import { formatDuration, formatNumber } from "@/lib/youtube"
 import type { PlaylistDetails, VideoItem } from "@/lib/youtube"
 import { Youtube, Clock, SortAsc, PlayCircle, AlertCircle, Search } from "lucide-react"
+import FeatureSearchBar from "./featurebar"
 
 
 export default function PlaylistAnalyzer() {
@@ -93,6 +94,9 @@ export default function PlaylistAnalyzer() {
       transition={{ duration: 0.5 }}
       className="max-w-7xl mx-auto px-4 py-8"
     >
+        <div>
+            <FeatureSearchBar />
+        </div>
       <Card className="mb-8 overflow-hidden">
         <CardContent className="p-6">
           <h1 className="text-3xl font-bold mb-6 text-center">YouTube Playlist Analyzer</h1>
