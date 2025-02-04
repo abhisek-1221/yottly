@@ -16,7 +16,7 @@ export function VideoCard({ video, searchQuery }: VideoCardProps) {
     const parts = text.split(new RegExp(`(${searchQuery})`, "gi"))
     return parts.map((part, index) =>
       part.toLowerCase() === searchQuery.toLowerCase() ? (
-        <span key={index} className="bg-yellow-200">
+        <span key={index} className="bg-yellow-800">
           {part}
         </span>
       ) : (

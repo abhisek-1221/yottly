@@ -8,9 +8,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { VideoCard } from "./VideoCard"
 import { formatDuration } from "@/lib/youtube"
 import type { PlaylistDetails, VideoItem } from "@/lib/youtube"
-import { Youtube, Clock, SortAsc, PlayCircle, AlertCircle, Search } from "lucide-react"
+import { Clock, SortAsc, PlayCircle, AlertCircle, Search } from "lucide-react"
 import FeatureSearchBar from "./featurebar"
 import { Toast } from "./searchbar/toast"
+import YouTube from "@/app/icons/yt"
 
 
 export default function PlaylistAnalyzer() {
@@ -39,10 +40,7 @@ export default function PlaylistAnalyzer() {
         throw new Error(data.error || "Failed to fetch playlist data")
       }
       
-      setPlaylistData(data)
-      
-   
-      
+      setPlaylistData(data) 
       setState("success")
       
       setTimeout(() => {
@@ -105,25 +103,29 @@ export default function PlaylistAnalyzer() {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
+      transition={{ duration: 1 }}
       className="max-w-7xl mx-auto px-4 py-8"
     >
         <div>
             <FeatureSearchBar />
         </div>
-      <Card className="mb-8 overflow-hidden">
+      <Card className="mb-8 overflow-hidden shadow-2xl shadow-gray-700 rounded-3xl">
         <CardContent className="p-6">
           <h1 className="text-3xl font-bold mb-6 text-center">YouTube Playlist Analyzer</h1>
           <div className="flex gap-4 mb-6">
-            <div className="relative flex-grow">
-              <Youtube className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-              <Input
-                placeholder="Enter YouTube Playlist ID"
-                value={playlistUrl}
-                onChange={(e) => setplaylistUrl(e.target.value)}
-                className="pl-10"
-              />
-            </div>
+          <div className="relative flex-grow bg-stone-950 rounded-xl overflow-hidden text-white shadow-lg">
+    <div className="absolute left-1.5 top-1/2 transform -translate-y-1/2 flex items-center gap-2">
+        <YouTube className="text-white w-6 h-6" />
+    </div>
+    <Input
+        placeholder="Enter YouTube Playlist ID"
+        value={playlistUrl}
+        onChange={(e) => setplaylistUrl(e.target.value)}
+        className="pl-10 bg-transparent text-white placeholder-stone-950 placeholder:text-lg placeholder:font-semibold focus:outline-none w-full shadow-lg shadow-stone-900"
+    />
+</div>
+            
+
             <Toast
         state={state} 
         onSave={handleAnalyze} 
@@ -143,7 +145,7 @@ export default function PlaylistAnalyzer() {
                   <CardContent className="p-4">
                     <h2 className="text-xl font-semibold mb-2">Playlist Summary</h2>
                     <div className="flex items-center mb-2">
-                      <Youtube className="mr-2" />
+                      <YouTube className="mr-8" />
                       <span>Total Videos: {playlistData.totalVideos}</span>
                     </div>
                     <div className="flex items-center">
@@ -156,30 +158,7 @@ export default function PlaylistAnalyzer() {
                   <CardContent className="p-4">
                     <h3 className="text-xl font-semibold mb-2">Range Selector</h3>
                     <div className="flex gap-4 mb-2">
-                      <Select value={rangeStart} onValueChange={setRangeStart}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Start" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {rangeOptions.map((option) => (
-                            <SelectItem key={option} value={option}>
-                              {option}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <Select value={rangeEnd} onValueChange={setRangeEnd}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="End" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {rangeOptions.map((option) => (
-                            <SelectItem key={option} value={option}>
-                              {option}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                    
                     </div>
                     <p className="text-sm text-gray-600">
                       Analyzing videos {rangeStart} to {rangeEnd}
@@ -212,22 +191,69 @@ export default function PlaylistAnalyzer() {
                     <h3 className="text-xl font-semibold mb-2 flex items-center">
                       <PlayCircle className="mr-2" /> Playback Speed
                     </h3>
-                    <Select value={playbackSpeed} onValueChange={setPlaybackSpeed}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Playback Speed" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="0.25">0.25x</SelectItem>
-                        <SelectItem value="0.5">0.5x</SelectItem>
-                        <SelectItem value="0.75">0.75x</SelectItem>
-                        <SelectItem value="1">1x</SelectItem>
-                        <SelectItem value="1.25">1.25x</SelectItem>
-                        <SelectItem value="1.5">1.5x</SelectItem>
-                        <SelectItem value="1.75">1.75x</SelectItem>
-                        <SelectItem value="2">2x</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <p className="text-sm text-gray-600 mt-2">Current speed: {playbackSpeed}x</p>
+                    <div className="flex flex-row gap-2 mb-2">
+                          <div>
+                                <Select value={playbackSpeed} onValueChange={setPlaybackSpeed}>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Playback Speed" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="0.25">0.25x</SelectItem>
+                                        <SelectItem value="0.5">0.5x</SelectItem>
+                                        <SelectItem value="0.75">0.75x</SelectItem>
+                                        <SelectItem value="1">1x</SelectItem>
+                                        <SelectItem value="1.25">1.25x</SelectItem>
+                                        <SelectItem value="1.5">1.5x</SelectItem>
+                                        <SelectItem value="1.75">1.75x</SelectItem>
+                                        <SelectItem value="2">2x</SelectItem>
+                                    </SelectContent>
+                                    </Select>
+                          </div>
+
+                          <div>
+                            <Select value={sortBy} onValueChange={setSortBy}>
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Sort by" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="position">Position</SelectItem>
+                                    <SelectItem value="duration">Duration</SelectItem>
+                                    <SelectItem value="views">Views</SelectItem>
+                                    <SelectItem value="likes">Likes</SelectItem>
+                                    <SelectItem value="publishDate">Publish Date</SelectItem>
+                                </SelectContent>
+                                </Select>
+                          </div>
+
+                          <div className="flex gap-4 mb-2">
+                          <Select value={rangeStart} onValueChange={setRangeStart}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Start" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {rangeOptions.map((option) => (
+                            <SelectItem key={option} value={option}>
+                              {option}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <Select value={rangeEnd} onValueChange={setRangeEnd}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="End" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {rangeOptions.map((option) => (
+                            <SelectItem key={option} value={option}>
+                              {option}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                          </div>
+                    </div>
+                    
+                    <p className="text-sm text-gray-600 mt-2">Analyzing videos {rangeStart} to {rangeEnd} at speed: {playbackSpeed}x</p>
                   </CardContent>
                 </Card>
               </div>
@@ -252,7 +278,7 @@ export default function PlaylistAnalyzer() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
-          <h2 className="text-2xl font-bold mb-4">Video List</h2>
+          <h2 className="text-3xl font-bold mb-4 flex justify-center items-center">Video List</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {sortedVideos.map((video, index) => (
               <motion.div
