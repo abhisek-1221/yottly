@@ -1,8 +1,11 @@
+"use client"
+
 import { motion } from "framer-motion"
 import { Card, CardContent } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
 import { formatDuration, formatNumber } from "@/lib/youtube"
 import type { VideoItem } from "@/lib/youtube"
-import { PlayCircle, ThumbsUp, Eye, Calendar } from "lucide-react"
+import { ThumbsUp, Eye, Calendar, ExternalLink } from "lucide-react"
 
 interface VideoCardProps {
   video: VideoItem
@@ -24,6 +27,7 @@ export function VideoCard({ video, searchQuery }: VideoCardProps) {
       ),
     )
   }
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -44,22 +48,27 @@ export function VideoCard({ video, searchQuery }: VideoCardProps) {
         </div>
         <CardContent className="p-4">
           <h3 className="font-semibold text-lg mb-2 line-clamp-2 h-14">{highlightText(video.title)}</h3>
-          <div className="flex flex-col space-y-2 text-sm text-gray-500">
-            <div className="flex items-center">
-              <Eye className="w-4 h-4 mr-2" />
-              <span>{formatNumber(video.viewCount)} views</span>
-            </div>
-            <div className="flex items-center">
-              <ThumbsUp className="w-4 h-4 mr-2" />
-              <span>{formatNumber(video.likeCount)} likes</span>
-            </div>
-            <div className="flex items-center">
-              <Calendar className="w-4 h-4 mr-2" />
+          <div className="flex flex-wrap gap-2 mt-2">
+            <Badge variant="secondary" className="flex items-center">
+              <Eye className="w-3 h-3 mr-1 text-blue-500" />
+              <span>{formatNumber(video.viewCount)}</span>
+            </Badge>
+            <Badge variant="secondary" className="flex items-center">
+              <ThumbsUp className="w-3 h-3 mr-1 text-green-500" />
+              <span>{formatNumber(video.likeCount)}</span>
+            </Badge>
+            <Badge variant="secondary" className="flex items-center">
+              <Calendar className="w-3 h-3 mr-1 text-red-500" />
               <span>{new Date(video.publishedAt).toLocaleDateString()}</span>
-            </div>
+            </Badge>
+            <Badge variant="secondary" className="flex items-center space-x-2 hover:bg-blue-950">
+              <ExternalLink className="w-3 h-3" />
+              <span>View</span>
+            </Badge>
           </div>
         </CardContent>
       </Card>
     </motion.div>
   )
 }
+
