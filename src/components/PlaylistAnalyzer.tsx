@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { VideoCard } from "./VideoCard"
 import { formatDuration } from "@/lib/youtube"
 import type { PlaylistDetails, VideoItem } from "@/lib/youtube"
-import { Clock, SortAsc, PlayCircle, AlertCircle, Search, FastForward, Calendar, SquareActivity } from "lucide-react"
+import { Clock, SortAsc, PlayCircle, AlertCircle, Search, FastForward, Calendar, SquareActivity, Youtube } from "lucide-react"
 import FeatureSearchBar from "./featurebar"
 import { Toast } from "./searchbar/toast"
 import YouTube from "@/app/icons/yt"
@@ -112,7 +112,10 @@ export default function PlaylistAnalyzer() {
         </div>
       <Card className="mb-8 overflow-hidden shadow-2xl shadow-gray-700 rounded-3xl">
         <CardContent className="p-6">
-          <h1 className="text-3xl font-bold mb-6 text-center">YouTube Playlist Analyzer</h1>
+            <div className="flex justify-center items-center">
+            <Youtube className="w-12 h-12 mx-2 text-red-500 mb-[1.3rem]" />
+            <h1 className="text-3xl font-bold mb-6 text-center">YouTube Playlist Analyzer</h1>
+            </div>
           <div className="flex gap-4 mb-6">
           <div className="relative flex-grow bg-stone-950 rounded-xl overflow-hidden text-white shadow-lg">
     <div className="absolute left-1.5 top-1/2 transform -translate-y-1/2 flex items-center gap-2">
@@ -144,9 +147,9 @@ export default function PlaylistAnalyzer() {
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
               <div className="grid md:grid-cols-2 gap-6 mb-6">
                 <Card className="bg-gradient-to-br from-stone-700 via-transparent to-gray-900 text-white">
-                  <CardContent className="p-4">
-                  <h3 className="text-xl font-semibold mb-2 flex items-center">
-                      <SortAsc className="mr-2" /> Playlist Summary
+                  <CardContent className="p-6">
+                  <h3 className="text-2xl font-semibold mb-4 flex items-center text-purple-300">
+                    <PlayCircle className="mr-2 h-6 w-6" /> Playlist Summary
                     </h3>
                     <div className="flex flex-col items-start mt-4 space-y-2">
                         <div className="flex gap-2">
@@ -154,7 +157,7 @@ export default function PlaylistAnalyzer() {
                         <span className="text-3xl font-bold">Total Videos: {playlistData.totalVideos}</span>
                         </div>
                       <div className="flex gap-2">
-                      <Clock className="mr-1 text-yellow-700 mt-1" />
+                      <Clock className="mr-1 text-yellow-100 mt-1" />
                       <span className="text-3xl font-bold">Total Duration: {formatDuration(adjustedDuration)}</span>
                       </div>
                     </div>
@@ -242,7 +245,7 @@ export default function PlaylistAnalyzer() {
                     </div>
                     </div>
                     
-                    <p className="text-sm text-gray-600 mt-2">Analyzing videos {rangeStart} to {rangeEnd} at speed: {playbackSpeed}x</p>
+                    <p className="text-sm text-gray-300 mt-2">Analyzing videos {rangeStart} to {rangeEnd} at speed: {playbackSpeed}x</p>
                   </CardContent>
                 </Card>
                                 {/* filters section end */}
