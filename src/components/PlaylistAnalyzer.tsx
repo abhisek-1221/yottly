@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { VideoCard } from "./VideoCard"
 import { formatDuration } from "@/lib/youtube"
 import type { PlaylistDetails, VideoItem } from "@/lib/youtube"
-import { Clock, SortAsc, PlayCircle, AlertCircle, Search, FastForward, Calendar } from "lucide-react"
+import { Clock, SortAsc, PlayCircle, AlertCircle, Search, FastForward, Calendar, SquareActivity } from "lucide-react"
 import FeatureSearchBar from "./featurebar"
 import { Toast } from "./searchbar/toast"
 import YouTube from "@/app/icons/yt"
@@ -149,11 +149,11 @@ export default function PlaylistAnalyzer() {
                     </h3>
                     <div className="flex flex-col items-start mt-4 space-y-2">
                         <div className="flex gap-2">
-                        <YouTube className="mr-2 w-6 h-6 mt-1" />
+                        <SquareActivity className="mr-2 w-6 h-6 mt-1 text-blue-300" />
                         <span className="text-3xl font-bold">Total Videos: {playlistData.totalVideos}</span>
                         </div>
                       <div className="flex gap-2">
-                      <Clock className="mr-2 text-yellow-700 mt-1" />
+                      <Clock className="mr-1 text-yellow-700 mt-1" />
                       <span className="text-3xl font-bold">Total Duration: {formatDuration(adjustedDuration)}</span>
                       </div>
                     </div>
@@ -162,7 +162,7 @@ export default function PlaylistAnalyzer() {
 
                  {/* filters section start */}
 
-                 <Card className="bg-gradient-to-br from-stone-700 via-transparent to-gray-900 text-white w-full max-w-3xl shadow-lg hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-1">
+                 <Card className="bg-gradient-to-br from-stone-700 via-transparent to-gray-900 text-white w-full max-w-3xl shadow-lg hover:shadow-xl transition-shadow duration-300 transform ">
                 <CardContent className="p-6">
                     <h3 className="text-2xl font-semibold mb-4 flex items-center text-purple-300">
                     <PlayCircle className="mr-2 h-6 w-6" /> Filters
@@ -249,30 +249,31 @@ export default function PlaylistAnalyzer() {
 
               </div>
 
-              <div className="mt-6">
-            
-                <div className="flex justify-center items-center">
-                <Input
-                  placeholder=" 🔍   Search video titles"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-[350px] rounded-full placeholder-gray-300 placeholder:text-center"
-                />
-                </div>
-                
-              </div>
-
-
             </motion.div>
           )}
         </CardContent>
       </Card>
-      {sortedVideos && (
+      {playlistData && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
+                {/* // searchQuery Bar */}
+                        <div className="p-4">
+                        
+                        <div className="flex justify-center items-center">
+                        <Input
+                        placeholder=" 🔍   Search video titles"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="w-[350px] rounded-full placeholder-gray-300 placeholder:text-center"
+                        />
+                        </div>
+                        
+                    </div>
+            {/* // searchQuery Bar end */}
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {sortedVideos.map((video, index) => (
               <motion.div
