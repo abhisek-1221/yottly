@@ -146,19 +146,19 @@ export default function PlaylistAnalyzer() {
           {playlistData && (
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
               <div className="grid md:grid-cols-2 gap-6 mb-6">
-                <Card className="bg-gradient-to-br from-stone-700 via-transparent to-gray-900 text-white">
+                <Card className="bg-gradient-to-br from-stone-700 via-transparent to-gray-900 text-white shadow-xl rounded-lg">
                   <CardContent className="p-6">
                   <h3 className="text-2xl font-semibold mb-4 flex items-center text-purple-300">
                     <PlayCircle className="mr-2 h-6 w-6" /> Playlist Summary
                     </h3>
-                    <div className="flex flex-col items-start mt-4 space-y-2">
-                        <div className="flex gap-2">
-                        <SquareActivity className="mr-2 w-6 h-6 mt-1 text-blue-300" />
-                        <span className="text-3xl font-bold">Total Videos: {playlistData.totalVideos}</span>
+                    <div className="flex flex-col items-start mt-4 space-y-3">
+                        <div className="flex items-center gap-2">
+                        <SquareActivity className="w-6 h-6 text-blue-400" />
+                        <span className="text-xl font-bold">Total Videos: {playlistData.totalVideos}</span>
                         </div>
-                      <div className="flex gap-2">
-                      <Clock className="mr-1 text-yellow-100 mt-1" />
-                      <span className="text-3xl font-bold">Total Duration: {formatDuration(adjustedDuration)}</span>
+                      <div className="flex items-center gap-2">
+                      <Clock className="w-6 h-6 text-yellow-300" />
+                      <span className="text-xl font-bold">Total Duration: {formatDuration(adjustedDuration)}</span>
                       </div>
                     </div>
                     </CardContent>

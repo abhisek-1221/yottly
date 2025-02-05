@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { formatDuration, formatNumber } from "@/lib/youtube"
 import type { VideoItem } from "@/lib/youtube"
 import { ThumbsUp, Eye, Calendar, ExternalLink } from "lucide-react"
+import { Button } from "./ui/button"
 
 interface VideoCardProps {
   video: VideoItem
@@ -61,10 +62,10 @@ export function VideoCard({ video, searchQuery }: VideoCardProps) {
               <Calendar className="w-3 h-3 mr-1 text-red-500" />
               <span>{new Date(video.publishedAt).toLocaleDateString()}</span>
             </Badge>
-            <Badge variant="secondary" className="flex items-center space-x-2 hover:bg-blue-950">
+            <Button variant="secondary" className="flex items-center space-x-1 hover:bg-blue-950">
               <ExternalLink className="w-3 h-3" />
               <span>View</span>
-            </Badge>
+            </Button>
           </div>
         </CardContent>
       </Card>
