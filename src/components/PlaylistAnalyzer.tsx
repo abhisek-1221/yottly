@@ -153,7 +153,7 @@ export default function PlaylistAnalyzer() {
                         <span className="text-3xl font-bold">Total Videos: {playlistData.totalVideos}</span>
                         </div>
                       <div className="flex gap-2">
-                      <Clock className="mr-2" />
+                      <Clock className="mr-2 text-yellow-700 mt-1" />
                       <span className="text-3xl font-bold">Total Duration: {formatDuration(adjustedDuration)}</span>
                       </div>
                     </div>
@@ -246,18 +246,23 @@ export default function PlaylistAnalyzer() {
                 </Card>
                                 {/* filters section end */}
 
+
               </div>
+
               <div className="mt-6">
-                <h3 className="text-xl font-semibold mb-2 flex items-center">
-                  <Search className="mr-2" /> Search Videos
-                </h3>
+            
+                <div className="flex justify-center items-center">
                 <Input
-                  placeholder="Search video titles"
+                  placeholder=" 🔍   Search video titles"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full"
+                  className="w-[350px] rounded-full placeholder-gray-300 placeholder:text-center"
                 />
+                </div>
+                
               </div>
+
+
             </motion.div>
           )}
         </CardContent>
@@ -268,7 +273,6 @@ export default function PlaylistAnalyzer() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
-          <h2 className="text-3xl font-bold mb-4 flex justify-center items-center">Video List</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {sortedVideos.map((video, index) => (
               <motion.div
