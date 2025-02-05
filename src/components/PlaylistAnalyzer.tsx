@@ -91,7 +91,7 @@ export default function PlaylistAnalyzer() {
     return filteredVideos?.reduce((acc, video) => acc + video.duration, 0)
   }, [filteredVideos])
 
-  const adjustedDuration = totalDuration / Number.parseFloat(playbackSpeed)
+  const adjustedDuration = Math.round(totalDuration / Number.parseFloat(playbackSpeed))
 
   const rangeOptions = useMemo(() => {
     if (!playlistData) return []
@@ -141,7 +141,7 @@ export default function PlaylistAnalyzer() {
           {playlistData && (
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
               <div className="grid md:grid-cols-2 gap-6 mb-6">
-                <Card className="bg-gradient-to-br from-purple-500 to-indigo-600 text-white">
+                <Card className="bg-gradient-to-br from-stone-700 via-transparent to-gray-900 text-white">
                   <CardContent className="p-4">
                     <h2 className="text-xl font-semibold mb-2">Playlist Summary</h2>
                     <div className="flex items-center mb-2">
