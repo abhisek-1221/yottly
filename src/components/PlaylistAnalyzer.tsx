@@ -41,6 +41,7 @@ export default function PlaylistAnalyzer() {
       }
       
       setPlaylistData(data) 
+      setRangeEnd(data.totalVideos.toString())
       setState("success")
       
       setTimeout(() => {
@@ -172,7 +173,7 @@ export default function PlaylistAnalyzer() {
                     {/* playback speed */}
                     <div className="space-y-2">
                         <label className="text-sm font-medium text-gray-300 flex items-center">
-                        <FastForward className="mr-2 h-4 w-4" /> Playback Speed
+                        <FastForward className="mr-2 h-4 w-4 text-purple-300" /> Playback Speed
                         </label>
                         <Select value={playbackSpeed} onValueChange={setPlaybackSpeed}>
                         <SelectTrigger className="w-full border-gray-600">
@@ -191,7 +192,7 @@ export default function PlaylistAnalyzer() {
                             {/* sort by */}
                             <div className="space-y-2">
                             <label className="text-sm font-medium text-gray-300 flex items-center">
-                            <SortAsc className="mr-2 h-4 w-4" /> Sort by
+                            <SortAsc className="mr-2 h-4 w-4 text-yellow-100" /> Sort by
                             </label>
                             <Select value={sortBy} onValueChange={setSortBy}>
                             <SelectTrigger className="w-full border-gray-600">
@@ -210,7 +211,7 @@ export default function PlaylistAnalyzer() {
                           {/* Range Selector */}
                     <div className="space-y-2">
                         <label className="text-sm font-medium text-gray-300 flex items-center">
-                        <Calendar className="mr-2 h-4 w-4" /> Range
+                        <Calendar className="mr-2 h-4 w-4 text-red-200" /> Range
                         </label>
                         <div className="flex gap-2">
                         <Select value={rangeStart} onValueChange={setRangeStart}>
