@@ -12,6 +12,19 @@ const formatTime = (seconds: number) => {
   return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
 };
 
+const cleanTranscriptText = (text: string) => {
+  return text
+    .replace(/&amp;#39;/g, "'")
+
+    .replace(/&quot;/g, '"')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&amp;/g, '&')
+
+    .replace(/\s+/g, ' ')
+    .trim();
+};
+
 export default function Home() {
   const [videoUrl, setVideoUrl] = useState("");
   const [transcriptData, setTranscriptData] = useState<any[]>([]);
@@ -31,9 +44,17 @@ export default function Home() {
       const data = await response.json();
       
       if (typeof data.transcript === 'string') {
-        setTranscriptData([{ text: data.transcript, offset: 0 }]);
+        setTranscriptData([{ 
+          text: cleanTranscriptText(data.transcript), 
+          offset: 0 
+        }]);
       } else {
-        setTranscriptData(data.transcript);
+        // Clean each transcript segment
+        const cleanedTranscript = data.transcript.map((entry: any) => ({
+          ...entry,
+          text: cleanTranscriptText(entry.text)
+        }));
+        setTranscriptData(cleanedTranscript);
       }
     } catch (error) {
       console.error("Error fetching transcript:", error);
@@ -42,7 +63,6 @@ export default function Home() {
     setLoading(false);
   };
 
-  // Combine all transcript text into a single string
   const fullTranscript = transcriptData.map(entry => entry.text).join(" ");
 
   return (
