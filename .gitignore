@@ -19,6 +19,7 @@
 # misc
 .DS_Store
 *.pem
+Youtube_API_config.json
 
 # debug
 npm-debug.log*

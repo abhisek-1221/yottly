@@ -49,7 +49,7 @@ export default function Home() {
       {transcript && (
         <div className="mt-4">
           <h2 className="text-xl font-semibold mb-2">Transcript:</h2>
-          <pre className="whitespace-pre-wrap bg-gray-100 p-4 rounded">{transcript}</pre>
+          <pre className="whitespace-pre-wrap p-4 rounded">{transcript}</pre>
         </div>
       )}
     </main>
