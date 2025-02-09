@@ -11,8 +11,6 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Invalid YouTube URL" }, { status: 400 });
     }
 
-    console.log("Fetching transcript for video ID:", videoId);
-
     // Fetch transcript
     const transcriptData = await YoutubeTranscript.fetchTranscript(videoId);
 
@@ -20,10 +18,8 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "No transcript found" }, { status: 404 });
     }
 
-    // Format transcript text into a readable string
-    const transcriptText = transcriptData.map((entry) => entry.text).join(" ");
-
-    return NextResponse.json({ transcript: transcriptText });
+    // Return the full transcript data array
+    return NextResponse.json({ transcript: transcriptData });
   } catch (error) {
     console.error("Error fetching transcript:", error);
     return NextResponse.json({ error: "Error fetching transcript" }, { status: 500 });
