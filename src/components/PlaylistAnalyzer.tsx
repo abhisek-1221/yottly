@@ -107,9 +107,6 @@ export default function PlaylistAnalyzer() {
       transition={{ duration: 1 }}
       className="max-w-7xl mx-auto px-4 py-8"
     >
-        <div>
-            <FeatureSearchBar />
-        </div>
       <Card className="mb-8 overflow-hidden shadow-2xl shadow-gray-700 rounded-3xl">
         <CardContent className="p-6">
             <div className="flex justify-center items-center">
@@ -271,7 +268,7 @@ export default function PlaylistAnalyzer() {
                         placeholder=" 🔍   Search video titles"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-[350px] rounded-full placeholder-gray-300 placeholder:text-center"
+                        className="w-[350px] rounded-full placeholder-gray-300 placeholder:text-center shadow-inner shadow-stone-600"
                         />
                         </div>
                         

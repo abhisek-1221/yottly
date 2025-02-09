@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input"
 import { motion, AnimatePresence } from "framer-motion"
 import { Search, Send, BarChart2, Globe, Video, PlaneTakeoff, AudioLines } from "lucide-react"
 import useDebounce from "../app/hooks/use-debounce"
+import { useRouter } from "next/navigation"
 
 interface Action {
   id: string
@@ -13,6 +14,7 @@ interface Action {
   description?: string
   short?: string
   end?: string
+  route?: string; 
 }
 
 interface SearchResult {
@@ -27,6 +29,7 @@ const allActions = [
     description: "v3-api",
     short: "⌘K",
     end: "Active",
+    route: "/analyze",
   },
   {
     id: "2",
@@ -35,6 +38,7 @@ const allActions = [
     description: "Deepseek",
     short: "",
     end: "Coming Soon",
+    route: "/summarize",
   },
   {
     id: "3",
@@ -43,6 +47,7 @@ const allActions = [
     description: "gpt-4o",
     short: "",
     end: "Coming Soon",
+    route: "/transcribe",
   },
   {
     id: "4",
@@ -51,6 +56,7 @@ const allActions = [
     description: "v3-api",
     short: "",
     end: "Active",
+    route: "/stats",
   },
   {
     id: "5",
@@ -59,6 +65,7 @@ const allActions = [
     description: "ExaAI",
     short: "",
     end: "Coming Soon",
+    route: "/compare",
   },
 ]
 
@@ -69,6 +76,9 @@ function FeatureSearchBar({ actions = allActions }: { actions?: Action[] }) {
   const [isTyping, setIsTyping] = useState(false)
   const [selectedAction, setSelectedAction] = useState<Action | null>(null)
   const debouncedQuery = useDebounce(query, 200)
+
+  const router = useRouter();
+
 
   useEffect(() => {
     if (!isFocused) {
@@ -95,7 +105,11 @@ function FeatureSearchBar({ actions = allActions }: { actions?: Action[] }) {
     setIsTyping(true)
   }
 
-  const container = {
+    const handleActionClick = (route: string) => {
+    router.push(route);
+    };
+
+  const container = { 
     hidden: { opacity: 0, height: 0 },
     show: {
       opacity: 1,
@@ -125,7 +139,7 @@ function FeatureSearchBar({ actions = allActions }: { actions?: Action[] }) {
     hidden: { opacity: 0, y: 20 },
     show: {
       opacity: 1,
-      y: 0,
+      y: 10,
       transition: {
         duration: 0.3,
       },
@@ -146,12 +160,15 @@ function FeatureSearchBar({ actions = allActions }: { actions?: Action[] }) {
   }
 
   return (
-    <div className="w-full max-w-xl mx-auto">
-      <div className="relative flex flex-col justify-start items-center min-h-[300px]">
+    <div className="w-full max-w-xl sm:scale-125">
+      <div className="fixed inset-x-0 flex flex-col justify-start items-center">
         <div className="w-full max-w-sm sticky top-0 bg-background z-10 pt-4 pb-1">
-          <label className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1 block" htmlFor="search">
-            Search Commands
+            <div className="flex items-center justify-center">
+            <label className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1 block space-y-2" htmlFor="search">
+            Search Features
           </label>
+            </div>
+          
           <div className="relative">
             <Input
               type="text"
@@ -207,7 +224,7 @@ function FeatureSearchBar({ actions = allActions }: { actions?: Action[] }) {
                       className="px-3 py-2 flex items-center justify-between hover:bg-gray-200 dark:hover:bg-zinc-900  cursor-pointer rounded-md"
                       variants={item}
                       layout
-                      onClick={() => setSelectedAction(action)}
+                      onClick={() => action.route && handleActionClick(action.route)}
                     >
                       <div className="flex items-center gap-2 justify-between">
                         <div className="flex items-center gap-2">
