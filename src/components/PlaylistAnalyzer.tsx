@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { VideoCard } from "./VideoCard"
 import { formatDuration } from "@/lib/youtube"
 import type { PlaylistDetails, VideoItem } from "@/lib/youtube"
-import { Clock, SortAsc, PlayCircle, AlertCircle, Search, FastForward, Calendar, SquareActivity, Youtube } from "lucide-react"
+import { Clock, SortAsc, PlayCircle, AlertCircle, Search, FastForward, Calendar, SquareActivity, Youtube, ChevronLeft } from "lucide-react"
 import { Toast } from "./searchbar/toast"
 import YouTube from "@/app/icons/yt"
 import { Button } from "./ui/button"
@@ -111,10 +111,13 @@ export default function PlaylistAnalyzer() {
       className="max-w-7xl mx-auto px-4 py-8"
     >
       <Card className="mb-8 overflow-hidden shadow-2xl shadow-gray-700 rounded-3xl">
-              <div className="flex justify-end items-end p-2 mr-6 mt-3">
-              <Button variant={"secondary"} onClick={() => router.push("/")}>
-              Back to home
+              <div className="flex justify-start items-start p-2 ml-6 mt-3">
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Button onClick={() => router.push("/")} variant="ghost" className="text-white">
+                <ChevronLeft className="w-5 h-5 mr-2" />
+                Back to Home
               </Button>
+            </motion.div>
               </div>
         <CardContent className="p-6">
             <div className="flex justify-center items-center">

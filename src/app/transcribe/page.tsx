@@ -1,79 +1,82 @@
-"use client";
+"use client"
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardHeader, CardContent } from "@/components/ui/card";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Clock, Eye, ThumbsUp, Calendar } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useState } from "react"
+import { motion } from "framer-motion"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Card, CardHeader, CardContent } from "@/components/ui/card"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Clock, Eye, ThumbsUp, Calendar, ChevronLeft, Search, ChevronDown, ChevronUp } from "lucide-react"
+import { useRouter } from "next/navigation"
+import type React from "react"
 
 interface VideoDetails {
-  id: string;
-  title: string;
-  description: string;
+  id: string
+  title: string
+  description: string
   thumbnails: {
-    maxres?: { url: string };
-    high?: { url: string };
-    medium?: { url: string };
-  };
-  channelTitle: string;
-  publishedAt: string;
-  duration: number;
-  viewCount: number;
-  likeCount: number;
+    maxres?: { url: string }
+    high?: { url: string }
+    medium?: { url: string }
+  }
+  channelTitle: string
+  publishedAt: string
+  duration: number
+  viewCount: number
+  likeCount: number
 }
 
 const formatTime = (seconds: number) => {
-  const minutes = Math.floor(seconds / 60);
-  const remainingSeconds = Math.floor(seconds % 60);
-  return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
-};
+  const minutes = Math.floor(seconds / 60)
+  const remainingSeconds = Math.floor(seconds % 60)
+  return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`
+}
 
 const formatNumber = (num: number) => {
-  return new Intl.NumberFormat('en-US', { notation: 'compact' }).format(num);
-};
+  return new Intl.NumberFormat("en-US", { notation: "compact" }).format(num)
+}
 
 const formatDate = (dateString: string) => {
-  return new Date(dateString).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  });
-};
+  return new Date(dateString).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  })
+}
 
 const cleanTranscriptText = (text: string) => {
   return text
     .replace(/&amp;#39;/g, "'")
     .replace(/&quot;/g, '"')
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
-    .replace(/&amp;/g, '&')
-    .replace(/\s+/g, ' ')
-    .trim();
-};
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&amp;/g, "&")
+    .replace(/\s+/g, " ")
+    .trim()
+}
 
 export default function Home() {
-  const [videoUrl, setVideoUrl] = useState("");
-  const [transcriptData, setTranscriptData] = useState<any[]>([]);
-  const [videoDetails, setVideoDetails] = useState<VideoDetails | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [videoUrl, setVideoUrl] = useState("")
+  const [transcriptData, setTranscriptData] = useState<any[]>([])
+  const [videoDetails, setVideoDetails] = useState<VideoDetails | null>(null)
+  const [loading, setLoading] = useState(false)
+  const [showFullDescription, setShowFullDescription] = useState(false)
 
-  const router = useRouter();
+  const router = useRouter()
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
+    e.preventDefault()
+    setLoading(true)
     try {
       // Fetch video details
       const videoResponse = await fetch("/api/videoDetail", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ videoUrl }),
-      });
-      const videoData = await videoResponse.json();
+      })
+      const videoData = await videoResponse.json()
       if (videoData.video) {
-        setVideoDetails(videoData.video);
+        setVideoDetails(videoData.video)
       }
 
       // Fetch transcript
@@ -81,143 +84,213 @@ export default function Home() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ videoUrl }),
-      });
-      const transcriptData = await transcriptResponse.json();
-      
-      if (typeof transcriptData.transcript === 'string') {
-        setTranscriptData([{ 
-          text: cleanTranscriptText(transcriptData.transcript), 
-          offset: 0 
-        }]);
+      })
+      const transcriptData = await transcriptResponse.json()
+
+      if (typeof transcriptData.transcript === "string") {
+        setTranscriptData([
+          {
+            text: cleanTranscriptText(transcriptData.transcript),
+            offset: 0,
+          },
+        ])
       } else if (Array.isArray(transcriptData.transcript)) {
         const cleanedTranscript = transcriptData.transcript.map((entry: any) => ({
           ...entry,
-          text: cleanTranscriptText(entry.text)
-        }));
-        setTranscriptData(cleanedTranscript);
+          text: cleanTranscriptText(entry.text),
+        }))
+        setTranscriptData(cleanedTranscript)
       } else {
-        setTranscriptData([]);
+        setTranscriptData([])
       }
     } catch (error) {
-      console.error("Error fetching data:", error);
-      setTranscriptData([]);
+      console.error("Error fetching data:", error)
+      setTranscriptData([])
     }
-    setLoading(false);
-  };
-  
+    setLoading(false)
+  }
 
-  const fullTranscript = transcriptData.map(entry => entry.text).join(" ");
+  const fullTranscript = transcriptData.map((entry) => entry.text).join(" ")
 
   return (
-    <main className="container mx-auto p-4 max-w-7xl">
-      <Card className="mb-6">
-        <div>
-            <Button onClick={() => router.push("/")}>
+    <motion.main
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+      className="container mx-auto p-4 max-w-7xl"
+    >
+      <Card className="mb-6 bg-gradient-to-r from-stone-900 via-transparent to-black text-white">
+        <CardContent className="p-6">
+          <div className="flex items-center justify-between mb-4">
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Button onClick={() => router.push("/")} variant="ghost" className="text-white">
+                <ChevronLeft className="w-5 h-5 mr-2" />
                 Back to Home
-            </Button>
-        </div>
-        <CardHeader>
-          <h1 className="text-2xl font-bold">YouTube Video Transcript</h1>
-        </CardHeader>
-        <CardContent>
+              </Button>
+            </motion.div>
+            <motion.h1
+              initial={{ y: -20 }}
+              animate={{ y: 0 }}
+              transition={{ type: "spring", stiffness: 300 }}
+              className="text-3xl font-bold"
+            >
+              YouTube Video Transcript
+            </motion.h1>
+          </div>
           <form onSubmit={handleSubmit} className="flex gap-2">
-            <Input
-              type="text"
-              value={videoUrl}
-              onChange={(e) => setVideoUrl(e.target.value)}
-              placeholder="Enter YouTube video URL"
-              className="flex-grow"
-            />
-            <Button type="submit" disabled={loading}>
-              {loading ? "Loading..." : "Get Transcript"}
-            </Button>
+            <motion.div initial={{ width: "100%" }} whileFocus={{ scale: 1.02 }} className="flex-grow relative">
+              <Input
+                type="text"
+                value={videoUrl}
+                onChange={(e) => setVideoUrl(e.target.value)}
+                placeholder="Enter YouTube video URL"
+                className="w-full h-12 px-4 rounded-lg border-2 border-white focus:outline-none focus:border-yellow-300 transition-all duration-300 bg-white/20 text-white placeholder-white/70"
+              />
+              <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-white/70" />
+            </motion.div>
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Button
+                type="submit"
+                disabled={loading}
+                className="h-12 px-6 font-semibold bg-red-900 text-white-900 hover:bg-red-500"
+              >
+                {loading ? "Loading..." : "Get Transcript"}
+              </Button>
+            </motion.div>
           </form>
         </CardContent>
       </Card>
 
       {videoDetails && (
-        <Card className="mb-6">
-          <CardContent className="p-6">
-            <div className="grid md:grid-cols-[300px,1fr] gap-6">
-              <div className="aspect-video relative rounded-lg overflow-hidden">
-                <img
-                  src={videoDetails.thumbnails.maxres?.url || 
-                       videoDetails.thumbnails.high?.url || 
-                       videoDetails.thumbnails.medium?.url}
-                  alt={videoDetails.title}
-                  className="object-cover w-full h-full"
-                />
-              </div>
-              <div className="space-y-4">
-                <h2 className="text-xl font-bold leading-tight">{videoDetails.title}</h2>
-                <p className="text-muted-foreground">{videoDetails.channelTitle}</p>
-                <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
-                  <div className="flex items-center gap-1">
-                    <Calendar className="w-4 h-4" />
-                    {formatDate(videoDetails.publishedAt)}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+          <Card className="mb-6 overflow-hidden">
+            <CardContent className="p-0">
+              <div className="grid md:grid-cols-[1fr,2fr]">
+                <motion.div whileHover={{ scale: 1.05 }} className="aspect-video relative overflow-hidden">
+                  <img
+                    src={
+                      videoDetails.thumbnails.maxres?.url ||
+                      videoDetails.thumbnails.high?.url ||
+                      videoDetails.thumbnails.medium?.url
+                    }
+                    alt={videoDetails.title}
+                    className="object-cover w-full h-full"
+                  />
+                </motion.div>
+                <div className="p-6 space-y-4">
+                  <h2 className="text-2xl font-bold leading-tight text-primary">{videoDetails.title}</h2>
+                  <p className="text-secondary-foreground">{videoDetails.channelTitle}</p>
+                  <div className="flex flex-wrap gap-4 text-sm">
+                    <motion.div
+                      whileHover={{ scale: 1.1 }}
+                      className="flex items-center gap-1 bg-blue-100 text-blue-800 px-2 py-1 rounded-full"
+                    >
+                      <Calendar className="w-4 h-4 text-blue-500" />
+                      {formatDate(videoDetails.publishedAt)}
+                    </motion.div>
+                    <motion.div
+                      whileHover={{ scale: 1.1 }}
+                      className="flex items-center gap-1 bg-green-100 text-green-800 px-2 py-1 rounded-full"
+                    >
+                      <Clock className="w-4 h-4 text-green-500" />
+                      {formatTime(videoDetails.duration)}
+                    </motion.div>
+                    <motion.div
+                      whileHover={{ scale: 1.1 }}
+                      className="flex items-center gap-1 bg-purple-100 text-purple-800 px-2 py-1 rounded-full"
+                    >
+                      <Eye className="w-4 h-4 text-purple-500" />
+                      {formatNumber(videoDetails.viewCount)} views
+                    </motion.div>
+                    <motion.div
+                      whileHover={{ scale: 1.1 }}
+                      className="flex items-center gap-1 bg-red-100 text-red-800 px-2 py-1 rounded-full"
+                    >
+                      <ThumbsUp className="w-4 h-4 text-red-500" />
+                      {formatNumber(videoDetails.likeCount)} likes
+                    </motion.div>
                   </div>
-                  <div className="flex items-center gap-1">
-                    <Clock className="w-4 h-4" />
-                    {formatTime(videoDetails.duration)}
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <Eye className="w-4 h-4" />
-                    {formatNumber(videoDetails.viewCount)} views
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <ThumbsUp className="w-4 h-4" />
-                    {formatNumber(videoDetails.likeCount)} likes
+                  <div>
+                    <p className={`text-muted-foreground ${showFullDescription ? "" : "line-clamp-2"}`}>
+                      {videoDetails.description}
+                    </p>
+                    <Button
+                      variant="link"
+                      onClick={() => setShowFullDescription(!showFullDescription)}
+                      className="mt-2 p-0 h-auto font-semibold text-blue-500"
+                    >
+                      {showFullDescription ? (
+                        <>
+                          Show less <ChevronUp className="w-4 h-4 ml-1" />
+                        </>
+                      ) : (
+                        <>
+                          Show more <ChevronDown className="w-4 h-4 ml-1" />
+                        </>
+                      )}
+                    </Button>
                   </div>
                 </div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </motion.div>
       )}
 
       {transcriptData.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="grid grid-cols-1 md:grid-cols-2 gap-6"
+        >
           <Card className="h-[600px]">
             <CardHeader>
-              <h2 className="text-xl font-semibold">Timestamped Transcript</h2>
+              <h2 className="text-xl font-semibold text-primary">Timestamped Transcript</h2>
             </CardHeader>
             <CardContent className="p-0">
               <ScrollArea className="h-[500px]">
                 <div className="p-4 grid gap-4">
                   {transcriptData.map((entry, index) => (
-                    <Card key={index} className="bg-card hover:bg-accent/50 transition-colors">
-                      <CardHeader className="p-3 pb-2">
-                        <div className="text-sm text-muted-foreground flex items-center gap-2">
-                          <Clock className="w-4 h-4" />
-                          {formatTime(entry.offset)}
-                        </div>
-                      </CardHeader>
-                      <CardContent className="p-3 pt-0">
-                        <p className="text-card-foreground">{entry.text}</p>
-                      </CardContent>
-                    </Card>
+                    <motion.div
+                      key={index}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.3, delay: index * 0.05 }}
+                    >
+                      <Card className="bg-gradient-to-r from-stone-950 via-transparent to-stone-800 hover:from-stone-900 hover:to-gray-900 transition-colors">
+                        <CardHeader className="p-3 pb-2">
+                          <div className="text-sm text-blue-600 flex items-center gap-2">
+                            <Clock className="w-4 h-4 text-blue-500" />
+                            {formatTime(entry.offset)}
+                          </div>
+                        </CardHeader>
+                        <CardContent className="p-3 pt-0">
+                          <p className="text-white font-semibold">{entry.text}</p>
+                        </CardContent>
+                      </Card>
+                    </motion.div>
                   ))}
                 </div>
               </ScrollArea>
             </CardContent>
           </Card>
 
-          <Card className="h-[600px]">
-            <CardHeader>
-              <h2 className="text-xl font-semibold">Full Transcript</h2>
+          <Card className="h-[600px] bg-gradient-to-r from-stone-950 via-transparent to-stone-800">
+            <CardHeader className="flex justify-center items-center">
+              <h2 className="text-xl font-semibold text-primary">Full Transcript</h2>
             </CardHeader>
             <CardContent className="p-0">
               <ScrollArea className="h-[500px]">
                 <div className="p-4">
-                  <p className="text-card-foreground leading-relaxed whitespace-pre-wrap">
-                    {fullTranscript}
-                  </p>
+                  <p className="text-white/90 font-medium leading-relaxed whitespace-pre-wrap">{fullTranscript}</p>
                 </div>
               </ScrollArea>
             </CardContent>
           </Card>
-        </div>
+        </motion.div>
       )}
-    </main>
-  );
+    </motion.main>
+  )
 }
+
