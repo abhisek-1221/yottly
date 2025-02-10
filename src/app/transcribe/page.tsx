@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Clock, Eye, ThumbsUp, Calendar } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 interface VideoDetails {
   id: string;
@@ -58,6 +59,8 @@ export default function Home() {
   const [videoDetails, setVideoDetails] = useState<VideoDetails | null>(null);
   const [loading, setLoading] = useState(false);
 
+  const router = useRouter();
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -86,12 +89,14 @@ export default function Home() {
           text: cleanTranscriptText(transcriptData.transcript), 
           offset: 0 
         }]);
-      } else {
+      } else if (Array.isArray(transcriptData.transcript)) {
         const cleanedTranscript = transcriptData.transcript.map((entry: any) => ({
           ...entry,
           text: cleanTranscriptText(entry.text)
         }));
         setTranscriptData(cleanedTranscript);
+      } else {
+        setTranscriptData([]);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -99,12 +104,18 @@ export default function Home() {
     }
     setLoading(false);
   };
+  
 
   const fullTranscript = transcriptData.map(entry => entry.text).join(" ");
 
   return (
     <main className="container mx-auto p-4 max-w-7xl">
       <Card className="mb-6">
+        <div>
+            <Button onClick={() => router.push("/")}>
+                Back to Home
+            </Button>
+        </div>
         <CardHeader>
           <h1 className="text-2xl font-bold">YouTube Video Transcript</h1>
         </CardHeader>

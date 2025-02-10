@@ -9,10 +9,10 @@ import { VideoCard } from "./VideoCard"
 import { formatDuration } from "@/lib/youtube"
 import type { PlaylistDetails, VideoItem } from "@/lib/youtube"
 import { Clock, SortAsc, PlayCircle, AlertCircle, Search, FastForward, Calendar, SquareActivity, Youtube } from "lucide-react"
-import FeatureSearchBar from "./featurebar"
 import { Toast } from "./searchbar/toast"
 import YouTube from "@/app/icons/yt"
-
+import { Button } from "./ui/button"
+import { useRouter } from "next/navigation"
 
 export default function PlaylistAnalyzer() {
   const [playlistUrl, setplaylistUrl] = useState("")
@@ -29,6 +29,9 @@ export default function PlaylistAnalyzer() {
   const [error, setError] = useState<string | null>(null)
   const [playbackSpeed, setPlaybackSpeed] = useState("1")
   const [searchQuery, setSearchQuery] = useState("")
+
+  const router = useRouter();
+
 
   const handleAnalyze = async () => {
     setState("loading")
@@ -108,6 +111,11 @@ export default function PlaylistAnalyzer() {
       className="max-w-7xl mx-auto px-4 py-8"
     >
       <Card className="mb-8 overflow-hidden shadow-2xl shadow-gray-700 rounded-3xl">
+              <div className="flex justify-end items-end p-2 mr-6 mt-3">
+              <Button variant={"secondary"} onClick={() => router.push("/")}>
+              Back to home
+              </Button>
+              </div>
         <CardContent className="p-6">
             <div className="flex justify-center items-center">
             <Youtube className="w-12 h-12 mx-2 text-red-500 mb-[1.3rem]" />
