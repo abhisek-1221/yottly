@@ -13,6 +13,8 @@ export async function POST(request: Request) {
 
     // Fetch transcript
     const transcriptData = await YoutubeTranscript.fetchTranscript(videoId);
+    console.log(transcriptData);
+    
 
     if (!transcriptData || transcriptData.length === 0) {
       return NextResponse.json({ error: "No transcript found" }, { status: 404 });
