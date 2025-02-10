@@ -6,9 +6,11 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardHeader, CardContent } from "@/components/ui/card"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Clock, Eye, ThumbsUp, Calendar, ChevronLeft, Search, ChevronDown, ChevronUp } from "lucide-react"
+import { Clock, Eye, ThumbsUp, Calendar, ChevronLeft, Search, ChevronDown, ChevronUp, FileText } from "lucide-react"
 import { useRouter } from "next/navigation"
 import type React from "react"
+import { useChat } from 'ai/react';
+
 
 interface VideoDetails {
   id: string
@@ -61,10 +63,12 @@ export default function Home() {
   const [videoDetails, setVideoDetails] = useState<VideoDetails | null>(null)
   const [loading, setLoading] = useState(false)
   const [showFullDescription, setShowFullDescription] = useState(false)
+  const [isSummarizing, setIsSummarizing] = useState(false)
+
 
   const router = useRouter()
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmissiom = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
     try {
@@ -112,6 +116,18 @@ export default function Home() {
 
   const fullTranscript = transcriptData.map((entry) => entry.text).join(" ")
 
+  const { messages, input, handleInputChange, handleSubmit } = useChat();
+  console.log(messages);
+    
+
+  const handleSummarize = async () => {
+    setIsSummarizing(true);
+    await handleSubmit();
+    setIsSummarizing(false);
+  }
+
+  
+
   return (
     <motion.main
       initial={{ opacity: 0 }}
@@ -137,7 +153,7 @@ export default function Home() {
               YouTube Video Transcript
             </motion.h1>
           </div>
-          <form onSubmit={handleSubmit} className="flex gap-2">
+          <form onSubmit={handleSubmissiom} className="flex gap-2">
             <motion.div initial={{ width: "100%" }} whileFocus={{ scale: 1.02 }} className="flex-grow relative">
               <Input
                 type="text"
@@ -285,6 +301,55 @@ export default function Home() {
                 <div className="p-4">
                   <p className="text-white/90 font-medium leading-relaxed whitespace-pre-wrap">{fullTranscript}</p>
                 </div>
+              </ScrollArea>
+            </CardContent>
+          </Card>
+
+          <Card className="h-[600px] bg-gradient-to-r from-stone-950 via-transparent to-stone-800">
+            <CardHeader className="flex justify-between items-center">
+              <h2 className="text-xl font-semibold text-primary">AI Summary</h2>
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <Button 
+                  onClick={handleSummarize} 
+                  disabled={isSummarizing}
+                  className="flex items-center gap-2 bg-blue-900 text-white hover:bg-blue-700"
+                >
+                  <FileText className="w-4 h-4" />
+                  {isSummarizing ? "Summarizing..." : "Summarize"}
+                </Button>
+              </motion.div>
+            </CardHeader>
+            <CardContent className="p-0">
+              <ScrollArea className="h-[500px]">
+                <div className="p-4">
+                  {messages.map((message, index) => (
+                    <div 
+                      key={index} 
+                      className={`mb-4 p-3 rounded-lg ${
+                        message.role === 'assistant' 
+                          ? 'bg-blue-950 text-white' 
+                          : 'bg-stone-800 text-white/80'
+                      }`}
+                    >
+                      {message.content}
+                    </div>
+                  ))}
+                </div>
+
+                <form onSubmit={handleSubmit} className="flex gap-4">
+          <input
+            value={fullTranscript}
+            onChange={handleInputChange}
+            placeholder="Type your message..."
+            className="flex-1 rounded-lg border border-gray-300 px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-[#f55036]"
+          />
+          <button 
+            type="submit"
+            className="rounded-lg bg-[#f55036] px-4 py-2 text-white hover:bg-[#d94530] focus:outline-none focus:ring-2 focus:ring-[#f55036]"
+          >
+            Send
+          </button>
+        </form>
               </ScrollArea>
             </CardContent>
           </Card>
