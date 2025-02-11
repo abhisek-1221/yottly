@@ -9,9 +9,11 @@ export async function POST(req: Request) {
 
   const result = streamText({
     model: groq('llama-3.3-70b-versatile'),
+    system: 'You are a Youtube Transcript Summarize with detailed key insights',
     messages,
-    prompt: 'You will be summarizing the given youtube transcript in a detailed way with key insights and bullet points.',
   });
-
+  console.log(result);
+  
+  
   return result.toDataStreamResponse();
 }

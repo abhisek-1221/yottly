@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -116,9 +116,7 @@ export default function Home() {
 
   const fullTranscript = transcriptData.map((entry) => entry.text).join(" ")
 
-  const { messages, input, handleInputChange, handleSubmit } = useChat();
-  console.log(messages);
-    
+  const { messages, input,  setInput, handleInputChange, handleSubmit } = useChat();    
 
   const handleSummarize = async () => {
     setIsSummarizing(true);
@@ -126,6 +124,11 @@ export default function Home() {
     setIsSummarizing(false);
   }
 
+  useEffect(() => {
+    if (fullTranscript) {
+      setInput(fullTranscript)
+    }
+  }, [fullTranscript, setInput])
   
 
   return (
@@ -307,17 +310,7 @@ export default function Home() {
 
           <Card className="h-[600px] bg-gradient-to-r from-stone-950 via-transparent to-stone-800">
             <CardHeader className="flex justify-between items-center">
-              <h2 className="text-xl font-semibold text-primary">AI Summary</h2>
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Button 
-                  onClick={handleSummarize} 
-                  disabled={isSummarizing}
-                  className="flex items-center gap-2 bg-blue-900 text-white hover:bg-blue-700"
-                >
-                  <FileText className="w-4 h-4" />
-                  {isSummarizing ? "Summarizing..." : "Summarize"}
-                </Button>
-              </motion.div>
+                  <h1 className="font-bold text-3xl">Summary</h1>
             </CardHeader>
             <CardContent className="p-0">
               <ScrollArea className="h-[500px]">
@@ -327,27 +320,26 @@ export default function Home() {
                       key={index} 
                       className={`mb-4 p-3 rounded-lg ${
                         message.role === 'assistant' 
-                          ? 'bg-blue-950 text-white' 
-                          : 'bg-stone-800 text-white/80'
+                          ? 'bg-stale-950 text-white text-sm whitespace-pre-wrap' 
+                          : "flex justify-center items-center font-mono text-orange-300"
                       }`}
                     >
-                      {message.content}
+                      {message.role === 'assistant' ? message.content : "streaming summarized text"}
                     </div>
                   ))}
                 </div>
 
-                <form onSubmit={handleSubmit} className="flex gap-4">
+                <form onSubmit={handleSubmit} className="flex justify-center items-center gap-4">
           <input
-            value={fullTranscript}
-            onChange={handleInputChange}
-            placeholder="Type your message..."
-            className="flex-1 rounded-lg border border-gray-300 px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-[#f55036]"
+            value={input}
+            placeholder={`Enter your text here`}
+            className="flex-1 rounded-lg border border-gray-300 px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-[#f55036] hidden"
           />
           <button 
             type="submit"
             className="rounded-lg bg-[#f55036] px-4 py-2 text-white hover:bg-[#d94530] focus:outline-none focus:ring-2 focus:ring-[#f55036]"
           >
-            Send
+            Summarize
           </button>
         </form>
               </ScrollArea>

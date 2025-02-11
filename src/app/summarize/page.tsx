@@ -1,53 +1,38 @@
-'use client';
+'use client'
 
-import { useChat } from 'ai/react';
+import { useState } from 'react'
+import { useChat } from 'ai/react'
+import { Button } from '@/components/ui/button'
 
-export default function Chat() {
-  const { messages, input, handleInputChange, handleSubmit } = useChat();
+export default function TranscriptSummarizer() {
+  const [summary, setSummary] = useState<string>('')
+  const { messages, input, setInput , isLoading } = useChat()
+
+  // This would be your predefined transcript
+const transcript = `To live as gently as I can;
+To be, no matter where, a man;To take what comes of good or illAnd cling to faith and honor still;To do my best, and let that standThe record of my brain and hand;And then, should failure come to me,Still work and hope for victory.To have no secret place whereinI stoop unseen to shame or sin;To be the same when I'm aloneAs when my every deed is known;To live undaunted, unafraidOf any step that I have made;To be without pretense or shamExactly what men think I am.To leave some simple mark behindTo keep my having lived in mind;If enmity to aught I show,To be an honest, generous foe,To play my little part, nor whineThat greater honors are not mine.This, I believe, is all I needFor my philosophy and creed.Edgar A. Guest. "My Creed."`
+
+  const handleSummarize = () => {
+    setInput(transcript)
+  }
+
+  // Update summary when new assistant message is received
+  if (messages.length > 0 && messages[messages.length - 1].role === 'assistant') {
+    setSummary(messages[messages.length - 1].content)
+  }
 
   return (
-    <div className="min-h-screen">
-      <div className="mx-auto w-full max-w-2xl py-8 px-4">
-        <div className="space-y-4 mb-4">
-          {messages.map(m => (
-            <div 
-              key={m.id} 
-              className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}
-            >
-              <div 
-                className={`
-                  max-w-[80%] rounded-lg px-4 py-2
-                  ${m.role === 'user' 
-                    ? 'bg-gray-800 text-white' 
-                    : 'bg-gray-600 text-white'}
-                `}
-              >
-                <div className="text-xs text-white mb-1">
-                  {m.role === 'user' ? 'You' : 'Llama 3.3 70B powered by Groq'}
-                </div>
-                <div className="text-sm whitespace-pre-wrap">
-                  {m.content}
-                </div>
-              </div>
-            </div>
-          ))}
+    <div className="container mx-auto p-4">
+      <h1 className="text-2xl font-bold mb-4">YouTube Transcript Summarizer</h1>
+      <Button onClick={handleSummarize} disabled={isLoading}>
+        {isLoading ? 'Summarizing...' : 'Summarize'}
+      </Button>
+      {summary && (
+        <div className="mt-4">
+          <h2 className="text-xl font-semibold mb-2">Summary:</h2>
+          <p className="whitespace-pre-wrap">{summary}</p>
         </div>
-
-        <form onSubmit={handleSubmit} className="flex gap-4">
-          <input
-            value={input}
-            onChange={handleInputChange}
-            placeholder="Type your message..."
-            className="flex-1 rounded-lg border border-gray-300 px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-[#f55036]"
-          />
-          <button 
-            type="submit"
-            className="rounded-lg bg-[#f55036] px-4 py-2 text-white hover:bg-[#d94530] focus:outline-none focus:ring-2 focus:ring-[#f55036]"
-          >
-            Send
-          </button>
-        </form>
-      </div>
+      )}
     </div>
-  );
+  )
 }
