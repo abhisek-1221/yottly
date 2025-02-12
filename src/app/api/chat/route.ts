@@ -7,7 +7,7 @@ export async function POST(req: Request) {
   const { messages } = await req.json();
 
   const result = streamText({
-    model: groq('llama-3.1-8b-instant'),
+    model: groq('gemma2-9b-it'),
     system: 'You are a Youtube Transcript Summarize with detailed key insights',
     messages,
   });
