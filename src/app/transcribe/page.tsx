@@ -10,6 +10,8 @@ import { Clock, Eye, ThumbsUp, Calendar, ChevronLeft, Search, ChevronDown, Chevr
 import { useRouter } from "next/navigation"
 import type React from "react"
 import { useChat } from 'ai/react';
+import Markdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 
 
 interface VideoDetails {
@@ -313,6 +315,7 @@ export default function Home() {
                   <h1 className="font-bold text-3xl">Summary</h1>
             </CardHeader>
             <CardContent className="p-0">
+              
               <ScrollArea className="h-[500px]">
                 <div className="p-4">
                   {messages.map((message, index) => (
@@ -324,7 +327,10 @@ export default function Home() {
                           : "flex justify-center items-center font-mono text-orange-300"
                       }`}
                     >
-                      {message.role === 'assistant' ? message.content : "streaming summarized text"}
+                        <Markdown remarkPlugins={[remarkGfm]}>
+                        {message.role === 'assistant' ? message.content : "streaming summarized text"}
+                        </Markdown>
+                      
                     </div>
                   ))}
                 </div>
