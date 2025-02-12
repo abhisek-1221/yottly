@@ -22,7 +22,7 @@ To be, no matter where, a man;To take what comes of good or illAnd cling to fait
   }
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="w-auto mx-auto p-4 flex-grow">
       <h1 className="text-2xl font-bold mb-4">YouTube Transcript Summarizer</h1>
       <Button onClick={handleSummarize} disabled={isLoading}>
         {isLoading ? 'Summarizing...' : 'Summarize'}

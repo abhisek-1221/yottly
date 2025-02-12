@@ -308,7 +308,7 @@ export default function Home() {
             </CardContent>
           </Card>
 
-          <Card className="h-[600px] bg-gradient-to-r from-stone-950 via-transparent to-stone-800">
+          <Card className="h-[600px] w-full bg-gradient-to-r from-stone-950 via-transparent to-stone-800">
             <CardHeader className="flex justify-between items-center">
                   <h1 className="font-bold text-3xl">Summary</h1>
             </CardHeader>
