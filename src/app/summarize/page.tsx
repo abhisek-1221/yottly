@@ -24,7 +24,11 @@ export default function TranscriptPage() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
+
+
   const fetchTranscript = async () => {
+
+    
     try {
       setLoading(true);
       setError(null);

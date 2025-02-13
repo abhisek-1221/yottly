@@ -48,16 +48,6 @@ const formatDate = (dateString: string) => {
   })
 }
 
-const cleanTranscriptText = (text: string) => {
-  return text
-    .replace(/&amp;#39;/g, "'")
-    .replace(/&quot;/g, '"')
-    .replace(/&lt;/g, "<")
-    .replace(/&gt;/g, ">")
-    .replace(/&amp;/g, "&")
-    .replace(/\s+/g, " ")
-    .trim()
-}
 
 export default function Home() {
   const [videoUrl, setVideoUrl] = useState("")
@@ -92,19 +82,20 @@ export default function Home() {
       const transcriptData = await transcriptResponse.json()
 
       if (transcriptData.transcript) {
-        // Handle the new transcript format
+
         if (transcriptData.transcript.segments) {
           const formattedTranscript = transcriptData.transcript.segments.map((segment: any) => ({
             text: segment.text,
-            offset: parseInt(segment.startTime.split(':')[0]) * 60 + 
-                   parseInt(segment.startTime.split(':')[1])
+            startTime: segment.startTime,
+            endTime: segment.endTime,
           }))
           setTranscriptData(formattedTranscript)
         } else if (transcriptData.transcript.fullTranscript) {
           setTranscriptData([
             {
               text: transcriptData.transcript.fullTranscript,
-              offset: 0,
+              startTime: "0:00",
+              endTime: "0:00",
             },
           ])
         }
@@ -280,7 +271,7 @@ export default function Home() {
                         <CardHeader className="p-3 pb-2">
                           <div className="text-sm text-blue-600 flex items-center gap-2">
                             <Clock className="w-4 h-4 text-blue-500" />
-                            {formatTime(entry.offset)}
+                            {entry.startTime} - {entry.endTime}
                           </div>
                         </CardHeader>
                         <CardContent className="p-3 pt-0">
