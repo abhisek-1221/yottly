@@ -65,8 +65,6 @@ export default function Home() {
   const [videoDetails, setVideoDetails] = useState<VideoDetails | null>(null)
   const [loading, setLoading] = useState(false)
   const [showFullDescription, setShowFullDescription] = useState(false)
-  const [isSummarizing, setIsSummarizing] = useState(false)
-
 
   const router = useRouter()
 
@@ -85,27 +83,31 @@ export default function Home() {
         setVideoDetails(videoData.video)
       }
 
-      // Fetch transcript
-      const transcriptResponse = await fetch("/api/transcript", {
+      // Fetch transcript using the new /transcribe endpoint
+      const transcriptResponse = await fetch("/api/transcribe", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ videoUrl }),
       })
       const transcriptData = await transcriptResponse.json()
 
-      if (typeof transcriptData.transcript === "string") {
-        setTranscriptData([
-          {
-            text: cleanTranscriptText(transcriptData.transcript),
-            offset: 0,
-          },
-        ])
-      } else if (Array.isArray(transcriptData.transcript)) {
-        const cleanedTranscript = transcriptData.transcript.map((entry: any) => ({
-          ...entry,
-          text: cleanTranscriptText(entry.text),
-        }))
-        setTranscriptData(cleanedTranscript)
+      if (transcriptData.transcript) {
+        // Handle the new transcript format
+        if (transcriptData.transcript.segments) {
+          const formattedTranscript = transcriptData.transcript.segments.map((segment: any) => ({
+            text: segment.text,
+            offset: parseInt(segment.startTime.split(':')[0]) * 60 + 
+                   parseInt(segment.startTime.split(':')[1])
+          }))
+          setTranscriptData(formattedTranscript)
+        } else if (transcriptData.transcript.fullTranscript) {
+          setTranscriptData([
+            {
+              text: transcriptData.transcript.fullTranscript,
+              offset: 0,
+            },
+          ])
+        }
       } else {
         setTranscriptData([])
       }
@@ -120,11 +122,6 @@ export default function Home() {
 
   const { messages, input,  setInput, handleInputChange, handleSubmit } = useChat();    
 
-  const handleSummarize = async () => {
-    setIsSummarizing(true);
-    await handleSubmit();
-    setIsSummarizing(false);
-  }
 
   useEffect(() => {
     if (fullTranscript) {
