@@ -64,7 +64,6 @@ export function VideoCard({ video, searchQuery }: VideoCardProps) {
             </Badge>
             <Button variant="secondary" className="flex items-center space-x-1 hover:bg-blue-950">
               <ExternalLink className="w-3 h-3" />
-              <span>View</span>
             </Button>
           </div>
         </CardContent>
