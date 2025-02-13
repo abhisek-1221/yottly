@@ -113,7 +113,7 @@ export default function PlaylistAnalyzer() {
             <div className="bg-zinc-800 p-2 rounded-lg">
               <YouTube className="w-5 h-5" />
             </div>
-            <span className="text-sm text-zinc-400">YouTube Playlist Analyzer</span>
+            <span className="text-sm text-zinc-400">Yottly</span>
             <div className="ml-auto">
               <Button variant="ghost" size="icon" className="rounded-full" onClick={() => router.push("/")}>
                 <Undo2 className="w-5 h-5" />
@@ -129,7 +129,7 @@ export default function PlaylistAnalyzer() {
                 <div className="bg-zinc-800 w-12 h-12 rounded-lg flex items-center justify-center mx-auto mb-6">
                   <YouTube className="w-6 h-6" />
                 </div>
-                <h1 className="text-2xl font-semibold mb-2">YouTube Playlist Analyzer</h1>
+                <h1 className="text-2xl font-semibold mb-2">Playlist Analyzer</h1>
                 <h2 className="text-xl text-zinc-400 mb-4">Analyze and filter your playlists</h2>
                 <p className="text-sm text-zinc-500 mb-8">
                   Enter your playlist ID below to get started with detailed analytics<br />

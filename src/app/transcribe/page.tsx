@@ -128,7 +128,7 @@ export default function Home() {
             <div className="bg-zinc-800 p-2 rounded-lg">
               <YouTube className="w-5 h-5" />
             </div>
-            <span className="text-sm text-zinc-400">YouTube Video Transcript</span>
+            <span className="text-sm text-zinc-400">Yottly</span>
             <div className="ml-auto">
               <Button variant="ghost" size="icon" className="rounded-full" onClick={() => router.push("/")}>
                 <Undo2 className="w-5 h-5" />

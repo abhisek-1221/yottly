@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import { Input } from "@/components/ui/input"
 import { motion, AnimatePresence } from "framer-motion"
-import { Search, Send, BarChart2, Globe, Video, PlaneTakeoff, AudioLines } from "lucide-react"
+import { Search, Send, BarChart2, Globe, Video, PlaneTakeoff, AudioLines, ChartSpline, Volleyball, Captions } from "lucide-react"
 import useDebounce from "../app/hooks/use-debounce"
 import { useRouter } from "next/navigation"
 
@@ -25,7 +25,7 @@ const allActions = [
   {
     id: "1",
     label: "Analyze Playlist",
-    icon: <PlaneTakeoff className="h-4 w-4 text-blue-500" />,
+    icon: <ChartSpline className="h-4 w-4 text-orange-500" />,
     description: "v3-api",
     short: "⌘K",
     end: "Active",
@@ -34,7 +34,7 @@ const allActions = [
   {
     id: "2",
     label: "Summarize AI Workspace",
-    icon: <BarChart2 className="h-4 w-4 text-orange-500" />,
+    icon: <Volleyball className="h-4 w-4 text-blue-500" />,
     description: "Groq 2.0",
     short: "",
     end: "Active",
@@ -43,7 +43,7 @@ const allActions = [
   {
     id: "3",
     label: "Transcribe Video",
-    icon: <Video className="h-4 w-4 text-purple-500" />,
+    icon: <Captions className="h-4 w-4 text-yellow-500" />,
     description: "v3-api",
     short: "",
     end: "Active",
@@ -52,7 +52,7 @@ const allActions = [
   {
     id: "4",
     label: "Channel Stats",
-    icon: <AudioLines className="h-4 w-4 text-green-500" />,
+    icon: <Video className="h-4 w-4 text-green-500" />,
     description: "Data API",
     short: "",
     end: "Coming Soon",
@@ -61,7 +61,7 @@ const allActions = [
   {
     id: "5",
     label: "Compare Videos",
-    icon: <Globe className="h-4 w-4 text-blue-500" />,
+    icon: <Globe className="h-4 w-4 text-purple-500" />,
     description: "ExaAI",
     short: "",
     end: "Coming Soon",
