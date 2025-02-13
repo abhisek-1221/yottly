@@ -6,12 +6,13 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardHeader, CardContent } from "@/components/ui/card"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Clock, Eye, ThumbsUp, Calendar, ChevronLeft, Search, ChevronDown, ChevronUp, FileText } from "lucide-react"
+import { Clock, Eye, ThumbsUp, Calendar, ChevronLeft, Search, ChevronDown, ChevronUp, FileText, Undo2 } from "lucide-react"
 import { useRouter } from "next/navigation"
 import type React from "react"
 import { useChat } from 'ai/react';
 import Markdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
+import YouTube from "../icons/yt"
 
 
 interface VideoDetails {
@@ -110,187 +111,188 @@ export default function Home() {
   const fullTranscript = transcriptData.map((entry) => entry.text).join(" ")  
 
   return (
-    <motion.main
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
-      className="container mx-auto p-4 max-w-7xl"
-    >
-      <Card className="mb-6 bg-gradient-to-r from-stone-900 via-transparent to-black text-white">
-        <CardContent className="p-6">
-          <div className="flex items-center justify-between mb-4">
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Button onClick={() => router.push("/")} variant="ghost" className="text-white">
-                <ChevronLeft className="w-5 h-5 mr-2" />
-                Back to Home
+    <div className="min-h-screen bg-zinc-950 text-white p-4 flex items-center justify-center">
+      <Card 
+        className={`w-full max-w-6xl bg-black border-zinc-800 shadow-xl shadow-stone-600 rounded-2xl ${
+          videoDetails && transcriptData.length > 0 ? 'scale-90' : ''
+        }`}
+      >
+        <CardContent className="p-6 flex flex-col min-h-[700px] relative">
+          {/* Header - Always visible */}
+          <div className="flex items-center space-x-2 mb-6">
+            <div className="bg-zinc-800 p-2 rounded-lg">
+              <YouTube className="w-5 h-5" />
+            </div>
+            <span className="text-sm text-zinc-400">YouTube Video Transcript</span>
+            <div className="ml-auto">
+              <Button variant="ghost" size="icon" className="rounded-full" onClick={() => router.push("/")}>
+                <Undo2 className="w-5 h-5" />
               </Button>
-            </motion.div>
-            <motion.h1
-              initial={{ y: -20 }}
-              animate={{ y: 0 }}
-              transition={{ type: "spring", stiffness: 300 }}
-              className="text-3xl font-bold"
-            >
-              YouTube Video Transcript
-            </motion.h1>
+            </div>
           </div>
-          <form onSubmit={handleSubmissiom} className="flex gap-2">
-            <motion.div initial={{ width: "100%" }} whileFocus={{ scale: 1.02 }} className="flex-grow relative">
+
+          {/* Main Content Area */}
+          <div className="flex-1 flex flex-col pb-20">
+            {/* Welcome Message - Only shown initially */}
+            {!videoDetails && (
+              <div className="text-center my-12">
+                <div className="bg-zinc-800 w-12 h-12 rounded-lg flex items-center justify-center mx-auto mb-6">
+                  <YouTube className="w-6 h-6" />
+                </div>
+                <h1 className="text-2xl font-semibold mb-2">YouTube Video Transcript</h1>
+                <h2 className="text-xl text-zinc-400 mb-4">Get timestamped transcripts with ease</h2>
+                <p className="text-sm text-zinc-500 mb-8">
+                  Enter your video URL below to get started with detailed transcripts<br />
+                  including timestamps and full text.
+                </p>
+
+                {/* Feature Cards */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-auto mb-8 px-10 w-3/4 ml-32">
+                  <Card className="bg-gradient-to-br from-stone-700 via-transparent to-gray-900 border-zinc-700 p-4">
+                    <div className="flex space-x-3 mt-2">
+                      <Clock className="w-5 h-5 mb-3" />
+                      <h3 className="font-medium mb-1">Timestamped</h3>
+                    </div>
+                    <p className="text-xs text-zinc-400">Precise timing for every segment</p>
+                  </Card>
+                  
+                  <Card className="bg-gradient-to-br from-stone-700 via-transparent to-gray-900 border-zinc-700 p-4">
+                    <div className="flex space-x-3 mt-2">
+                      <Eye className="w-5 h-5 mb-3" />
+                      <h3 className="font-medium mb-1">Full Text</h3>
+                    </div>
+                    <p className="text-xs text-zinc-400">Complete transcript for easy reading</p>
+                  </Card>
+                  
+                  <Card className="bg-gradient-to-br from-stone-700 via-transparent to-gray-900 border-zinc-700 p-4">
+                    <div className="flex space-x-3 mt-2">
+                      <ThumbsUp className="w-5 h-5 mb-3" />
+                      <h3 className="font-medium mb-1">Video Details</h3>
+                    </div>
+                    <p className="text-xs text-zinc-400">Comprehensive video information</p>
+                  </Card>
+                </div>
+              </div>
+            )}
+
+            {/* Video Details and Transcript */}
+            {videoDetails && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="space-y-3"
+              >
+                {/* Video Info Card */}
+                <Card className="bg-gradient-to-br from-stone-700 via-transparent to-gray-900 border-zinc-700">
+                  <CardContent className="p-4">
+                    <div className="grid md:grid-cols-[1fr,2fr] gap-4">
+                      <div className="aspect-video relative overflow-hidden rounded-lg">
+                        <img
+                          src={videoDetails.thumbnails.maxres?.url || videoDetails.thumbnails.high?.url}
+                          alt={videoDetails.title}
+                          className="object-cover w-full h-full"
+                        />
+                      </div>
+                      <div className="space-y-3">
+                        <h2 className="text-xl font-bold">{videoDetails.title}</h2>
+                        <p className="text-zinc-400">{videoDetails.channelTitle}</p>
+                        <div className="flex flex-wrap gap-2">
+                          <span className="flex items-center gap-1 bg-zinc-800 px-2 py-1 rounded-full text-sm">
+                            <Calendar className="w-4 h-4 text-yellow-600" />
+                            {formatDate(videoDetails.publishedAt)}
+                          </span>
+                          <span className="flex items-center gap-1 bg-zinc-800 px-2 py-1 rounded-full text-sm">
+                            <Eye className="w-4 h-4 text-blue-400" />
+                            {formatNumber(videoDetails.viewCount)} views
+                          </span>
+                          <span className="flex items-center gap-1 bg-zinc-800 px-2 py-1 rounded-full text-sm">
+                            <ThumbsUp className="w-4 h-4 text-green-500" />
+                            {formatNumber(videoDetails.likeCount)} likes
+                          </span>
+                        </div>
+                        <div>
+                          <p className={`text-zinc-400 ${showFullDescription ? "" : "line-clamp-2"}`}>
+                            {videoDetails.description}
+                          </p>
+                          <Button
+                            variant="ghost"
+                            onClick={() => setShowFullDescription(!showFullDescription)}
+                            className="mt-2 p-0 h-auto text-zinc-400 hover:text-white"
+                          >
+                            {showFullDescription ? (
+                              <>Show less <ChevronUp className="w-4 h-4 ml-1" /></>
+                            ) : (
+                              <>Show more <ChevronDown className="w-4 h-4 ml-1" /></>
+                            )}
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Transcripts */}
+
+                {transcriptData.length > 0 && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {/* Timestamped Transcript */}
+                    <Card className="bg-gradient-to-br from-stone-700 via-transparent to-gray-900 border-zinc-700">
+                      <CardContent className="p-4">
+                        <h3 className="text-lg font-semibold mb-4">Timestamped Transcript</h3>
+                        <ScrollArea className="h-[400px]">
+                          <div className="space-y-3">
+                            {transcriptData.map((entry, index) => (
+                              <div key={index} className="bg-zinc-800/50 p-3 rounded-lg">
+                                <div className="text-sm flex items-center gap-2 mb-1 text-blue-400">
+                                  <Clock className="w-4 h-4" />
+                                  {entry.startTime} - {entry.endTime}
+                                </div>
+                                <p className="text-sm">{entry.text}</p>
+                              </div>
+                            ))}
+                          </div>
+                        </ScrollArea>
+                      </CardContent>
+                    </Card>
+
+                    {/* Full Transcript */}
+                    <Card className="bg-gradient-to-br from-stone-700 via-transparent to-gray-900 border-zinc-700">
+                      <CardContent className="p-4">
+                        <h3 className="text-lg font-semibold mb-4">Full Transcript</h3>
+                        <ScrollArea className="h-[400px]">
+                          <p className="text-sm text-zinc-200 whitespace-pre-wrap">
+                            {fullTranscript}
+                          </p>
+                        </ScrollArea>
+                      </CardContent>
+                    </Card>
+                  </div>    
+                  )}
+              </motion.div>
+            )}
+          </div>
+
+          {/* Input Area - Always visible at the bottom */}
+          <div className="absolute bottom-0 left-0 right-0 p-6 bg-black border-t border-zinc-800 rounded-b-2xl">
+            <form onSubmit={handleSubmissiom} className="flex space-x-2 w-2/3 mx-auto">
               <Input
                 type="text"
                 value={videoUrl}
                 onChange={(e) => setVideoUrl(e.target.value)}
-                placeholder="Enter YouTube video URL"
-                className="w-full h-12 px-4 rounded-lg border-2 border-white focus:outline-none focus:border-yellow-300 transition-all duration-300 bg-white/20 text-white placeholder-white/70"
+                placeholder="Enter YouTube video URL..."
+                className="flex-1 bg-transparent shadow-md shadow-gray-700 border-zinc-700 rounded-full"
               />
-              <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-white/70" />
-            </motion.div>
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Button
                 type="submit"
                 disabled={loading}
-                className="h-12 px-6 font-semibold bg-red-900 text-white-900 hover:bg-red-500"
+                className="px-6 rounded-full bg-red-700 hover:bg-red-500 text-white"
               >
                 {loading ? "Loading..." : "Get Transcript"}
               </Button>
-            </motion.div>
-          </form>
+            </form>
+          </div>
         </CardContent>
       </Card>
-
-      {videoDetails && (
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-          <Card className="mb-6 overflow-hidden">
-            <CardContent className="p-0">
-              <div className="grid md:grid-cols-[1fr,2fr]">
-                <motion.div whileHover={{ scale: 1.05 }} className="aspect-video relative overflow-hidden">
-                  <img
-                    src={
-                      videoDetails.thumbnails.maxres?.url ||
-                      videoDetails.thumbnails.high?.url ||
-                      videoDetails.thumbnails.medium?.url
-                    }
-                    alt={videoDetails.title}
-                    className="object-cover w-full h-full"
-                  />
-                </motion.div>
-                <div className="p-6 space-y-4">
-                  <h2 className="text-2xl font-bold leading-tight text-primary">{videoDetails.title}</h2>
-                  <p className="text-secondary-foreground">{videoDetails.channelTitle}</p>
-                  <div className="flex flex-wrap gap-4 text-sm">
-                    <motion.div
-                      whileHover={{ scale: 1.1 }}
-                      className="flex items-center gap-1 bg-blue-100 text-blue-800 px-2 py-1 rounded-full"
-                    >
-                      <Calendar className="w-4 h-4 text-blue-500" />
-                      {formatDate(videoDetails.publishedAt)}
-                    </motion.div>
-                    <motion.div
-                      whileHover={{ scale: 1.1 }}
-                      className="flex items-center gap-1 bg-green-100 text-green-800 px-2 py-1 rounded-full"
-                    >
-                      <Clock className="w-4 h-4 text-green-500" />
-                      {formatTime(videoDetails.duration)}
-                    </motion.div>
-                    <motion.div
-                      whileHover={{ scale: 1.1 }}
-                      className="flex items-center gap-1 bg-purple-100 text-purple-800 px-2 py-1 rounded-full"
-                    >
-                      <Eye className="w-4 h-4 text-purple-500" />
-                      {formatNumber(videoDetails.viewCount)} views
-                    </motion.div>
-                    <motion.div
-                      whileHover={{ scale: 1.1 }}
-                      className="flex items-center gap-1 bg-red-100 text-red-800 px-2 py-1 rounded-full"
-                    >
-                      <ThumbsUp className="w-4 h-4 text-red-500" />
-                      {formatNumber(videoDetails.likeCount)} likes
-                    </motion.div>
-                  </div>
-                  <div>
-                    <p className={`text-muted-foreground ${showFullDescription ? "" : "line-clamp-2"}`}>
-                      {videoDetails.description}
-                    </p>
-                    <Button
-                      variant="link"
-                      onClick={() => setShowFullDescription(!showFullDescription)}
-                      className="mt-2 p-0 h-auto font-semibold text-blue-500"
-                    >
-                      {showFullDescription ? (
-                        <>
-                          Show less <ChevronUp className="w-4 h-4 ml-1" />
-                        </>
-                      ) : (
-                        <>
-                          Show more <ChevronDown className="w-4 h-4 ml-1" />
-                        </>
-                      )}
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
-      )}
-
-      {transcriptData.length > 0 && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="grid grid-cols-1 md:grid-cols-2 gap-6"
-        >
-          <Card className="h-[600px]">
-            <CardHeader>
-              <h2 className="text-xl font-semibold text-primary">Timestamped Transcript</h2>
-            </CardHeader>
-            <CardContent className="p-4">
-              <ScrollArea className="h-[500px]">
-                <div className="p-4 grid gap-4">
-                  {transcriptData.map((entry, index) => (
-                    <motion.div
-                      key={index}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.3, delay: index * 0.05 }}
-                    >
-                      <Card className="bg-gradient-to-r from-stone-950 via-transparent to-stone-800 hover:from-stone-900 hover:to-gray-900 transition-colors">
-                        <CardHeader className="p-3 pb-2">
-                          <div className="text-sm text-blue-600 flex items-center gap-2">
-                            <Clock className="w-4 h-4 text-blue-500" />
-                            {entry.startTime} - {entry.endTime}
-                          </div>
-                        </CardHeader>
-                        <CardContent className="p-3 pt-0">
-                          <p className="text-white font-semibold">{entry.text}</p>
-                        </CardContent>
-                      </Card>
-                    </motion.div>
-                  ))}
-                </div>
-              </ScrollArea>
-            </CardContent>
-          </Card>
-
-          <Card className="h-[600px] bg-gradient-to-r from-stone-950 via-transparent to-stone-800">
-            <CardHeader className="flex justify-center items-center">
-              <h2 className="text-xl font-semibold text-primary">Full Transcript</h2>
-            </CardHeader>
-            <CardContent className="p-0">
-              <ScrollArea className="h-[500px]">
-                <div className="p-4">
-                  <p className="text-white/90 font-medium leading-relaxed whitespace-pre-wrap">{fullTranscript}</p>
-                </div>
-              </ScrollArea>
-            </CardContent>
-          </Card>
-
-        </motion.div>
-      )}
-
-    </motion.main>
-
+    </div>
   )
 }
-

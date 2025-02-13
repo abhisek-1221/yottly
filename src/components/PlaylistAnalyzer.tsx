@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { VideoCard } from "./VideoCard"
 import { formatDuration } from "@/lib/youtube"
 import type { PlaylistDetails, VideoItem } from "@/lib/youtube"
-import { Clock, SortAsc, PlayCircle, AlertCircle, Search, FastForward, Calendar, SquareActivity, Youtube, ChevronLeft, Settings, Undo2 } from "lucide-react"
+import { Clock, SortAsc, PlayCircle, FastForward, Calendar, Youtube, Undo2 } from "lucide-react"
 import { Toast } from "./searchbar/toast"
 import YouTube from "@/app/icons/yt"
 import { Button } from "./ui/button"
@@ -107,7 +107,7 @@ export default function PlaylistAnalyzer() {
   return (
     <div className="min-h-screen bg-zinc-950 text-white p-4 flex items-center justify-center">
       <Card className="w-full max-w-6xl bg-black border-zinc-800 shadow-xl shadow-stone-600 rounded-2xl">
-        <CardContent className="p-6 flex flex-col min-h-[600px] relative">
+        <CardContent className="p-6 flex flex-col min-h-[700px] relative">
           {/* Header - Always visible */}
           <div className="flex items-center space-x-2 mb-6">
             <div className="bg-zinc-800 p-2 rounded-lg">
