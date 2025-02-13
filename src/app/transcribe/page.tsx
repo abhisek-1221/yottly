@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardHeader, CardContent } from "@/components/ui/card"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Clock, Eye, ThumbsUp, Calendar, ChevronLeft, Search, ChevronDown, ChevronUp, FileText, Undo2 } from "lucide-react"
+import { Clock, Eye, ThumbsUp, Calendar, ChevronLeft, Search, ChevronDown, ChevronUp, FileText, Undo2, Loader2, Check, CircleCheckBig } from "lucide-react"
 import { useRouter } from "next/navigation"
 import type React from "react"
 import { useChat } from 'ai/react';
@@ -56,6 +56,7 @@ export default function Home() {
   const [videoDetails, setVideoDetails] = useState<VideoDetails | null>(null)
   const [loading, setLoading] = useState(false)
   const [showFullDescription, setShowFullDescription] = useState(false)
+  const [showSuccess, setShowSuccess] = useState(false)
 
   const router = useRouter()
 
@@ -98,6 +99,10 @@ export default function Home() {
             },
           ])
         }
+        setShowSuccess(true)
+        setTimeout(() => {
+          setShowSuccess(false)
+        }, 4000) // Reset after 4 seconds
       } else {
         setTranscriptData([])
       }
@@ -147,7 +152,7 @@ export default function Home() {
                 </p>
 
                 {/* Feature Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-auto mb-8 px-10 w-3/4 ml-32">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-[8rem] px-10 w-3/4 ml-32">
                   <Card className="bg-gradient-to-br from-stone-700 via-transparent to-gray-900 border-zinc-700 p-4">
                     <div className="flex space-x-3 mt-2">
                       <Clock className="w-5 h-5 mb-3" />
@@ -287,7 +292,19 @@ export default function Home() {
                 disabled={loading}
                 className="px-6 rounded-full bg-red-700 hover:bg-red-500 text-white"
               >
-                {loading ? "Loading..." : "Get Transcript"}
+                {loading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Loading...
+                  </>
+                ) : showSuccess ? (
+                  <>
+                    <CircleCheckBig className="w-4 h-4 mr-2 text-green-400" />
+                    Got Transcript
+                  </>
+                ) : (
+                  "Get Transcript"
+                )}
               </Button>
             </form>
           </div>
