@@ -62,7 +62,6 @@ export default function Home() {
     e.preventDefault()
     setLoading(true)
     try {
-      // Fetch video details
       const videoResponse = await fetch("/api/videoDetail", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -73,7 +72,6 @@ export default function Home() {
         setVideoDetails(videoData.video)
       }
 
-      // Fetch transcript using the new /transcribe endpoint
       const transcriptResponse = await fetch("/api/transcribe", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -109,17 +107,7 @@ export default function Home() {
     setLoading(false)
   }
 
-  const fullTranscript = transcriptData.map((entry) => entry.text).join(" ")
-
-  const { messages, input,  setInput, handleInputChange, handleSubmit } = useChat();    
-
-
-  useEffect(() => {
-    if (fullTranscript) {
-      setInput(fullTranscript)
-    }
-  }, [fullTranscript, setInput])
-  
+  const fullTranscript = transcriptData.map((entry) => entry.text).join(" ")  
 
   return (
     <motion.main
@@ -300,65 +288,6 @@ export default function Home() {
 
         </motion.div>
       )}
-    {transcriptData.length > 0 && (
-          <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.4 }}
-          className="p-4 "
-  >
-          <Card className="h-[600px] w-full bg-gradient-to-r from-stone-950 via-transparent to-stone-800">
-                      <CardHeader className="flex justify-between items-center">
-                            <h1 className="font-bold text-3xl">Summary</h1>
-                      </CardHeader>
-                      <CardContent className="p-0">
-                        
-                        <ScrollArea className="h-[500px]">
-                          <div className="p-8">
-                            {messages.map((message, index) => (
-                              <div 
-                                key={index} 
-                                className={`mb-4 p-6 rounded-lg ${
-                                  message.role === 'assistant' 
-                                    ? 'bg-stale-950 text-white text-sm whitespace-pre-wrap p-4' 
-                                    : "flex justify-center items-center font-mono text-orange-300"
-                                }`}
-                              >
-                                  {message.role === 'assistant' ? (
-                                <Markdown remarkPlugins={[remarkGfm]}>
-                                  {message.content}
-                                </Markdown>
-                              ) : (
-                                <div className="flex items-center space-x-2">
-                                  <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-orange-300"></div>
-                                  <span>Generating summary...</span>
-                                </div>
-                                )}
-
-                              </div>
-                            ))}
-
-                          </div>
-  
-                          <form onSubmit={handleSubmit} className="flex justify-center items-center gap-4">
-                    <input
-                      value={input}
-                      placeholder={`Enter your text here`}
-                      className="flex-1 rounded-lg border border-gray-300 px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-[#f55036] hidden"
-                    />
-                    <button 
-                      type="submit"
-                      className="rounded-lg bg-[#f55036] px-4 py-1 text-white hover:bg-[#d94530] focus:outline-none focus:ring-2 focus:ring-[#f55036]"
-                    >
-                      Summarize
-                    </button>
-                  </form>
-                        </ScrollArea>
-                      </CardContent>
-                    </Card>
-  </motion.div>
-      )}
-      
 
     </motion.main>
 
