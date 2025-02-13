@@ -162,8 +162,8 @@ function FeatureSearchBar({ actions = allActions }: { actions?: Action[] }) {
   return (
     <div className="w-full max-w-xl sm:scale-125">
       <div className="fixed inset-x-0 flex flex-col justify-start items-center">
-        <div className="w-full max-w-sm sticky top-0 bg-background z-10 pt-4 pb-1">
-            <div className="flex items-center justify-center">
+        <div className="w-full max-w-sm sticky top-0 bg-background z-10 pt-1 pb-1">
+            <div className="flex items-center justify-center bg-transparent">
             <label className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1 block space-y-2" htmlFor="search">
             Search Features
           </label>

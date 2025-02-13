@@ -10,10 +10,7 @@ export async function POST(req: Request) {
     model: groq('gemma2-9b-it'),
     system: 'You are a Youtube Transcript Summarize with detailed key insights',
     messages,
-  });
-  console.log(result);
-  
-  
+  });  
   
   return result.toDataStreamResponse();
 }
