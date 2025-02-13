@@ -37,7 +37,7 @@ const allActions = [
     icon: <BarChart2 className="h-4 w-4 text-orange-500" />,
     description: "Groq 2.0",
     short: "",
-    end: "Coming Soon",
+    end: "Active",
     route: "/summarize",
   },
   {
@@ -53,9 +53,9 @@ const allActions = [
     id: "4",
     label: "Channel Stats",
     icon: <AudioLines className="h-4 w-4 text-green-500" />,
-    description: "DataAPI",
+    description: "Data API",
     short: "",
-    end: "Active",
+    end: "Coming Soon",
     route: "/stats",
   },
   {
@@ -163,16 +163,11 @@ function FeatureSearchBar({ actions = allActions }: { actions?: Action[] }) {
     <div className="w-full max-w-xl sm:scale-125">
       <div className="fixed inset-x-0 flex flex-col justify-start items-center">
         <div className="w-full max-w-sm sticky top-0 bg-background z-10 pt-1 pb-1">
-            <div className="flex items-center justify-center bg-transparent">
-            <label className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1 block space-y-2" htmlFor="search">
-            Search Features
-          </label>
-            </div>
           
           <div className="relative">
             <Input
               type="text"
-              placeholder="What's up?"
+              placeholder="What's up? Search Features..."
               value={query}
               onChange={handleInputChange}
               onFocus={handleFocus}
