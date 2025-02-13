@@ -28,6 +28,13 @@ export async function POST(request: Request) {
   }
 }
 
+function formatTimestamp(ms: number): string {
+    const seconds = Math.floor(ms / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+  }
+
 async function fetchTranscript(youtube: any, videoId: string) {
     try {
       const info = await youtube.getInfo(videoId)
@@ -35,8 +42,9 @@ async function fetchTranscript(youtube: any, videoId: string) {
       
       const segments = transcriptData.transcript.content.body.initial_segments.map(
         (segment: any) => ({
-          text: segment.snippet.text,
-          offset: segment.snippet.start,
+            text: segment.snippet.text,
+            startTime: formatTimestamp(parseInt(segment.start_ms)),
+            endTime: formatTimestamp(parseInt(segment.end_ms)),
         })
       )
   
