@@ -31,6 +31,8 @@ interface VideoDetails {
   likeCount: number
 }
 
+
+
 const formatTime = (seconds: number) => {
   const minutes = Math.floor(seconds / 60)
   const remainingSeconds = Math.floor(seconds % 60)
@@ -74,46 +76,30 @@ export default function Home() {
         setVideoDetails(videoData.video)
       }
 
-      const transcriptResponse = await fetch("/api/transcribe", {
+      const response = await fetch("/api/transcribe", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ videoUrl }),
       })
-      const transcriptData = await transcriptResponse.json()
-
-      if (transcriptData.transcript) {
-
-        if (transcriptData.transcript.segments) {
-          const formattedTranscript = transcriptData.transcript.segments.map((segment: any) => ({
-            text: segment.text,
-            startTime: segment.startTime,
-            endTime: segment.endTime,
-          }))
-          setTranscriptData(formattedTranscript)
-        } else if (transcriptData.transcript.fullTranscript) {
-          setTranscriptData([
-            {
-              text: transcriptData.transcript.fullTranscript,
-              startTime: "0:00",
-              endTime: "0:00",
-            },
-          ])
-        }
-        setShowSuccess(true)
-        setTimeout(() => {
-          setShowSuccess(false)
-        }, 4000) // Reset after 4 seconds
-      } else {
-        setTranscriptData([])
-      }
-    } catch (error) {
+     
+            const transcriptData = await response.json()            
+                
+                setTranscriptData(transcriptData.transcript.fullTranscript)
+                
+                setShowSuccess(true)
+                setTimeout(() => {
+                setShowSuccess(false)
+                }, 4000) // Reset after 4 seconds
+            } 
+            
+     catch (error) {
       console.error("Error fetching data:", error)
       setTranscriptData([])
     }
+    finally {
     setLoading(false)
   }
-
-  const fullTranscript = transcriptData.map((entry) => entry.text).join(" ")  
+}
 
   return (
     <div className="min-h-screen bg-zinc-950 text-white p-4 flex items-center justify-center">
@@ -144,11 +130,11 @@ export default function Home() {
                 <div className="bg-zinc-800 w-12 h-12 rounded-lg flex items-center justify-center mx-auto mb-6">
                   <YouTube className="w-6 h-6" />
                 </div>
-                <h1 className="text-2xl font-semibold mb-2">YouTube Video Transcript</h1>
-                <h2 className="text-xl text-zinc-400 mb-4">Get timestamped transcripts with ease</h2>
+                <h1 className="text-2xl font-semibold mb-2">YouTube Video Summarizer</h1>
+                <h2 className="text-xl text-zinc-400 mb-4">Get Summary with ease</h2>
                 <p className="text-sm text-zinc-500 mb-8">
-                  Enter your video URL below to get started with detailed transcripts<br />
-                  including timestamps and full text.
+                  Enter your video URL below to get started with detailed summary<br />
+                  including multiple GenAI models
                 </p>
 
                 {/* Feature Cards */}
@@ -239,34 +225,13 @@ export default function Home() {
                 {/* Transcripts */}
 
                 {transcriptData.length > 0 && (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {/* Timestamped Transcript */}
-                    <Card className="bg-gradient-to-br from-stone-700 via-transparent to-gray-900 border-zinc-700">
-                      <CardContent className="p-4">
-                        <h3 className="text-lg font-semibold mb-4">Timestamped Transcript</h3>
-                        <ScrollArea className="h-[400px]">
-                          <div className="space-y-3">
-                            {transcriptData.map((entry, index) => (
-                              <div key={index} className="bg-zinc-800/50 p-3 rounded-lg">
-                                <div className="text-sm flex items-center gap-2 mb-1 text-blue-400">
-                                  <Clock className="w-4 h-4" />
-                                  {entry.startTime} - {entry.endTime}
-                                </div>
-                                <p className="text-sm">{entry.text}</p>
-                              </div>
-                            ))}
-                          </div>
-                        </ScrollArea>
-                      </CardContent>
-                    </Card>
-
-                    {/* Full Transcript */}
+                    <div>
                     <Card className="bg-gradient-to-br from-stone-700 via-transparent to-gray-900 border-zinc-700">
                       <CardContent className="p-4">
                         <h3 className="text-lg font-semibold mb-4">Full Transcript</h3>
                         <ScrollArea className="h-[400px]">
                           <p className="text-sm text-zinc-200 whitespace-pre-wrap">
-                            {fullTranscript}
+                            {transcriptData}
                           </p>
                         </ScrollArea>
                       </CardContent>

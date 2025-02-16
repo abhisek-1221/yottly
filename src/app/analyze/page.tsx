@@ -106,7 +106,7 @@ export default function PlaylistAnalyzer() {
   
   return (
     <div className="min-h-screen bg-zinc-950 text-white p-4 flex items-center justify-center">
-      <Card className="w-full max-w-6xl bg-black border-zinc-800 shadow-xl shadow-stone-600 rounded-2xl">
+      <Card className="w-full max-w-6xl bg-black border-zinc-800 shadow-xl shadow-stone-600 rounded-2xl 2xl:scale-150">
         <CardContent className="p-6 flex flex-col min-h-[700px] relative">
           {/* Header - Always visible */}
           <div className="flex items-center space-x-2 mb-6">

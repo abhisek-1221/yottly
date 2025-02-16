@@ -8,7 +8,7 @@ export async function POST(req: Request) {
 
   const result = streamText({
     model: groq('gemma2-9b-it'),
-    system: 'You are a Youtube Transcript Summarize with detailed key insights',
+    system: 'You are a Youtube Transcript Summarizer with detailed key insights',
     messages,
   });  
   
