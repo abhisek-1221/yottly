@@ -37,6 +37,7 @@ export default function Home() {
   const [loading, setLoading] = useState(false)
   const [showFullDescription, setShowFullDescription] = useState(false)
   const [showSuccess, setShowSuccess] = useState(false)
+  const [searchQuery, setSearchQuery] = useState("")
 
   const handleSubmissiom = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -92,6 +93,9 @@ export default function Home() {
   }
 
   const fullTranscript = transcriptData.map((entry) => entry.text).join(" ")  
+  const filteredTranscripts = transcriptData.filter((entry) => 
+    entry?.text?.toLowerCase().includes(searchQuery?.toLowerCase())
+  )
 
   return (
     <div className="min-h-screen bg-zinc-950 text-white p-4 flex items-center justify-center">
@@ -174,20 +178,47 @@ export default function Home() {
                     {/* Timestamped Transcript */}
                     <Card className="bg-gradient-to-br from-stone-700 via-transparent to-gray-900 border-zinc-700">
                       <CardContent className="p-4">
-                        <h3 className="text-lg font-semibold mb-4">Timestamped Transcript</h3>
-                        <ScrollArea className="h-[400px]">
-                          <div className="space-y-3">
-                            {transcriptData.map((entry, index) => (
-                              <div key={index} className="bg-zinc-800/50 p-3 rounded-lg">
-                                <div className="text-sm flex items-center gap-2 mb-1 text-blue-400">
-                                  <Clock className="w-4 h-4" />
-                                  {entry.startTime} - {entry.endTime}
-                                </div>
-                                <p className="text-sm">{entry.text}</p>
-                              </div>
-                            ))}
+                        <div className="flex flex-col space-y-2">
+                          <h3 className="text-lg font-semibold">Timestamped Transcript</h3>
+                          
+                          {/* Search Input */}
+                          <div className="relative">
+                            <Input
+                              type="text"
+                              value={searchQuery}
+                              onChange={(e) => setSearchQuery(e.target.value)}
+                              placeholder="Search in transcript..."
+                              className="w-full bg-zinc-800/50 border-zinc-700 focus:border-zinc-600 rounded-lg"
+                            />
                           </div>
-                        </ScrollArea>
+                    
+                          <ScrollArea className="h-[350px]">
+                            <div className="space-y-3">
+                              {filteredTranscripts.map((entry, index) => (
+                                <motion.div
+                                  key={index}
+                                  initial={{ opacity: 0, y: 20 }}
+                                  animate={{ opacity: 1, y: 0 }}
+                                  transition={{ duration: 0.3, delay: index * 0.05 }}
+                                  className="bg-zinc-800/50 p-3 rounded-lg"
+                                >
+                                  <div className="text-sm flex items-center gap-2 mb-1 text-blue-400">
+                                    <Clock className="w-4 h-4" />
+                                    {entry.startTime} - {entry.endTime}
+                                  </div>
+                                  <p className="text-sm">{entry.text}</p>
+                                </motion.div>
+                              ))}
+                              
+                              {/* No results message */}
+                              {filteredTranscripts.length === 0 && (
+                                <div className="text-center py-4 text-zinc-500">
+                                  No matching transcripts found
+                                </div>
+                              )}
+                            </div>
+                          </ScrollArea>
+                        </div>
                       </CardContent>
                     </Card>
 
