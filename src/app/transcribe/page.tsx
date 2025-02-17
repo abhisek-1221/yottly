@@ -1,18 +1,16 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Card, CardHeader, CardContent } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Clock, Eye, ThumbsUp, Calendar, ChevronLeft, Search, ChevronDown, ChevronUp, FileText, Undo2, Loader2, Check, CircleCheckBig } from "lucide-react"
-import { useRouter } from "next/navigation"
+import { Clock, Eye, ThumbsUp, Calendar, ChevronDown, ChevronUp, Loader2,CircleCheckBig } from "lucide-react"
 import type React from "react"
-import { useChat } from 'ai/react';
-import Markdown from 'react-markdown'
-import remarkGfm from 'remark-gfm'
-import YouTube from "../icons/yt"
+import Header from "@/components/hsr/header"
+import FeatureCard from "@/components/hsr/FeatureCard"
+import { formatDate, formatNumber } from "@/lib/youtube"
 
 
 interface VideoDetails {
@@ -31,24 +29,6 @@ interface VideoDetails {
   likeCount: number
 }
 
-const formatTime = (seconds: number) => {
-  const minutes = Math.floor(seconds / 60)
-  const remainingSeconds = Math.floor(seconds % 60)
-  return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`
-}
-
-const formatNumber = (num: number) => {
-  return new Intl.NumberFormat("en-US", { notation: "compact" }).format(num)
-}
-
-const formatDate = (dateString: string) => {
-  return new Date(dateString).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  })
-}
-
 
 export default function Home() {
   const [videoUrl, setVideoUrl] = useState("")
@@ -57,8 +37,6 @@ export default function Home() {
   const [loading, setLoading] = useState(false)
   const [showFullDescription, setShowFullDescription] = useState(false)
   const [showSuccess, setShowSuccess] = useState(false)
-
-  const router = useRouter()
 
   const handleSubmissiom = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -124,60 +102,13 @@ export default function Home() {
       >
         <CardContent className="p-6 flex flex-col min-h-[700px] relative">
           {/* Header - Always visible */}
-          <div className="flex items-center space-x-2 mb-6">
-            <div className="bg-zinc-800 p-2 rounded-lg">
-              <YouTube className="w-5 h-5" />
-            </div>
-            <span className="text-sm text-zinc-400">Yottly</span>
-            <div className="ml-auto">
-              <Button variant="ghost" size="icon" className="rounded-full" onClick={() => router.push("/")}>
-                <Undo2 className="w-5 h-5" />
-              </Button>
-            </div>
-          </div>
+          <Header />
 
           {/* Main Content Area */}
           <div className="flex-1 flex flex-col pb-20">
             {/* Welcome Message - Only shown initially */}
             {!videoDetails && (
-              <div className="text-center my-12">
-                <div className="bg-zinc-800 w-12 h-12 rounded-lg flex items-center justify-center mx-auto mb-6">
-                  <YouTube className="w-6 h-6" />
-                </div>
-                <h1 className="text-2xl font-semibold mb-2">YouTube Video Transcript</h1>
-                <h2 className="text-xl text-zinc-400 mb-4">Get timestamped transcripts with ease</h2>
-                <p className="text-sm text-zinc-500 mb-8">
-                  Enter your video URL below to get started with detailed transcripts<br />
-                  including timestamps and full text.
-                </p>
-
-                {/* Feature Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-[8rem] px-10 w-3/4 ml-32">
-                  <Card className="bg-gradient-to-br from-stone-700 via-transparent to-gray-900 border-zinc-700 p-4">
-                    <div className="flex space-x-3 mt-2">
-                      <Clock className="w-5 h-5 mb-3" />
-                      <h3 className="font-medium mb-1">Timestamped</h3>
-                    </div>
-                    <p className="text-xs text-zinc-400">Precise timing for every segment</p>
-                  </Card>
-                  
-                  <Card className="bg-gradient-to-br from-stone-700 via-transparent to-gray-900 border-zinc-700 p-4">
-                    <div className="flex space-x-3 mt-2">
-                      <Eye className="w-5 h-5 mb-3" />
-                      <h3 className="font-medium mb-1">Full Text</h3>
-                    </div>
-                    <p className="text-xs text-zinc-400">Complete transcript for easy reading</p>
-                  </Card>
-                  
-                  <Card className="bg-gradient-to-br from-stone-700 via-transparent to-gray-900 border-zinc-700 p-4">
-                    <div className="flex space-x-3 mt-2">
-                      <ThumbsUp className="w-5 h-5 mb-3" />
-                      <h3 className="font-medium mb-1">Video Details</h3>
-                    </div>
-                    <p className="text-xs text-zinc-400">Comprehensive video information</p>
-                  </Card>
-                </div>
-              </div>
+              <FeatureCard type="transcribe" />
             )}
 
             {/* Video Details and Transcript */}

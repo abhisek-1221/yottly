@@ -53,5 +53,13 @@ export interface PlaylistDetails {
   export const formatNumber = (num: number): string => {
     return new Intl.NumberFormat('en-US', { notation: 'compact' }).format(num);
   };
+
+  export const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    })
+  }
   
   

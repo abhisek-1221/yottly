@@ -7,13 +7,12 @@ import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { formatDuration } from "@/lib/youtube"
 import type { PlaylistDetails, VideoItem } from "@/lib/youtube"
-import { Clock, SortAsc, PlayCircle, FastForward, Calendar, Youtube, Undo2 } from "lucide-react"
-import YouTube from "@/app/icons/yt"
-import { Button } from "@/components/ui/button"
-import { useRouter } from "next/navigation"
+import { Clock, SortAsc, PlayCircle, FastForward, Calendar } from "lucide-react"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Toast } from "@/components/searchbar/toast"
 import { VideoCard } from "@/components/VideoCard"
+import Header from "@/components/hsr/header"
+import FeatureCard from "@/components/hsr/FeatureCard"
 
 export default function PlaylistAnalyzer() {
   const [playlistUrl, setplaylistUrl] = useState("")
@@ -30,8 +29,6 @@ export default function PlaylistAnalyzer() {
   const [error, setError] = useState<string | null>(null)
   const [playbackSpeed, setPlaybackSpeed] = useState("1")
   const [searchQuery, setSearchQuery] = useState("")
-
-  const router = useRouter();
 
 
   const handleAnalyze = async () => {
@@ -109,63 +106,13 @@ export default function PlaylistAnalyzer() {
       <Card className="w-full max-w-6xl bg-black border-zinc-800 shadow-xl shadow-stone-600 rounded-2xl 2xl:scale-150">
         <CardContent className="p-6 flex flex-col min-h-[700px] relative">
           {/* Header - Always visible */}
-          <div className="flex items-center space-x-2 mb-6">
-            <div className="bg-zinc-800 p-2 rounded-lg">
-              <YouTube className="w-5 h-5" />
-            </div>
-            <span className="text-sm text-zinc-400">Yottly</span>
-            <div className="ml-auto">
-              <Button variant="ghost" size="icon" className="rounded-full" onClick={() => router.push("/")}>
-                <Undo2 className="w-5 h-5" />
-              </Button>
-            </div>
-          </div>
+          <Header />
 
           {/* Main Content Area */}
           <div className="flex-1 flex flex-col pb-20">
             {/* Welcome Message - Only shown initially */}
             {!playlistData && (
-              <div className="text-center my-12">
-                <div className="bg-zinc-800 w-12 h-12 rounded-lg flex items-center justify-center mx-auto mb-6">
-                  <YouTube className="w-6 h-6" />
-                </div>
-                <h1 className="text-2xl font-semibold mb-2">Playlist Analyzer</h1>
-                <h2 className="text-xl text-zinc-400 mb-4">Analyze and filter your playlists</h2>
-                <p className="text-sm text-zinc-500 mb-8">
-                  Enter your playlist ID below to get started with detailed analytics<br />
-                  including duration, views, and more.
-                </p>
-              </div>
-            )}
-
-            {/* Feature Cards - Only shown initially */}
-            {!playlistData && (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-auto mb-8 px-10 w-3/4 ml-32">
-                <Card className="bg-gradient-to-br from-stone-700 via-transparent to-gray-900 border-zinc-700 p-4">
-                  <div className="flex space-x-3 mt-2">
-                  <Clock className="w-5 h-5 mb-3" />
-                  <h3 className="font-medium mb-1">Duration Analysis</h3>
-                  </div>
-                  
-                  <p className="text-xs text-zinc-400">Track total watching time</p>
-                </Card>
-                
-                <Card className="bg-gradient-to-br from-stone-700 via-transparent to-gray-900 border-zinc-700 p-4">
-                <div className="flex space-x-3 mt-2">
-                <SortAsc className="w-5 h-5 mb-3" />
-                  <h3 className="font-medium mb-1">Smart Sorting</h3>
-                  </div>
-                  <p className="text-xs text-zinc-400">Order by views, duration, or date or search query</p>
-                </Card>
-                
-                <Card className="bg-gradient-to-br from-stone-700 via-transparent to-gray-900 border-zinc-700 p-4">
-                <div className="flex space-x-3 mt-2">
-                <PlayCircle className="w-5 h-5 mb-3" />
-                  <h3 className="font-medium mb-1">Playback Control</h3>
-                  </div>
-                  <p className="text-xs text-zinc-400">Adjust speed and manage content</p>
-                </Card>
-              </div>
+             <FeatureCard type="analyze" />
             )}
 
             {/* Analysis Results - Shown after data fetch */}
