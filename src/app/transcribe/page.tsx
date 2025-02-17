@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Clock, Eye, ThumbsUp, Calendar, ChevronDown, ChevronUp, Loader2,CircleCheckBig } from "lucide-react"
+import { Clock, Eye, ThumbsUp, Calendar, ChevronDown, ChevronUp, Loader2, CircleCheckBig, Download } from "lucide-react"
 import type React from "react"
 import Header from "@/components/hsr/header"
 import FeatureCard from "@/components/hsr/FeatureCard"
@@ -96,6 +96,16 @@ export default function Home() {
   const filteredTranscripts = transcriptData.filter((entry) => 
     entry?.text?.toLowerCase().includes(searchQuery?.toLowerCase())
   )
+
+  const handleDownload = () => {
+    const element = document.createElement("a")
+    const file = new Blob([fullTranscript], {type: 'text/plain'})
+    element.href = URL.createObjectURL(file)
+    element.download = `transcript-${videoDetails?.title || "video"}.txt`
+    document.body.appendChild(element)
+    element.click()
+    document.body.removeChild(element)
+  }
 
   return (
     <div className="min-h-screen bg-zinc-950 text-white p-4 flex items-center justify-center">
@@ -225,7 +235,17 @@ export default function Home() {
                     {/* Full Transcript */}
                     <Card className="bg-gradient-to-br from-stone-700 via-transparent to-gray-900 border-zinc-700">
                       <CardContent className="p-4">
-                        <h3 className="text-lg font-semibold mb-4">Full Transcript</h3>
+                        <div className="flex justify-between items-center mb-4">
+                          <h3 className="text-lg font-semibold">Full Transcript</h3>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={handleDownload}
+                            className="hover:bg-zinc-800 rounded-full"
+                          >
+                            <Download className="h-4 w-4 text-zinc-400 hover:text-white" />
+                          </Button>
+                        </div>
                         <ScrollArea className="h-[400px]">
                           <p className="text-sm text-zinc-200 whitespace-pre-wrap">
                             {fullTranscript}
