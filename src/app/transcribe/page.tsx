@@ -129,6 +129,20 @@ export default function Home() {
     document.body.removeChild(element)
   }
 
+  const handleTimestampedDownload = () => {
+    const formattedTranscript = transcriptData
+      .map(entry => `[${entry.startTime} - ${entry.endTime}]\n${entry.text}\n`)
+      .join('\n')
+    
+    const element = document.createElement("a")
+    const file = new Blob([formattedTranscript], {type: 'text/plain'})
+    element.href = URL.createObjectURL(file)
+    element.download = `timestamped-transcript-${videoDetails?.title || "video"}.txt`
+    document.body.appendChild(element)
+    element.click()
+    document.body.removeChild(element)
+  }
+
   const handleTimestampClick = (startTime: string) => {
     if (player) {
       // Convert timestamp (MM:SS) to seconds
@@ -236,7 +250,17 @@ export default function Home() {
                       <Card className="bg-gradient-to-br from-stone-700 via-transparent to-gray-900 border-zinc-700">
                         <CardContent className="p-4">
                           <div className="flex flex-col space-y-2">
-                            <h3 className="text-lg font-semibold">Timestamped Transcript</h3>
+                            <div className="flex justify-between items-center mb-4">
+                              <h3 className="text-lg font-semibold">Timestamped Transcript</h3>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={handleTimestampedDownload}
+                                className="hover:bg-zinc-800 rounded-full"
+                              >
+                                <Download className="h-4 w-4 text-zinc-400 hover:text-white" />
+                              </Button>
+                            </div>
                             
                             {/* Search Input */}
                             <div className="relative">
