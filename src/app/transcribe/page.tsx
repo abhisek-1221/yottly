@@ -118,7 +118,7 @@ export default function Home() {
   const filteredTranscripts = transcriptData.filter((entry) => 
     entry?.text?.toLowerCase().includes(searchQuery?.toLowerCase())
   )
-
+ 
   const handleDownload = () => {
     const element = document.createElement("a")
     const file = new Blob([fullTranscript], {type: 'text/plain'})

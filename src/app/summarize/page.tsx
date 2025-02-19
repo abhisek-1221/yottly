@@ -6,16 +6,21 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Eye, ThumbsUp, Calendar, ChevronDown, ChevronUp, Loader2, CircleCheckBig } from "lucide-react"
-import { useRouter } from "next/navigation"
+import { Eye, ThumbsUp, Calendar, ChevronDown, ChevronUp, Loader2, CircleCheckBig, Cpu, Bot, Sparkles, Brain } from "lucide-react"
 import type React from "react"
 import Markdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import Header from "@/components/hsr/header"
 import FeatureCard from "@/components/hsr/FeatureCard"
 import { formatDate, formatNumber } from "@/lib/youtube"
-
-
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 interface VideoDetails {
   id: string
@@ -41,10 +46,11 @@ export default function Home() {
   const [showFullDescription, setShowFullDescription] = useState(false)
   const [showSuccess, setShowSuccess] = useState(false)
   const [isSummarizing, setIsSummarizing] = useState(false);
-  const [messages, setMessages] = useState<{ id: string; role: 'user' | 'assistant'; content: string }[]>([])
+  const [messages, setMessages] = useState<{ id: string; role: 'user' | 'assistant';
+     content: string }[]>([])
+  const [selectedLLM, setSelectedLLM] = useState("")
   const [summary, setSummary] = useState("")
 
-  const router = useRouter()
   const abortControllerRef = useRef<AbortController | null>(null)
 
   const streamSummary = useCallback(async (fullTranscript: string) => {
@@ -57,7 +63,10 @@ export default function Home() {
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: [userMessage] }),
+        body: JSON.stringify({ 
+          messages: [userMessage],
+          model: selectedLLM,
+          system: 'You are an AI assistant that provides clear, concise summaries with key insights. Present information in a natural, conversational way while maintaining professionalism. Focus on extracting and organizing main points, themes, and notable moments. Do not write here is the summary of the transcript or the video'}),
         signal: abortControllerRef.current.signal,
       })
 
@@ -66,6 +75,7 @@ export default function Home() {
       }
 
       const reader = response.body?.getReader()
+            
       if (!reader) {
         throw new Error('Response body is not readable')
       }
@@ -294,7 +304,51 @@ export default function Home() {
 
           {/* Input Area - Always visible at the bottom */}
           <div className="absolute bottom-0 left-0 right-0 p-6 bg-black border-t border-zinc-800 rounded-b-2xl">
+
             <form onSubmit={handleSubmission} className="flex space-x-2 w-2/3 mx-auto">
+
+            <div>
+            <Select value={selectedLLM} onValueChange={setSelectedLLM}>
+                    <SelectTrigger className="w-[180px]">
+                      <SelectValue placeholder="Select LLM" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectItem value="gemma2-9b-it">
+                          <div className="flex items-center gap-2">
+                            <Bot className="h-4 w-4" />
+                            <span>Gemma2</span>
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="llama3-70b-8192">
+                          <div className="flex items-center gap-2">
+                          <Sparkles className="h-4 w-4" />
+                          <span>Llama3 70B</span>
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="mixtral-8x7b-32768">
+                          <div className="flex items-center gap-2">
+                            <Brain className="h-4 w-4" />
+                            <span>Mixtral 8x7B</span>
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="deepseek-r1-distill-qwen-32b">
+                          <div className="flex items-center gap-2">
+                            <Cpu className="h-4 w-4" />
+                            <span>Deepseek R1</span>
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="llama-3.1-8b-instant">
+                          <div className="flex items-center gap-2">
+                            <Sparkles className="h-4 w-4" />
+                            <span>Llama 3.1</span>
+                          </div>
+                        </SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+            </Select>
+            </div>
+
               <Input
                 type="text"
                 value={videoUrl}

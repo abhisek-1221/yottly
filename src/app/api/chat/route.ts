@@ -4,11 +4,11 @@ import { streamText, smoothStream } from 'ai';
 export const maxDuration = 60;
 
 export async function POST(req: Request) {
-  const { messages } = await req.json();
+  const { messages, model, system } = await req.json();
 
   const result = streamText({
-    model: groq('gemma2-9b-it'),
-    system: 'You are an AI assistant that provides clear, concise summaries with key insights. Present information in a natural, conversational way while maintaining professionalism. Focus on extracting and organizing main points, themes, and notable moments.',
+    model: groq(model || 'llama-3.1-8b-instant'), 
+    system: system || 'You are an AI assistant that provides clear, concise summaries with key insights.',
     messages,
     experimental_transform: smoothStream(),      
   });  
