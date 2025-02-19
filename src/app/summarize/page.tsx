@@ -132,12 +132,17 @@ export default function Home() {
 
   const handleSubmission = async (e: React.FormEvent) => {
     e.preventDefault()
-    setLoading(true)
-    setIsSummarizing(false)
-    setSummary("")
-    setMessages([])
-
+    if (!selectedLLM) {
+      alert('Please select an LLM model first')
+      return
+    }
+    
     try {
+      setLoading(true)
+      setIsSummarizing(false)
+      setSummary("")
+      setMessages([])
+
       const videoResponse = await fetch("/api/videoDetail", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -155,9 +160,30 @@ export default function Home() {
       })
      
       const transcriptData = await response.json()
-      const fullTranscript = transcriptData.transcript.fullTranscript
       
-      setTranscriptData(fullTranscript)
+      // Add error handling for transcript
+      if (!transcriptData?.transcript?.fullTranscript) {
+        throw new Error('No transcript data received')
+      }
+      
+      const fullTranscript = transcriptData.transcript.fullTranscript
+      console.log('Transcript length:', fullTranscript.length) // Debug log
+      
+      // If transcript is too long, chunk it
+      if (fullTranscript.length > 7000) {
+        const chunks = chunkTranscript(fullTranscript, 7000)
+        setTranscriptData(chunks)
+        
+        // Summarize each chunk
+        let completeSummary = ''
+        for (const chunk of chunks) {
+          const chunkSummary = await streamSummary(chunk)
+          completeSummary += chunkSummary + '\n\n'
+        }
+      } else {
+        setTranscriptData([fullTranscript])
+        await streamSummary(fullTranscript)
+      }
 
       setShowSuccess(true)
       
@@ -171,11 +197,37 @@ export default function Home() {
       }, 4000)
 
     } catch (error) {
-      console.error("Error fetching data:", error)
-      setTranscriptData([])
+      console.error("Error:", error)
+      setMessages(prev => [...prev, { 
+        id: Date.now().toString(), 
+        role: 'assistant', 
+        content: 'Error processing transcript. Please try again.' 
+      }])
     } finally {
       setLoading(false)
     }
+  }
+
+  // Add this helper function to chunk large transcripts
+  const chunkTranscript = (text: string, maxLength: number): string[] => {
+    const chunks: string[] = []
+    let start = 0
+    
+    while (start < text.length) {
+      // Find the last period before maxLength
+      let end = start + maxLength
+      if (end > text.length) end = text.length
+      
+      if (end < text.length) {
+        const lastPeriod = text.lastIndexOf('. ', end)
+        if (lastPeriod > start) end = lastPeriod + 1
+      }
+      
+      chunks.push(text.slice(start, end).trim())
+      start = end
+    }
+    
+    return chunks
   }
 
   useEffect(() => {
