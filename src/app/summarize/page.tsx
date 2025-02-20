@@ -170,8 +170,8 @@ export default function Home() {
       console.log('Transcript length:', fullTranscript.length) // Debug log
       
       // If transcript is too long, chunk it
-      if (fullTranscript.length > 7000) {
-        const chunks = chunkTranscript(fullTranscript, 7000)
+      if (fullTranscript.length > 20000) {
+        const chunks = chunkTranscript(fullTranscript, 20000)
         setTranscriptData(chunks)
         
         // Summarize each chunk
@@ -333,9 +333,6 @@ export default function Home() {
                                 : ' text-white'}
                             `}
                         >
-                            <div className="text-lg font-bold text-white mb-1">
-                            {m.role === 'user' ? 'You' : 'AI Summarizer'}
-                            </div>
                             <div className="text-sm whitespace-pre-wrap">
                              <Markdown remarkPlugins={[remarkGfm]}>
                                 {m.content}
