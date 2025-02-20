@@ -4,9 +4,35 @@ import Link from "next/link"
 import { ArrowRight, VideoIcon, BookOpen, ListVideo, Brain, Play, Youtube } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
+import { motion } from "framer-motion"
+import { useInView } from "framer-motion"
+import { useRef } from "react"
 
+const fadeIn = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { 
+    opacity: 1, 
+    y: 0,
+    transition: { duration: 0.6, ease: "easeOut" }
+  }
+}
+
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.2
+    }
+  }
+}
 
 export default function LandingPage() {
+  const featuresRef = useRef(null)
+  const demoRef = useRef(null)
+  const featuresInView = useInView(featuresRef, { once: true, margin: "-100px" })
+  const demoInView = useInView(demoRef, { once: true, margin: "-100px" })
+
   return (
     <div className="flex min-h-screen flex-col">
       <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -40,7 +66,12 @@ export default function LandingPage() {
 
           <div className="container relative">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 py-24 px-12">
-              <div className="space-y-8">
+              <motion.div 
+                className="space-y-8"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6 }}
+              >
                 <div className="space-y-6">
                   <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl">
                     Your YouTube{" "}
@@ -75,8 +106,13 @@ export default function LandingPage() {
                     <p className="text-sm text-muted-foreground">Processing</p>
                   </div>
                 </div>
-              </div>
-              <div className="relative hidden lg:block">
+              </motion.div>
+              <motion.div 
+                className="relative hidden lg:block"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+              >
                 <div className="absolute inset-0 bg-gradient-to-r from-red-500/20 to-red-700/10 rounded-2xl blur-3xl" />
                 <div className="relative bg-card rounded-2xl border p-6 shadow-2xl">
                   <div className="space-y-4">
@@ -94,57 +130,91 @@ export default function LandingPage() {
                     </div>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             </div>
           </div>
         </section>
 
-        <section id="features" className="bg-muted/50 py-24">
+        <motion.section 
+          ref={featuresRef}
+          id="features" 
+          className="bg-muted/50 py-24"
+          initial="hidden"
+          animate={featuresInView ? "visible" : "hidden"}
+          variants={staggerContainer}
+        >
           <div className="container space-y-12">
-            <h2 className="text-3xl font-bold tracking-tighter text-center sm:text-4xl md:text-5xl">
+            <motion.h2 
+              variants={fadeIn}
+              className="text-3xl font-bold tracking-tighter text-center sm:text-4xl md:text-5xl"
+            >
               Powerful Features
-            </h2>
-            <div className="mx-auto grid max-w-5xl grid-cols-1 gap-6 md:grid-cols-3">
-              <Card>
-                <CardContent className="p-6 space-y-2">
-                  <VideoIcon className="h-12 w-12 text-red-500" />
-                  <h3 className="text-xl font-bold">Video Summaries</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Get concise AI-powered summaries of any YouTube video in seconds.
-                  </p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardContent className="p-6 space-y-2">
-                  <BookOpen className="h-12 w-12 text-red-500" />
-                  <h3 className="text-xl font-bold">Transcripts</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Generate accurate transcripts with timestamps for easy navigation.
-                  </p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardContent className="p-6 space-y-2">
-                  <ListVideo className="h-12 w-12 text-red-500" />
-                  <h3 className="text-xl font-bold">Playlist Analysis</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Analyze entire playlists to extract key insights and themes.
-                  </p>
-                </CardContent>
-              </Card>
-            </div>
+            </motion.h2>
+            <motion.div 
+              variants={staggerContainer}
+              className="mx-auto grid max-w-5xl grid-cols-1 gap-6 md:grid-cols-3"
+            >
+              <motion.div variants={fadeIn}>
+                <Card>
+                  <CardContent className="p-6 space-y-2">
+                    <VideoIcon className="h-12 w-12 text-red-500" />
+                    <h3 className="text-xl font-bold">Video Summaries</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Get concise AI-powered summaries of any YouTube video in seconds.
+                    </p>
+                  </CardContent>
+                </Card>
+              </motion.div>
+              <motion.div variants={fadeIn}>
+                <Card>
+                  <CardContent className="p-6 space-y-2">
+                    <BookOpen className="h-12 w-12 text-red-500" />
+                    <h3 className="text-xl font-bold">Transcripts</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Generate accurate transcripts with timestamps for easy navigation.
+                    </p>
+                  </CardContent>
+                </Card>
+              </motion.div>
+              <motion.div variants={fadeIn}>
+                <Card>
+                  <CardContent className="p-6 space-y-2">
+                    <ListVideo className="h-12 w-12 text-red-500" />
+                    <h3 className="text-xl font-bold">Playlist Analysis</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Analyze entire playlists to extract key insights and themes.
+                    </p>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            </motion.div>
           </div>
-        </section>
+        </motion.section>
 
-        <section id="demo" className="py-24">
+        <motion.section 
+          ref={demoRef}
+          id="demo" 
+          className="py-24"
+          initial="hidden"
+          animate={demoInView ? "visible" : "hidden"}
+          variants={staggerContainer}
+        >
           <div className="container space-y-12">
-            <div className="text-center space-y-4">
-              <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">See Yottly in Action</h2>
+            <motion.div 
+              variants={fadeIn}
+              className="text-center space-y-4"
+            >
+              <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
+                See Yottly in Action
+              </h2>
               <p className="text-xl text-muted-foreground max-w-[42rem] mx-auto">
                 Watch how Yottly transforms your YouTube experience with AI-powered features.
               </p>
-            </div>
-            <div className="max-w-4xl mx-auto">
+            </motion.div>
+            <motion.div 
+              variants={fadeIn}
+              className="max-w-4xl mx-auto"
+            >
               <div className="relative aspect-video rounded-xl overflow-hidden">
                 <iframe
                   className="absolute inset-0 w-full h-full"
@@ -154,17 +224,25 @@ export default function LandingPage() {
                   allowFullScreen
                 ></iframe>
               </div>
-            </div>
-            <div className="text-center">
+            </motion.div>
+            <motion.div 
+              variants={fadeIn}
+              className="text-center"
+            >
               <Button size="lg" className="gap-2">
                 <Play className="w-4 h-4" /> Try Yottly Now
               </Button>
-            </div>
+            </motion.div>
           </div>
-        </section>
+        </motion.section>
       </main>
 
-      <footer className="border-t py-8">
+      <motion.footer 
+        className="border-t py-8"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.5 }}
+      >
         <div className="container flex flex-col items-center justify-between gap-4 md:flex-row">
           <p className="text-sm text-muted-foreground">© 2024 Yottly. All rights reserved.</p>
           <div className="flex items-center space-x-4">
@@ -179,7 +257,7 @@ export default function LandingPage() {
             </Link>
           </div>
         </div>
-      </footer>
+      </motion.footer>
     </div>
   )
 }
