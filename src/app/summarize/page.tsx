@@ -22,6 +22,8 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
+import { DeepSeek, Gemma, Meta, Mistral } from '@lobehub/icons';
+
 interface VideoDetails {
   id: string
   title: string
@@ -365,31 +367,31 @@ export default function Home() {
                       <SelectGroup>
                         <SelectItem value="gemma2-9b-it">
                           <div className="flex items-center gap-2">
-                            <Bot className="h-4 w-4" />
+                            <Gemma.Color size={20} />
                             <span>Gemma2</span>
                           </div>
                         </SelectItem>
                         <SelectItem value="llama3-70b-8192">
                           <div className="flex items-center gap-2">
-                          <Sparkles className="h-4 w-4" />
+                          <Meta size={20} />
                           <span>Llama3 70B</span>
                           </div>
                         </SelectItem>
                         <SelectItem value="mixtral-8x7b-32768">
                           <div className="flex items-center gap-2">
-                            <Brain className="h-4 w-4" />
+                            <Mistral.Color size={20} />
                             <span>Mixtral 8x7B</span>
                           </div>
                         </SelectItem>
                         <SelectItem value="deepseek-r1-distill-qwen-32b">
                           <div className="flex items-center gap-2">
-                            <Cpu className="h-4 w-4" />
+                            <DeepSeek.Color size={20} />
                             <span>Deepseek R1</span>
                           </div>
                         </SelectItem>
                         <SelectItem value="llama-3.1-8b-instant">
                           <div className="flex items-center gap-2">
-                            <Sparkles className="h-4 w-4" />
+                            <Meta.Color size={20} />
                             <span>Llama 3.1</span>
                           </div>
                         </SelectItem>
