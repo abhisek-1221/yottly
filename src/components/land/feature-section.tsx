@@ -44,7 +44,7 @@ const features = [
     description:
       "Get concise, intelligent summaries of any YouTube video in seconds. Save time by understanding key points without watching the entire video.",
     icon: VideoIcon,
-    video: "https://cdn.llm.report/openai-demo.mp4",
+    iframe: "https://www.tella.tv/video/cm7r9hfdf00070bl758xld16r/embed?b=0&title=0&a=0&loop=1&autoPlay=true&t=0&muted=1&wt=0",
     cta: "Try Summarizer",
     href: "/summarize",
     reverse: false,
@@ -56,7 +56,7 @@ const features = [
     description:
       "Generate high-quality transcripts with precise timestamps. Perfect for content creators, researchers, and anyone needing searchable text from videos.",
     icon: BookOpen,
-    video: "https://cdn.llm.report/logs-demo.mp4",
+    iframe: "https://www.tella.tv/video/cm7r9hfdf00070bl758xld16r/embed?b=0&title=0&a=0&loop=1&autoPlay=true&t=0&muted=1&wt=0",
     cta: "Get Transcripts",
     href: "/transcribe",
     reverse: true,
@@ -68,7 +68,7 @@ const features = [
     description:
       "Extract key insights and common themes across entire YouTube playlists. Ideal for courses, tutorial series, and content research.",
     icon: ListVideo,
-    video: "https://cdn.llm.report/users-demo.mp4",
+    iframe: "https://www.tella.tv/video/cm7r9hfdf00070bl758xld16r/embed?b=0&title=0&a=0&loop=1&autoPlay=true&t=0&muted=1&wt=0",
     cta: "Analyze Playlist",
     href: "/playlist",
     reverse: false,
@@ -101,7 +101,7 @@ const FeatureSections = () => {
                   <h2 className="text-base font-semibold leading-7 text-red-500">
                     {feature.header}
                   </h2>
-                  <p className="mt-2 text-2xl sm:text-3xl font-bold tracking-tight text-white sm:text-4xl">
+                  <p className="mt-2 text-2xl sm:text-3xl font-bold tracking-tight text-white">
                     {feature.name}
                   </p>
                   <p className="mt-4 sm:mt-6 text-base sm:text-lg leading-7 sm:leading-8 text-gray-400">
@@ -124,14 +124,14 @@ const FeatureSections = () => {
                   className="lg:col-span-3"
                   variants={fadeInUp}
                 >
-                  <video
-                    src={feature.video}
-                    autoPlay
-                    loop
-                    muted
-                    playsInline
-                    className="rounded-xl border m-auto w-full shadow-2xl"
-                  />
+                  <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0 }}>
+                    <iframe
+                      src={feature.iframe}
+                      style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 0 }}
+                      allowFullScreen
+                      allowTransparency
+                    ></iframe>
+                  </div>
                 </motion.div>
               </div>
             </div>

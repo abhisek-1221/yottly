@@ -169,8 +169,8 @@ export default function LandingPage() {
                 transition={{ duration: 0.6, delay: 0.3 }}
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-red-500/20 to-red-700/10 rounded-2xl blur-3xl" />
-                <div className="relative bg-card rounded-2xl border p-4 sm:p-6 shadow-2xl">
-                  <div className="space-y-3 sm:space-y-4">
+                <div className="relative bg-card rounded-2xl border p-5 sm:p-7 md:p-8 shadow-2xl max-w-xl mx-auto w-full">
+                    <div className="space-y-3 sm:space-y-4">
                     <div className="flex items-center justify-between">
                       <div className="space-y-1">
                         <h3 className="font-semibold">Video Analysis</h3>
@@ -180,8 +180,24 @@ export default function LandingPage() {
                         Try Now
                       </Button>
                     </div>
-                    <div className="aspect-[4/3] rounded-lg bg-gradient-to-br from-red-500/5 via-red-700/10 to-red-500/5 flex items-center justify-center">
-                      <Brain className="h-16 sm:h-20 lg:h-24 w-16 sm:w-20 lg:w-24 text-red-500/40" />
+                    <div className="aspect-[4/2.2] rounded-lg bg-gradient-to-br from-red-500/5 via-red-700/10 to-red-500/5 overflow-hidden">
+                      <div style={{ position: 'relative', paddingBottom: '75%', height: 0, overflow: 'hidden' }}>
+                        <iframe
+                          src="https://www.tella.tv/video/cm7r9hfdf00070bl758xld16r/embed?b=0&title=0&a=0&loop=1&autoPlay=true&t=0&muted=1&wt=0"
+                          style={{ 
+                            position: 'absolute', 
+                            top: 0, 
+                            left: 0, 
+                            width: '100%', 
+                            height: '100%', 
+                            border: 0,
+                            borderRadius: '0.5rem' 
+                          }}
+                          allowFullScreen
+                          title="Yottly Demo"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        ></iframe>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -231,7 +247,7 @@ export default function LandingPage() {
               <div className="relative aspect-video rounded-lg sm:rounded-xl overflow-hidden shadow-lg">
                 <iframe
                   className="absolute inset-0 w-full h-full"
-                  src="https://www.youtube.com/embed/your-demo-video-id"
+                  src="https://www.tella.tv/video/cm7r9hfdf00070bl758xld16r/embed?b=0&title=0&a=0&loop=1&autoPlay=true&t=0&muted=1&wt=0"
                   title="Yottly Demo"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
