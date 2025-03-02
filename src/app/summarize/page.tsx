@@ -54,6 +54,7 @@ export default function Home() {
   const [summary, setSummary] = useState("")
 
   const abortControllerRef = useRef<AbortController | null>(null)
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const streamSummary = useCallback(async (fullTranscript: string) => {
     setIsSummarizing(true)
@@ -232,6 +233,17 @@ export default function Home() {
     return chunks
   }
 
+  const scrollToBottom = useCallback(() => {
+    if (scrollContainerRef.current) {
+      // Use scrollIntoView instead of directly manipulating scrollTop
+      scrollContainerRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    }
+  }, []);
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages, summary, scrollToBottom]);
+
   useEffect(() => {
     return () => {
       if (abortControllerRef.current) {
@@ -321,29 +333,30 @@ export default function Home() {
                     <Card className="bg-gradient-to-br from-stone-700 via-transparent to-gray-900 border-zinc-700">
                       <CardContent className="p-4">
                         <h3 className="text-lg font-semibold mb-4">Full Summary</h3>
-                        <ScrollArea className="h-[400px]">
-                                    {messages.map(m => (
-                        <div 
-                        key={m.id} 
-                        className={`flex ${m.role === 'user' ? 'hidden' : 'justify-start'}`}
-                        >
-                        <div 
-                            className={`
-                            max-w-[80%] rounded-lg px-4 py-2
-                            ${m.role === 'user' 
-                                ? ' text-white' 
-                                : ' text-white'}
-                            `}
-                        >
-                            <div className="text-sm whitespace-pre-wrap">
-                             <Markdown remarkPlugins={[remarkGfm]}>
-                                {m.content}
-                            </Markdown>
-                            </div>
-                        </div>
-                        </div>
-                    ))}
-
+                        <ScrollArea className="h-[400px] overflow-y-auto">
+                          <div>
+                            {messages.map(m => (
+                              <div 
+                                key={m.id} 
+                                className={`flex ${m.role === 'user' ? 'hidden' : 'justify-start'}`}
+                              >
+                                <div 
+                                  className={`
+                                    max-w-[80%] rounded-lg px-4 py-2
+                                    ${m.role === 'user' ? ' text-white' : ' text-white'}
+                                  `}
+                                >
+                                  <div className="text-sm whitespace-pre-wrap">
+                                    <Markdown remarkPlugins={[remarkGfm]}>
+                                      {m.content}
+                                    </Markdown>
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                            {/* This div will be used as a reference point to scroll to */}
+                            <div ref={scrollContainerRef} />
+                          </div>
                         </ScrollArea>
                       </CardContent>
                     </Card>
