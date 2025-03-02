@@ -235,7 +235,7 @@ export default function Home() {
 
   const scrollToBottom = useCallback(() => {
     if (scrollContainerRef.current) {
-      // Use scrollIntoView instead of directly manipulating scrollTop
+      // Using scrollIntoView instead of directly manipulating scrollTop
       scrollContainerRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
     }
   }, []);

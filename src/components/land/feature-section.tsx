@@ -44,7 +44,7 @@ const features = [
     description:
       "Get concise, intelligent summaries of any YouTube video in seconds. Save time by understanding key points without watching the entire video.",
     icon: VideoIcon,
-    iframe: "https://www.tella.tv/video/cm7r9hfdf00070bl758xld16r/embed?b=0&title=0&a=0&loop=1&autoPlay=true&t=0&muted=1&wt=0",
+    iframe: "https://www.tella.tv/video/cm7rgr3ol00000bjr8mg6hctz/embed?b=0&title=0&a=0&loop=1&autoPlay=true&t=0&muted=1&wt=0",
     cta: "Try Summarizer",
     href: "/summarize",
     reverse: false,
@@ -56,7 +56,7 @@ const features = [
     description:
       "Generate high-quality transcripts with precise timestamps. Perfect for content creators, researchers, and anyone needing searchable text from videos.",
     icon: BookOpen,
-    iframe: "https://www.tella.tv/video/cm7r9hfdf00070bl758xld16r/embed?b=0&title=0&a=0&loop=1&autoPlay=true&t=0&muted=1&wt=0",
+    iframe: "https://www.tella.tv/video/cm7rswzd7001o0ajo8y7l2y67/embed?b=0&title=0&a=0&loop=1&autoPlay=true&t=0&muted=1&wt=0",
     cta: "Get Transcripts",
     href: "/transcribe",
     reverse: true,
