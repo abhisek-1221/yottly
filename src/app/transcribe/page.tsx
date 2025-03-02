@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, use } from "react"
 
 // Extend the Window interface to include onYouTubeIframeAPIReady
 declare global {
@@ -18,6 +18,7 @@ import type React from "react"
 import Header from "@/components/hsr/header"
 import FeatureCard from "@/components/hsr/FeatureCard"
 import { formatDate, formatNumber } from "@/lib/youtube"
+import { useChat } from "ai/react"
 
 
 interface VideoDetails {
@@ -36,7 +37,6 @@ interface VideoDetails {
   likeCount: number
 }
 
-
 export default function Home() {
   const [videoUrl, setVideoUrl] = useState("")
   const [transcriptData, setTranscriptData] = useState<any[]>([])
@@ -47,6 +47,11 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState("")
   const [player, setPlayer] = useState<any>(null)
   const [isYouTubeApiReady, setIsYouTubeApiReady] = useState(false)
+
+
+  // const prompt = ""
+  // const { messages , input , setInput , handleSubmit} = useChat(
+  // )
 
   useEffect(() => {
     // Declare the onYouTubeIframeAPIReady callback
@@ -152,6 +157,25 @@ export default function Home() {
       player.playVideo()
     }
   }
+
+  // const generateAI = async (e: React.FormEvent<HTMLFormElement>, prompt : string) => {
+  //   e.preventDefault();
+  //   try {
+  //     // Convert Transcript from api/transcript to gemini summarize api on prequel basis 
+  //     const aiTranscript = await fetch("/api/chat", {
+  //       method : "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify({ 
+  //         model : "llama-3.1-8b-instant",
+  //         system: `${prompt}`
+  //        }),
+        
+
+  //     })
+      
+  //   } catch (error: any) {
+  //     error("Error fetching data:", error)
+  //   }
 
   return (
     <>
