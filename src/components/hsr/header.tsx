@@ -14,7 +14,7 @@ const Header = () => {
             </div>
             <span className="text-sm text-zinc-400">Yottly</span>
             <div className="ml-auto">
-              <Button variant="ghost" size="icon" className="rounded-full" onClick={() => router.push("/")}>
+              <Button variant="ghost" size="icon" className="rounded-full" onClick={() => router.push("/dashboard")}>
                 <Undo2 className="w-5 h-5" />
               </Button>
             </div>
