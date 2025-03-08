@@ -143,7 +143,7 @@ const formatNumber = (value: number): string => {
   };
   
   return (
-    <div className="min-h-screen bg-gray-900 text-gray-100 p-6">
+    <div className="min-h-screen text-gray-100 p-6">
       <motion.div 
         className="max-w-6xl mx-auto"
         initial="hidden"
@@ -197,7 +197,7 @@ const formatNumber = (value: number): string => {
           </div>
           
           {/* Video 2 */}
-          <div className="bg-gray-800 rounded-lg overflow-hidden shadow-lg">
+          <div className="bg-stone-900 rounded-lg overflow-hidden shadow-lg">
             <div className="relative aspect-video bg-black">
               <img 
                 src={`/api/placeholder/640/360`} 
