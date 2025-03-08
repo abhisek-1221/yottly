@@ -12,7 +12,7 @@ export async function POST(request: Request) {
 
     const youtube = await Innertube.create({
       lang: 'en',
-      location: 'US',
+      location: 'IN',
       retrieve_player: false,
     })
 
