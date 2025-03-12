@@ -129,7 +129,7 @@ const formatNumber = (value: number): string => {
   const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
     if (active && payload && payload.length) {
       return (
-        <div className="bg-gray-800 p-3 border border-gray-700 rounded shadow-lg">
+        <div className="p-3 border border-gray-700 rounded shadow-lg">
           <p className="font-medium text-gray-200">{label || payload[0].name}</p>
           {payload.map((entry, index) => (
             <p key={index} style={{ color: entry.color || COLORS[index % COLORS.length] }}>
@@ -162,7 +162,7 @@ const formatNumber = (value: number): string => {
           variants={itemVariants}
         >
           {/* Video 1 */}
-          <div className="bg-gray-800 rounded-lg overflow-hidden shadow-lg">
+          <div className="rounded-lg overflow-hidden shadow-lg">
             <div className="relative aspect-video bg-black">
               <img 
                 src={`/api/placeholder/640/360`} 
@@ -234,7 +234,7 @@ const formatNumber = (value: number): string => {
         
         {/* Comparison Tabs */}
         <motion.div 
-          className="bg-gray-800 rounded-lg overflow-hidden shadow-lg mb-8"
+          className="rounded-lg overflow-hidden shadow-lg mb-8"
           variants={itemVariants}
         >
           <div className="flex border-b border-gray-700">
@@ -333,7 +333,7 @@ const formatNumber = (value: number): string => {
               <div>
                 <div className="flex justify-between items-center mb-6">
                   <h3 className="text-lg font-semibold">Video Statistics Comparison</h3>
-                  <div className="flex bg-gray-700 rounded-lg overflow-hidden">
+                  <div className="flex rounded-lg overflow-hidden">
                     <button 
                       className={`px-4 py-2 text-sm ${activeChart === 'pie' ? 'bg-blue-500 text-white' : 'text-gray-300'}`}
                       onClick={() => setActiveChart('pie')}
@@ -453,13 +453,13 @@ const formatNumber = (value: number): string => {
                     </div>
                     
                     <div className="grid grid-cols-2 gap-4 mt-6">
-                      <div className="bg-gray-700 p-3 rounded text-center">
+                      <div className="p-3 rounded text-center">
                         <div className="flex items-center justify-center">
                           <div className="w-3 h-3 bg-blue-500 rounded-full mr-2"></div>
                           <span className="text-sm font-medium text-gray-300">{videos.first.title}</span>
                         </div>
                       </div>
-                      <div className="bg-gray-700 p-3 rounded text-center">
+                      <div className="p-3 rounded text-center">
                         <div className="flex items-center justify-center">
                           <div className="w-3 h-3 bg-purple-500 rounded-full mr-2"></div>
                           <span className="text-sm font-medium text-gray-300">{videos.second.title}</span>
@@ -469,7 +469,7 @@ const formatNumber = (value: number): string => {
                   </div>
                 )}
                 
-                <div className="mt-8 p-4 bg-gray-700 rounded-lg">
+                <div className="mt-8 p-4 rounded-lg">
                   <h4 className="font-medium mb-2">Insights</h4>
                   <ul className="space-y-1 text-sm text-gray-300">
                     <li>• {videos.second.title} has {Math.round((videos.second.views - videos.first.views) / 1000000)}M more views</li>
@@ -487,9 +487,9 @@ const formatNumber = (value: number): string => {
                   <h3 className="text-lg font-semibold mb-4 text-blue-400">{videos.first.title}</h3>
                   <div className="space-y-4">
                     {[1, 2, 3].map(i => (
-                      <div key={i} className="p-3 bg-gray-700 rounded">
+                      <div key={i} className="p-3 rounded">
                         <div className="flex items-center mb-2">
-                          <div className="w-8 h-8 bg-gray-600 rounded-full mr-2"></div>
+                          <div className="w-8 h-8 rounded-full mr-2"></div>
                           <span className="font-medium">User {i}</span>
                           <span className="text-xs text-gray-400 ml-2">2 weeks ago</span>
                         </div>
@@ -502,9 +502,9 @@ const formatNumber = (value: number): string => {
                   <h3 className="text-lg font-semibold mb-4 text-purple-400">{videos.second.title}</h3>
                   <div className="space-y-4">
                     {[1, 2, 3].map(i => (
-                      <div key={i} className="p-3 bg-gray-700 rounded">
+                      <div key={i} className="p-3 rounded">
                         <div className="flex items-center mb-2">
-                          <div className="w-8 h-8 bg-gray-600 rounded-full mr-2"></div>
+                          <div className="w-8 h-8 rounded-full mr-2"></div>
                           <span className="font-medium">Viewer {i}</span>
                           <span className="text-xs text-gray-400 ml-2">1 week ago</span>
                         </div>
@@ -520,7 +520,7 @@ const formatNumber = (value: number): string => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <h3 className="text-lg font-semibold mb-4 text-blue-400">{videos.first.title}</h3>
-                  <div className="bg-gray-700 p-4 rounded mb-4">
+                  <div className="p-4 rounded mb-4">
                     <h4 className="font-medium mb-2">Audience Retention</h4>
                     <div className="h-32 relative">
                       <div className="absolute bottom-0 left-0 w-8 h-28 bg-blue-500 rounded-t mx-2"></div>
@@ -538,11 +538,11 @@ const formatNumber = (value: number): string => {
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
-                    <div className="bg-gray-700 p-3 rounded text-center">
+                    <div className=" p-3 rounded text-center">
                       <div className="text-2xl font-bold text-blue-400">92%</div>
                       <div className="text-xs text-gray-400">Like Ratio</div>
                     </div>
-                    <div className="bg-gray-700 p-3 rounded text-center">
+                    <div className="p-3 rounded text-center">
                       <div className="text-2xl font-bold text-blue-400">4:32</div>
                       <div className="text-xs text-gray-400">Avg. Watch Time</div>
                     </div>
@@ -550,7 +550,7 @@ const formatNumber = (value: number): string => {
                 </div>
                 <div>
                   <h3 className="text-lg font-semibold mb-4 text-purple-400">{videos.second.title}</h3>
-                  <div className="bg-gray-700 p-4 rounded mb-4">
+                  <div className="p-4 rounded mb-4">
                     <h4 className="font-medium mb-2">Audience Retention</h4>
                     <div className="h-32 relative">
                       <div className="absolute bottom-0 left-0 w-8 h-30 bg-purple-500 rounded-t mx-2"></div>
@@ -568,11 +568,11 @@ const formatNumber = (value: number): string => {
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
-                    <div className="bg-gray-700 p-3 rounded text-center">
+                    <div className="p-3 rounded text-center">
                       <div className="text-2xl font-bold text-purple-400">96%</div>
                       <div className="text-xs text-gray-400">Like Ratio</div>
                     </div>
-                    <div className="bg-gray-700 p-3 rounded text-center">
+                    <div className="p-3 rounded text-center">
                       <div className="text-2xl font-bold text-purple-400">5:17</div>
                       <div className="text-xs text-gray-400">Avg. Watch Time</div>
                     </div>
@@ -585,7 +585,7 @@ const formatNumber = (value: number): string => {
         
         {/* Conclusion Card */}
         <motion.div 
-          className="bg-gray-800 rounded-lg shadow-lg p-6"
+          className="rounded-lg shadow-lg p-6"
           variants={itemVariants}
         >
           <h2 className="text-xl font-bold mb-4">Comparison Summary</h2>
