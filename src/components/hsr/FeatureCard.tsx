@@ -57,7 +57,8 @@ const object = {
         return (
             <div className="text-center my-12">
             <div className="bg-zinc-800 w-12 h-12 rounded-lg flex items-center justify-center mx-auto mb-6">
-            <YouTube className="w-6 h-6" />
+            <img className='w-8 h-8' src="https://img.icons8.com/arcade/64/youtube-play.png" alt="youtube-play"/>
+            
             </div>
             <h1 className="text-2xl font-semibold mb-2">{content.heading}</h1>
             <h2 className="text-xl text-zinc-400 mb-4">{content.subheading}</h2>

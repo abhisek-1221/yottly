@@ -44,7 +44,7 @@ export default function LandingPage() {
       <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container flex h-16 items-center justify-between">
           <Link href="/" className="flex items-center space-x-2 px-2">
-            <Youtube className="h-5 w-5 sm:h-6 sm:w-6 text-red-500" />
+            <img className="h-5 w-5 sm:h-6 sm:w-6" src="https://img.icons8.com/arcade/64/youtube-play.png" alt="youtube-play"/>
             <span className="text-lg sm:text-xl font-bold">Yottly</span>
           </Link>
           
@@ -56,7 +56,7 @@ export default function LandingPage() {
             <Link href="#demo" className="transition-colors hover:text-primary">
               Demo
             </Link>
-            <Link href="https://github.com/yourusername/yottly" className="transition-colors hover:text-primary">
+            <Link href="https://github.com/abhisek-1221/yottly" className="transition-colors hover:text-primary">
               GitHub
             </Link>
           </nav>
@@ -94,7 +94,7 @@ export default function LandingPage() {
                 <Link href="#demo" className="px-2 py-3 hover:bg-muted rounded-md" onClick={() => setMobileMenuOpen(false)}>
                   Demo
                 </Link>
-                <Link href="https://github.com/yourusername/yottly" className="px-2 py-3 hover:bg-muted rounded-md" onClick={() => setMobileMenuOpen(false)}>
+                <Link href="https://github.com/abhisek-1221/yottly" className="px-2 py-3 hover:bg-muted rounded-md" onClick={() => setMobileMenuOpen(false)}>
                   GitHub
                 </Link>
                 <Link href="/dashboard" className="px-2">
@@ -176,9 +176,6 @@ export default function LandingPage() {
                         <h3 className="font-semibold">Video Analysis</h3>
                         <p className="text-xs sm:text-sm text-muted-foreground">Powered by AI</p>
                       </div>
-                      <Button variant="outline" size="sm">
-                        Try Now
-                      </Button>
                     </div>
                     <div className="aspect-[4/2.2] rounded-lg bg-gradient-to-br from-red-500/5 via-red-700/10 to-red-500/5 overflow-hidden">
                       <div style={{ position: 'relative', paddingBottom: '75%', height: 0, overflow: 'hidden' }}>
@@ -258,7 +255,11 @@ export default function LandingPage() {
               variants={fadeIn}
               className="text-center"
             >
-              <Button size="lg" className="gap-2">
+              <Button size="lg" className="gap-2"
+              onClick={() => {
+                router.push("/dashboard");
+              }}
+              >
                 <Play className="h-4 w-4" /> Try Yottly Now
               </Button>
             </motion.div>
@@ -281,7 +282,7 @@ export default function LandingPage() {
             <Link href="#" className="text-xs sm:text-sm text-muted-foreground hover:text-primary">
               Privacy
             </Link>
-            <Link href="https://github.com/yourusername/yottly" className="text-xs sm:text-sm text-muted-foreground hover:text-primary">
+            <Link href="https://github.com/abhisek-1221/yottly" className="text-xs sm:text-sm text-muted-foreground hover:text-primary">
               GitHub
             </Link>
           </div>

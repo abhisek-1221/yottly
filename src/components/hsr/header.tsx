@@ -10,7 +10,7 @@ const Header = () => {
   return (
     <div className="flex items-center space-x-2 mb-6">
             <div className="bg-zinc-800 p-2 rounded-lg">
-              <YouTube className="w-5 h-5" />
+            <img className='w-5 h-5' src="https://img.icons8.com/arcade/64/youtube-play.png" alt="youtube-play"/>
             </div>
             <span className="text-sm text-zinc-400">Yottly</span>
             <div className="ml-auto">
