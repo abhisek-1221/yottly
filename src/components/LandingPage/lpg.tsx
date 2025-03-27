@@ -244,10 +244,19 @@ export default function LandingPage() {
               <div className="relative aspect-video rounded-lg sm:rounded-xl overflow-hidden shadow-lg">
                 <iframe
                   className="absolute inset-0 w-full h-full"
-                  src="https://www.tella.tv/video/cm7r9hfdf00070bl758xld16r/embed?b=0&title=0&a=0&loop=1&autoPlay=true&t=0&muted=1&wt=0"
+                  src="https://www.tella.tv/video/cm8rhxvcb000a0aky4pm1d52o/embed?b=0&title=0&a=0&loop=0&t=0&muted=0&wt=0"
                   title="Yottly Demo"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
+                  style={{ 
+                    position: 'absolute', 
+                    top: 0, 
+                    left: 0, 
+                    width: '100%', 
+                    height: '100%', 
+                    border: 0
+                  }}
+                  allowTransparency
                 ></iframe>
               </div>
             </motion.div>
