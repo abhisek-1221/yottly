@@ -42,7 +42,7 @@ export default function LandingPage() {
   return (
     <div className="flex min-h-screen flex-col">
       <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex h-16 items-center justify-between">
+        <div className="container mx-auto max-w-[1920px] px-4 sm:px-6 lg:px-8 xl:px-12 flex h-16 items-center justify-between">
           <Link href="/" className="flex items-center space-x-2 px-2">
             <img className="h-5 w-5 sm:h-6 sm:w-6" src="https://img.icons8.com/arcade/64/youtube-play.png" alt="youtube-play"/>
             <span className="text-lg sm:text-xl font-bold">Yottly</span>
@@ -112,22 +112,22 @@ export default function LandingPage() {
             <div className="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:14px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]" />
           </div>
 
-          <div className="container relative">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 py-12 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 md:px-8 lg:px-12">
+          <div className="container mx-auto max-w-[1920px] px-4 sm:px-6 lg:px-8 xl:px-12 relative">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 py-12 sm:py-16 md:py-20 lg:py-28 xl:py-32">
               <motion.div 
-                className="space-y-6 sm:space-y-8"
+                className="space-y-6 sm:space-y-8 xl:space-y-10 max-w-3xl"
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.6 }}
               >
-                <div className="space-y-4 sm:space-y-6">
-                  <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tighter">
+                <div className="space-y-4 sm:space-y-6 xl:space-y-8">
+                  <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl font-bold tracking-tighter">
                     Your YouTube{" "}
                     <span className="bg-gradient-to-r from-red-500 to-red-700 bg-clip-text text-transparent">
                       AI Assistant
                     </span>
                   </h1>
-                  <p className="max-w-[42rem] leading-normal text-muted-foreground text-base sm:text-lg md:text-xl md:leading-8">
+                  <p className="text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl leading-normal text-muted-foreground max-w-[42rem] xl:max-w-[52rem]">
                     Transform how you interact with YouTube content. Summarize videos, generate transcripts, 
                     and analyze playlists - all powered by advanced AI.
                   </p>
@@ -163,7 +163,7 @@ export default function LandingPage() {
                 </div>
               </motion.div>
               <motion.div 
-                className="relative hidden sm:block lg:block"
+                className="relative hidden sm:block lg:block xl:scale-110 2xl:scale-120"
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.6, delay: 0.3 }}
@@ -206,12 +206,12 @@ export default function LandingPage() {
         <motion.section 
           ref={featuresRef}
           id="features" 
-          className="py-12 sm:py-16 md:py-20 lg:py-24"
+          className="py-12 sm:py-16 md:py-20 lg:py-28 xl:py-32"
           initial="hidden"
           animate={featuresInView ? "visible" : "hidden"}
           variants={staggerContainer}
         >
-          <div className="container space-y-8 sm:space-y-12 px-7 sm:px-6">
+          <div className="container mx-auto max-w-[1920px] px-4 sm:px-6 lg:px-8 xl:px-12 space-y-8 sm:space-y-12 xl:space-y-16">
           <FeatureSections />
           </div>
         </motion.section>
@@ -220,12 +220,12 @@ export default function LandingPage() {
         <motion.section 
           ref={demoRef}
           id="demo" 
-          className="py-12 sm:py-16 md:py-20 lg:py-24"
+          className="py-12 sm:py-16 md:py-20 lg:py-28 xl:py-32"
           initial="hidden"
           animate={demoInView ? "visible" : "hidden"}
           variants={staggerContainer}
         >
-          <div className="container space-y-8 sm:space-y-12 px-4 sm:px-6">
+          <div className="container mx-auto max-w-[1920px] px-4 sm:px-6 lg:px-8 xl:px-12 space-y-8 sm:space-y-12 xl:space-y-16">
             <motion.div 
               variants={fadeIn}
               className="text-center space-y-2 sm:space-y-4"
@@ -239,7 +239,7 @@ export default function LandingPage() {
             </motion.div>
             <motion.div 
               variants={fadeIn}
-              className="max-w-4xl mx-auto px-4 sm:px-0"
+              className="max-w-6xl mx-auto px-4 sm:px-0"
             >
               <div className="relative aspect-video rounded-lg sm:rounded-xl overflow-hidden shadow-lg">
                 <iframe
@@ -277,12 +277,12 @@ export default function LandingPage() {
       </main>
 
       <motion.footer 
-        className="border-t py-6 sm:py-8"
+        className="border-t py-6 sm:py-8 lg:py-10"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.5 }}
       >
-        <div className="container flex flex-col items-center justify-between gap-4 md:flex-row px-4 sm:px-6">
+        <div className="container mx-auto max-w-[1920px] px-4 sm:px-6 lg:px-8 xl:px-12 flex flex-col items-center justify-between gap-4 md:flex-row">
           <p className="text-xs sm:text-sm text-muted-foreground">© 2024 Yottly. All rights reserved.</p>
           <div className="flex items-center gap-3 sm:gap-4">
             <Link href="#" className="text-xs sm:text-sm text-muted-foreground hover:text-primary">
