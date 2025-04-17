@@ -1,16 +1,28 @@
-"use client"
+'use client'
 
-import * as React from "react"
-import { motion, AnimatePresence } from "framer-motion"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Info, Loader } from "lucide-react"
-import AnalyzeButton from "./analyzebutton"
+import * as React from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
+import { Info, Loader } from 'lucide-react'
+import AnalyzeButton from './analyzebutton'
 
 const CheckIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" className="text-green-500">
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="18"
+    height="18"
+    viewBox="0 0 18 18"
+    className="text-green-500"
+  >
     <title>circle-check-3</title>
-    <g fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" stroke="currentColor">
+    <g
+      fill="none"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="1.5"
+      stroke="currentColor"
+    >
       <circle cx="9" cy="9" r="7.25"></circle>
       <path d="M5.5,9c.863,.867,1.537,1.868,2.1,2.962,1.307-2.491,2.94-4.466,4.9-5.923"></path>
     </g>
@@ -18,7 +30,7 @@ const CheckIcon = () => (
 )
 
 interface ToastProps {
-  state: "initial" | "loading" | "success"
+  state: 'initial' | 'loading' | 'success'
   onReset?: () => void
   onSave?: () => void
 }
@@ -26,15 +38,15 @@ interface ToastProps {
 const saveStates = {
   initial: {
     icon: <Info className="w-[18px] h-[18px] text-white" />,
-    text: "Only Playlist URLs are supported",
+    text: 'Only Playlist URLs are supported',
   },
   loading: {
     icon: <Loader className="w-[15px] h-[15px] animate-spin text-white" />,
-    text: "Analyzing",
+    text: 'Analyzing',
   },
   success: {
     icon: <CheckIcon />,
-    text: "Analysis complete",
+    text: 'Analysis complete',
   },
 }
 
@@ -42,12 +54,12 @@ export function Toast({ state: initialState, onSave }: ToastProps) {
   const [state, setState] = React.useState(initialState)
 
   React.useEffect(() => {
-    if (initialState === "loading") {
-      setState("loading")
+    if (initialState === 'loading') {
+      setState('loading')
       const timer = setTimeout(() => {
-        setState("success")
+        setState('success')
         const successTimer = setTimeout(() => {
-          setState("initial")
+          setState('initial')
         }, 2000)
         return () => clearTimeout(successTimer)
       }, 3000)
@@ -71,7 +83,7 @@ export function Toast({ state: initialState, onSave }: ToastProps) {
         <motion.div
           className="inline-flex items-center justify-center gap-2 pl-1.5 pr-3 py-0"
           layout
-          transition={{ duration: 0.25, ease: "easeInOut" }}
+          transition={{ duration: 0.25, ease: 'easeInOut' }}
         >
           <AnimatePresence mode="wait">
             <motion.div
@@ -99,13 +111,13 @@ export function Toast({ state: initialState, onSave }: ToastProps) {
         </motion.div>
 
         <AnimatePresence>
-          {state === "initial" && (
+          {state === 'initial' && (
             <motion.div
               className="inline-flex items-center gap-2 pl-0 pr-px py-0"
               initial={{ opacity: 0, width: 0 }}
-              animate={{ opacity: 1, width: "auto" }}
+              animate={{ opacity: 1, width: 'auto' }}
               exit={{ opacity: 0, width: 0 }}
-              transition={{ duration: 0.25, ease: "easeInOut" }}
+              transition={{ duration: 0.25, ease: 'easeInOut' }}
             >
               <AnalyzeButton onClick={handleSave} />
             </motion.div>
@@ -115,4 +127,3 @@ export function Toast({ state: initialState, onSave }: ToastProps) {
     </Card>
   )
 }
-

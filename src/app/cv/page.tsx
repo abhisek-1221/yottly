@@ -1,14 +1,25 @@
-"use client";
+'use client'
 
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { PieChart, Pie, BarChart, Bar, XAxis, YAxis, Tooltip, Legend, Cell, ResponsiveContainer } from 'recharts';
+import React, { useState } from 'react'
+import { motion } from 'framer-motion'
+import {
+  PieChart,
+  Pie,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  Legend,
+  Cell,
+  ResponsiveContainer,
+} from 'recharts'
 
 const YouTubeComparison = () => {
-  const [activeTab, setActiveTab] = useState('stats');
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [activeChart, setActiveChart] = useState('pie');
-  
+  const [activeTab, setActiveTab] = useState('stats')
+  const [isPlaying, setIsPlaying] = useState(false)
+  const [activeChart, setActiveChart] = useState('pie')
+
   const videos = {
     first: {
       id: 'dQw4w9WgXcQ',
@@ -21,7 +32,7 @@ const YouTubeComparison = () => {
       likes: 15000000,
       likesFormatted: '15M',
       comments: 3200000,
-      commentsFormatted: '3.2M'
+      commentsFormatted: '3.2M',
     },
     second: {
       id: 'qeMFqkcPYcg',
@@ -34,97 +45,121 @@ const YouTubeComparison = () => {
       likes: 12000000,
       likesFormatted: '12M',
       comments: 2100000,
-      commentsFormatted: '2.1M'
-    }
-  };
-  
+      commentsFormatted: '2.1M',
+    },
+  }
+
   // Prepare chart data
   const pieData = [
-    { name: videos.first.title, views: videos.first.views, likes: videos.first.likes, comments: videos.first.comments, color: '#3B82F6' },
-    { name: videos.second.title, views: videos.second.views, likes: videos.second.likes, comments: videos.second.comments, color: '#A855F7' }
-  ];
-  
+    {
+      name: videos.first.title,
+      views: videos.first.views,
+      likes: videos.first.likes,
+      comments: videos.first.comments,
+      color: '#3B82F6',
+    },
+    {
+      name: videos.second.title,
+      views: videos.second.views,
+      likes: videos.second.likes,
+      comments: videos.second.comments,
+      color: '#A855F7',
+    },
+  ]
+
   const barData = [
-    { name: 'Views (millions)', video1: videos.first.views / 1000000, video2: videos.second.views / 1000000 },
-    { name: 'Likes (millions)', video1: videos.first.likes / 1000000, video2: videos.second.likes / 1000000 },
-    { name: 'Comments (millions)', video1: videos.first.comments / 1000000, video2: videos.second.comments / 1000000 }
-  ];
-  
-  const COLORS = ['#3B82F6', '#A855F7'];
-  
+    {
+      name: 'Views (millions)',
+      video1: videos.first.views / 1000000,
+      video2: videos.second.views / 1000000,
+    },
+    {
+      name: 'Likes (millions)',
+      video1: videos.first.likes / 1000000,
+      video2: videos.second.likes / 1000000,
+    },
+    {
+      name: 'Comments (millions)',
+      video1: videos.first.comments / 1000000,
+      video2: videos.second.comments / 1000000,
+    },
+  ]
+
+  const COLORS = ['#3B82F6', '#A855F7']
+
   const tabs = [
     { id: 'visual', label: 'Visual' },
     { id: 'stats', label: 'Stats' },
     { id: 'comments', label: 'Comments' },
-    { id: 'engagement', label: 'Engagement' }
-  ];
-  
+    { id: 'engagement', label: 'Engagement' },
+  ]
+
   const containerVariants = {
     hidden: { opacity: 0 },
-    visible: { 
+    visible: {
       opacity: 1,
-      transition: { 
+      transition: {
         duration: 0.5,
-        staggerChildren: 0.1
-      }
-    }
-  };
-  
+        staggerChildren: 0.1,
+      },
+    },
+  }
+
   const itemVariants = {
     hidden: { y: 20, opacity: 0 },
-    visible: { 
-      y: 0, 
+    visible: {
+      y: 0,
       opacity: 1,
-      transition: { duration: 0.5 }
-    }
-  };
-  
+      transition: { duration: 0.5 },
+    },
+  }
+
   // Format number for tooltip
-interface VideoData {
-    id: string;
-    title: string;
-    channel: string;
-    views: number;
-    viewsFormatted: string;
-    published: string;
-    description: string;
-    likes: number;
-    likesFormatted: string;
-    comments: number;
-    commentsFormatted: string;
-}
+  interface VideoData {
+    id: string
+    title: string
+    channel: string
+    views: number
+    viewsFormatted: string
+    published: string
+    description: string
+    likes: number
+    likesFormatted: string
+    comments: number
+    commentsFormatted: string
+  }
 
-interface PieData {
-    name: string;
-    views: number;
-    likes: number;
-    comments: number;
-    color: string;
-}
+  interface PieData {
+    name: string
+    views: number
+    likes: number
+    comments: number
+    color: string
+  }
 
-interface BarData {
-    name: string;
-    video1: number;
-    video2: number;
-}
+  interface BarData {
+    name: string
+    video1: number
+    video2: number
+  }
 
-interface CustomTooltipProps {
-    active: boolean;
-    payload: { name: string; value: number; color?: string }[];
-    label: string;
-}
+  interface CustomTooltipProps {
+    active: boolean
+    payload: { name: string; value: number; color?: string }[]
+    label: string
+  }
 
-const formatNumber = (value: number): string => {
+  const formatNumber = (value: number): string => {
     if (value >= 1000000000) {
-        return `${(value / 1000000000).toFixed(1)}B`;
+      return `${(value / 1000000000).toFixed(1)}B`
     } else if (value >= 1000000) {
-        return `${(value / 1000000).toFixed(1)}M`;
+      return `${(value / 1000000).toFixed(1)}M`
     } else if (value >= 1000) {
-        return `${(value / 1000).toFixed(1)}K`;
+      return `${(value / 1000).toFixed(1)}K`
     }
-    return value.toString();
-};
-  
+    return value.toString()
+  }
+
   // Custom tooltip for charts
   const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
     if (active && payload && payload.length) {
@@ -137,36 +172,33 @@ const formatNumber = (value: number): string => {
             </p>
           ))}
         </div>
-      );
+      )
     }
-    return null;
-  };
-  
+    return null
+  }
+
   return (
     <div className="min-h-screen text-gray-100 p-6">
-      <motion.div 
+      <motion.div
         className="max-w-6xl mx-auto"
         initial="hidden"
         animate="visible"
         variants={containerVariants}
       >
-        <motion.h1 
+        <motion.h1
           className="text-3xl font-bold mb-8 text-center bg-gradient-to-r from-purple-400 to-blue-500 bg-clip-text text-transparent"
           variants={itemVariants}
         >
           YouTube Video Comparison
         </motion.h1>
-        
-        <motion.div 
-          className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8"
-          variants={itemVariants}
-        >
+
+        <motion.div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8" variants={itemVariants}>
           {/* Video 1 */}
           <div className="rounded-lg overflow-hidden shadow-lg">
             <div className="relative aspect-video bg-black">
-              <img 
-                src={`/api/placeholder/640/360`} 
-                alt="Video thumbnail" 
+              <img
+                src={`/api/placeholder/640/360`}
+                alt="Video thumbnail"
                 className="w-full h-full object-cover"
               />
               <div className="absolute inset-0 flex items-center justify-center">
@@ -191,17 +223,19 @@ const formatNumber = (value: number): string => {
             </div>
             <div className="p-4">
               <h2 className="text-xl font-bold mb-2">{videos.first.title}</h2>
-              <p className="text-gray-400 mb-4">{videos.first.channel} • {videos.first.viewsFormatted}</p>
+              <p className="text-gray-400 mb-4">
+                {videos.first.channel} • {videos.first.viewsFormatted}
+              </p>
               <p className="text-sm text-gray-300">{videos.first.description}</p>
             </div>
           </div>
-          
+
           {/* Video 2 */}
           <div className="bg-stone-900 rounded-lg overflow-hidden shadow-lg">
             <div className="relative aspect-video bg-black">
-              <img 
-                src={`/api/placeholder/640/360`} 
-                alt="Video thumbnail" 
+              <img
+                src={`/api/placeholder/640/360`}
+                alt="Video thumbnail"
                 className="w-full h-full object-cover"
               />
               <div className="absolute inset-0 flex items-center justify-center">
@@ -226,19 +260,18 @@ const formatNumber = (value: number): string => {
             </div>
             <div className="p-4">
               <h2 className="text-xl font-bold mb-2">{videos.second.title}</h2>
-              <p className="text-gray-400 mb-4">{videos.second.channel} • {videos.second.viewsFormatted}</p>
+              <p className="text-gray-400 mb-4">
+                {videos.second.channel} • {videos.second.viewsFormatted}
+              </p>
               <p className="text-sm text-gray-300">{videos.second.description}</p>
             </div>
           </div>
         </motion.div>
-        
+
         {/* Comparison Tabs */}
-        <motion.div 
-          className="rounded-lg overflow-hidden shadow-lg mb-8"
-          variants={itemVariants}
-        >
+        <motion.div className="rounded-lg overflow-hidden shadow-lg mb-8" variants={itemVariants}>
           <div className="flex border-b border-gray-700">
-            {tabs.map(tab => (
+            {tabs.map((tab) => (
               <button
                 key={tab.id}
                 className={`px-6 py-3 font-medium relative ${
@@ -248,7 +281,7 @@ const formatNumber = (value: number): string => {
               >
                 {tab.label}
                 {activeTab === tab.id && (
-                  <motion.div 
+                  <motion.div
                     className="absolute bottom-0 left-0 right-0 h-1 bg-blue-400"
                     layoutId="activeTab"
                   />
@@ -256,7 +289,7 @@ const formatNumber = (value: number): string => {
               </button>
             ))}
           </div>
-          
+
           <div className="p-6">
             {activeTab === 'visual' && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -266,7 +299,7 @@ const formatNumber = (value: number): string => {
                     <li className="flex justify-between">
                       <span className="text-gray-400">Video Quality</span>
                       <div className="flex space-x-1">
-                        {[1, 2, 3, 4].map(i => (
+                        {[1, 2, 3, 4].map((i) => (
                           <span key={i} className="w-6 h-2 bg-blue-500 rounded"></span>
                         ))}
                         <span className="w-6 h-2 bg-gray-600 rounded"></span>
@@ -275,10 +308,10 @@ const formatNumber = (value: number): string => {
                     <li className="flex justify-between">
                       <span className="text-gray-400">Cinematography</span>
                       <div className="flex space-x-1">
-                        {[1, 2, 3].map(i => (
+                        {[1, 2, 3].map((i) => (
                           <span key={i} className="w-6 h-2 bg-blue-500 rounded"></span>
                         ))}
-                        {[1, 2].map(i => (
+                        {[1, 2].map((i) => (
                           <span key={i} className="w-6 h-2 bg-gray-600 rounded"></span>
                         ))}
                       </div>
@@ -286,7 +319,7 @@ const formatNumber = (value: number): string => {
                     <li className="flex justify-between">
                       <span className="text-gray-400">Color Grading</span>
                       <div className="flex space-x-1">
-                        {[1, 2, 3, 4, 5].map(i => (
+                        {[1, 2, 3, 4, 5].map((i) => (
                           <span key={i} className="w-6 h-2 bg-blue-500 rounded"></span>
                         ))}
                       </div>
@@ -294,15 +327,17 @@ const formatNumber = (value: number): string => {
                   </ul>
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold mb-2 text-purple-400">{videos.second.title}</h3>
+                  <h3 className="text-lg font-semibold mb-2 text-purple-400">
+                    {videos.second.title}
+                  </h3>
                   <ul className="space-y-2">
                     <li className="flex justify-between">
                       <span className="text-gray-400">Video Quality</span>
                       <div className="flex space-x-1">
-                        {[1, 2, 3].map(i => (
+                        {[1, 2, 3].map((i) => (
                           <span key={i} className="w-6 h-2 bg-purple-500 rounded"></span>
                         ))}
-                        {[1, 2].map(i => (
+                        {[1, 2].map((i) => (
                           <span key={i} className="w-6 h-2 bg-gray-600 rounded"></span>
                         ))}
                       </div>
@@ -310,7 +345,7 @@ const formatNumber = (value: number): string => {
                     <li className="flex justify-between">
                       <span className="text-gray-400">Cinematography</span>
                       <div className="flex space-x-1">
-                        {[1, 2, 3, 4, 5].map(i => (
+                        {[1, 2, 3, 4, 5].map((i) => (
                           <span key={i} className="w-6 h-2 bg-purple-500 rounded"></span>
                         ))}
                       </div>
@@ -318,7 +353,7 @@ const formatNumber = (value: number): string => {
                     <li className="flex justify-between">
                       <span className="text-gray-400">Color Grading</span>
                       <div className="flex space-x-1">
-                        {[1, 2, 3, 4].map(i => (
+                        {[1, 2, 3, 4].map((i) => (
                           <span key={i} className="w-6 h-2 bg-purple-500 rounded"></span>
                         ))}
                         <span className="w-6 h-2 bg-gray-600 rounded"></span>
@@ -328,19 +363,19 @@ const formatNumber = (value: number): string => {
                 </div>
               </div>
             )}
-            
+
             {activeTab === 'stats' && (
               <div>
                 <div className="flex justify-between items-center mb-6">
                   <h3 className="text-lg font-semibold">Video Statistics Comparison</h3>
                   <div className="flex rounded-lg overflow-hidden">
-                    <button 
+                    <button
                       className={`px-4 py-2 text-sm ${activeChart === 'pie' ? 'bg-blue-500 text-white' : 'text-gray-300'}`}
                       onClick={() => setActiveChart('pie')}
                     >
                       Pie Charts
                     </button>
-                    <button 
+                    <button
                       className={`px-4 py-2 text-sm ${activeChart === 'bar' ? 'bg-blue-500 text-white' : 'text-gray-300'}`}
                       onClick={() => setActiveChart('bar')}
                     >
@@ -348,7 +383,7 @@ const formatNumber = (value: number): string => {
                     </button>
                   </div>
                 </div>
-                
+
                 {activeChart === 'pie' && (
                   <div className="space-y-8">
                     <div>
@@ -365,19 +400,23 @@ const formatNumber = (value: number): string => {
                               fill="#8884d8"
                               dataKey="views"
                               nameKey="name"
-                              label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                              label={({ name, percent }) =>
+                                `${name}: ${(percent * 100).toFixed(0)}%`
+                              }
                             >
                               {pieData.map((entry, index) => (
                                 <Cell key={`cell-${index}`} fill={entry.color} />
                               ))}
                             </Pie>
-                            <Tooltip content={<CustomTooltip active={false} payload={[]} label="" />} />
+                            <Tooltip
+                              content={<CustomTooltip active={false} payload={[]} label="" />}
+                            />
                             <Legend />
                           </PieChart>
                         </ResponsiveContainer>
                       </div>
                     </div>
-                    
+
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
                         <h4 className="text-center mb-4 font-medium">Likes Comparison</h4>
@@ -393,18 +432,22 @@ const formatNumber = (value: number): string => {
                                 fill="#8884d8"
                                 dataKey="likes"
                                 nameKey="name"
-                                label={({ name, percent }) => `${name.substring(0, 10)}...: ${(percent * 100).toFixed(0)}%`}
+                                label={({ name, percent }) =>
+                                  `${name.substring(0, 10)}...: ${(percent * 100).toFixed(0)}%`
+                                }
                               >
                                 {pieData.map((entry, index) => (
                                   <Cell key={`cell-${index}`} fill={entry.color} />
                                 ))}
                               </Pie>
-                              <Tooltip content={<CustomTooltip active={false} payload={[]} label="" />} />
-                              </PieChart>
+                              <Tooltip
+                                content={<CustomTooltip active={false} payload={[]} label="" />}
+                              />
+                            </PieChart>
                           </ResponsiveContainer>
                         </div>
                       </div>
-                      
+
                       <div>
                         <h4 className="text-center mb-4 font-medium">Comments Comparison</h4>
                         <div className="h-64">
@@ -419,21 +462,25 @@ const formatNumber = (value: number): string => {
                                 fill="#8884d8"
                                 dataKey="comments"
                                 nameKey="name"
-                                label={({ name, percent }) => `${name.substring(0, 10)}...: ${(percent * 100).toFixed(0)}%`}
+                                label={({ name, percent }) =>
+                                  `${name.substring(0, 10)}...: ${(percent * 100).toFixed(0)}%`
+                                }
                               >
                                 {pieData.map((entry, index) => (
                                   <Cell key={`cell-${index}`} fill={entry.color} />
                                 ))}
                               </Pie>
-                              <Tooltip content={<CustomTooltip active={false} payload={[]} label="" />} />
-                              </PieChart>
+                              <Tooltip
+                                content={<CustomTooltip active={false} payload={[]} label="" />}
+                              />
+                            </PieChart>
                           </ResponsiveContainer>
                         </div>
                       </div>
                     </div>
                   </div>
                 )}
-                
+
                 {activeChart === 'bar' && (
                   <div>
                     <div className="h-96">
@@ -444,78 +491,98 @@ const formatNumber = (value: number): string => {
                         >
                           <XAxis dataKey="name" />
                           <YAxis />
-                          <Tooltip content={<CustomTooltip active={false} payload={[]} label="" />} />
+                          <Tooltip
+                            content={<CustomTooltip active={false} payload={[]} label="" />}
+                          />
                           <Legend />
                           <Bar dataKey="video1" name={videos.first.title} fill="#3B82F6" />
                           <Bar dataKey="video2" name={videos.second.title} fill="#A855F7" />
                         </BarChart>
                       </ResponsiveContainer>
                     </div>
-                    
+
                     <div className="grid grid-cols-2 gap-4 mt-6">
                       <div className="p-3 rounded text-center">
                         <div className="flex items-center justify-center">
                           <div className="w-3 h-3 bg-blue-500 rounded-full mr-2"></div>
-                          <span className="text-sm font-medium text-gray-300">{videos.first.title}</span>
+                          <span className="text-sm font-medium text-gray-300">
+                            {videos.first.title}
+                          </span>
                         </div>
                       </div>
                       <div className="p-3 rounded text-center">
                         <div className="flex items-center justify-center">
                           <div className="w-3 h-3 bg-purple-500 rounded-full mr-2"></div>
-                          <span className="text-sm font-medium text-gray-300">{videos.second.title}</span>
+                          <span className="text-sm font-medium text-gray-300">
+                            {videos.second.title}
+                          </span>
                         </div>
                       </div>
                     </div>
                   </div>
                 )}
-                
+
                 <div className="mt-8 p-4 rounded-lg">
                   <h4 className="font-medium mb-2">Insights</h4>
                   <ul className="space-y-1 text-sm text-gray-300">
-                    <li>• {videos.second.title} has {Math.round((videos.second.views - videos.first.views) / 1000000)}M more views</li>
-                    <li>• {videos.first.title} has {Math.round((videos.first.likes - videos.second.likes) / 1000000)}M more likes</li>
+                    <li>
+                      • {videos.second.title} has{' '}
+                      {Math.round((videos.second.views - videos.first.views) / 1000000)}M more views
+                    </li>
+                    <li>
+                      • {videos.first.title} has{' '}
+                      {Math.round((videos.first.likes - videos.second.likes) / 1000000)}M more likes
+                    </li>
                     <li>• Comment-to-view ratio is higher for {videos.first.title}</li>
                     <li>• Both videos show strong engagement metrics overall</li>
                   </ul>
                 </div>
               </div>
             )}
-            
+
             {activeTab === 'comments' && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <h3 className="text-lg font-semibold mb-4 text-blue-400">{videos.first.title}</h3>
                   <div className="space-y-4">
-                    {[1, 2, 3].map(i => (
+                    {[1, 2, 3].map((i) => (
                       <div key={i} className="p-3 rounded">
                         <div className="flex items-center mb-2">
                           <div className="w-8 h-8 rounded-full mr-2"></div>
                           <span className="font-medium">User {i}</span>
                           <span className="text-xs text-gray-400 ml-2">2 weeks ago</span>
                         </div>
-                        <p className="text-sm">Sample comment for video 1. This shows how users are reacting to the content.</p>
+                        <p className="text-sm">
+                          Sample comment for video 1. This shows how users are reacting to the
+                          content.
+                        </p>
                       </div>
                     ))}
                   </div>
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold mb-4 text-purple-400">{videos.second.title}</h3>
+                  <h3 className="text-lg font-semibold mb-4 text-purple-400">
+                    {videos.second.title}
+                  </h3>
                   <div className="space-y-4">
-                    {[1, 2, 3].map(i => (
+                    {[1, 2, 3].map((i) => (
                       <div key={i} className="p-3 rounded">
                         <div className="flex items-center mb-2">
                           <div className="w-8 h-8 rounded-full mr-2"></div>
                           <span className="font-medium">Viewer {i}</span>
                           <span className="text-xs text-gray-400 ml-2">1 week ago</span>
                         </div>
-                        <p className="text-sm">Sample comment for video 2. These comments help compare audience reactions.</p>
+                        <p className="text-sm">
+                          Sample comment for video 2. These comments help compare audience
+                          reactions.
+                        </p>
                       </div>
                     ))}
                   </div>
                 </div>
               </div>
             )}
-            
+
             {activeTab === 'engagement' && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
@@ -549,7 +616,9 @@ const formatNumber = (value: number): string => {
                   </div>
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold mb-4 text-purple-400">{videos.second.title}</h3>
+                  <h3 className="text-lg font-semibold mb-4 text-purple-400">
+                    {videos.second.title}
+                  </h3>
                   <div className="p-4 rounded mb-4">
                     <h4 className="font-medium mb-2">Audience Retention</h4>
                     <div className="h-32 relative">
@@ -582,12 +651,9 @@ const formatNumber = (value: number): string => {
             )}
           </div>
         </motion.div>
-        
+
         {/* Conclusion Card */}
-        <motion.div 
-          className="rounded-lg shadow-lg p-6"
-          variants={itemVariants}
-        >
+        <motion.div className="rounded-lg shadow-lg p-6" variants={itemVariants}>
           <h2 className="text-xl font-bold mb-4">Comparison Summary</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
@@ -612,7 +678,7 @@ const formatNumber = (value: number): string => {
         </motion.div>
       </motion.div>
     </div>
-  );
-};
+  )
+}
 
-export default YouTubeComparison;
+export default YouTubeComparison

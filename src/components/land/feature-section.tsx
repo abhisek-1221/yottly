@@ -1,100 +1,103 @@
-"use client";
+'use client'
 
-import { Icons } from "@/components/icons";
-import { buttonVariants } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { List, BookOpen, VideoIcon, ListVideo } from "lucide-react";
-import Link from "next/link";
-import { motion } from "framer-motion";
-import { useInView } from "framer-motion";
-import { useRef } from "react";
+import { Icons } from '@/components/icons'
+import { buttonVariants } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
+import { List, BookOpen, VideoIcon, ListVideo } from 'lucide-react'
+import Link from 'next/link'
+import { motion } from 'framer-motion'
+import { useInView } from 'framer-motion'
+import { useRef } from 'react'
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 30 },
-  visible: { 
-    opacity: 1, 
+  visible: {
+    opacity: 1,
     y: 0,
-    transition: { duration: 0.6, ease: "easeOut" }
-  }
-};
+    transition: { duration: 0.6, ease: 'easeOut' },
+  },
+}
 
 const fadeInLeft = {
   hidden: { opacity: 0, x: -50 },
-  visible: { 
-    opacity: 1, 
+  visible: {
+    opacity: 1,
     x: 0,
-    transition: { duration: 0.6, ease: "easeOut", delay: 0.2 }
-  }
-};
+    transition: { duration: 0.6, ease: 'easeOut', delay: 0.2 },
+  },
+}
 
 const fadeInRight = {
   hidden: { opacity: 0, x: 50 },
-  visible: { 
-    opacity: 1, 
+  visible: {
+    opacity: 1,
     x: 0,
-    transition: { duration: 0.6, ease: "easeOut", delay: 0.2 }
-  }
-};
+    transition: { duration: 0.6, ease: 'easeOut', delay: 0.2 },
+  },
+}
 
 const features = [
   {
-    id: "feature-summarize",
-    header: "Summarize",
-    name: "AI-Powered Video Summaries",
+    id: 'feature-summarize',
+    header: 'Summarize',
+    name: 'AI-Powered Video Summaries',
     description:
-      "Get concise, intelligent summaries of any YouTube video in seconds. Save time by understanding key points without watching the entire video.",
+      'Get concise, intelligent summaries of any YouTube video in seconds. Save time by understanding key points without watching the entire video.',
     icon: VideoIcon,
-    iframe: "https://www.tella.tv/video/cm7rgr3ol00000bjr8mg6hctz/embed?b=0&title=0&a=0&loop=1&autoPlay=true&t=0&muted=1&wt=0",
-    cta: "Try Summarizer",
-    href: "/summarize",
+    iframe:
+      'https://www.tella.tv/video/cm7rgr3ol00000bjr8mg6hctz/embed?b=0&title=0&a=0&loop=1&autoPlay=true&t=0&muted=1&wt=0',
+    cta: 'Try Summarizer',
+    href: '/summarize',
     reverse: false,
   },
   {
-    id: "feature-transcript",
-    header: "Transcribe",
-    name: "Accurate Video Transcriptions",
+    id: 'feature-transcript',
+    header: 'Transcribe',
+    name: 'Accurate Video Transcriptions',
     description:
-      "Generate high-quality transcripts with precise timestamps. Perfect for content creators, researchers, and anyone needing searchable text from videos.",
+      'Generate high-quality transcripts with precise timestamps. Perfect for content creators, researchers, and anyone needing searchable text from videos.',
     icon: BookOpen,
-    iframe: "https://www.tella.tv/video/cm7rswzd7001o0ajo8y7l2y67/embed?b=0&title=0&a=0&loop=1&autoPlay=true&t=0&muted=1&wt=0",
-    cta: "Get Transcripts",
-    href: "/transcribe",
+    iframe:
+      'https://www.tella.tv/video/cm7rswzd7001o0ajo8y7l2y67/embed?b=0&title=0&a=0&loop=1&autoPlay=true&t=0&muted=1&wt=0',
+    cta: 'Get Transcripts',
+    href: '/transcribe',
     reverse: true,
   },
   {
-    id: "feature-playlist",
-    header: "Analyze",
-    name: "Comprehensive Playlist Analysis",
+    id: 'feature-playlist',
+    header: 'Analyze',
+    name: 'Comprehensive Playlist Analysis',
     description:
-      "Extract key insights and common themes across entire YouTube playlists. Ideal for courses, tutorial series, and content research.",
+      'Extract key insights and common themes across entire YouTube playlists. Ideal for courses, tutorial series, and content research.',
     icon: ListVideo,
-    iframe: "https://www.tella.tv/video/cm7r9hfdf00070bl758xld16r/embed?b=0&title=0&a=0&loop=1&autoPlay=true&t=0&muted=1&wt=0",
-    cta: "Analyze Playlist",
-    href: "/playlist",
+    iframe:
+      'https://www.tella.tv/video/cm7r9hfdf00070bl758xld16r/embed?b=0&title=0&a=0&loop=1&autoPlay=true&t=0&muted=1&wt=0',
+    cta: 'Analyze Playlist',
+    href: '/playlist',
     reverse: false,
   },
-];
+]
 
 const FeatureSections = () => {
   return (
     <>
       {features.map((feature) => {
-        const sectionRef = useRef(null);
-        const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
-        
+        const sectionRef = useRef(null)
+        const isInView = useInView(sectionRef, { once: true, margin: '-100px' })
+
         return (
-          <motion.section 
-            id={feature.id} 
+          <motion.section
+            id={feature.id}
             key={feature.id}
             ref={sectionRef}
             initial="hidden"
-            animate={isInView ? "visible" : "hidden"}
+            animate={isInView ? 'visible' : 'hidden'}
           >
             <div className="mx-auto px-4 sm:px-6 py-6 sm:py-16 md:py-20">
               <div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-12 sm:gap-y-16 lg:mx-0 lg:max-w-none lg:grid-cols-5">
                 <motion.div
-                  className={cn("m-auto lg:col-span-2", {
-                    "lg:order-last": feature.reverse,
+                  className={cn('m-auto lg:col-span-2', {
+                    'lg:order-last': feature.reverse,
                   })}
                   variants={feature.reverse ? fadeInRight : fadeInLeft}
                 >
@@ -110,24 +113,28 @@ const FeatureSections = () => {
                   <Link
                     className={cn(
                       buttonVariants({
-                        variant: "default",
-                        size: "lg",
+                        variant: 'default',
+                        size: 'lg',
                       }),
-                      "mt-6 sm:mt-8"
+                      'mt-6 sm:mt-8'
                     )}
                     href={feature.href}
                   >
                     {feature.cta}
                   </Link>
                 </motion.div>
-                <motion.div
-                  className="lg:col-span-3"
-                  variants={fadeInUp}
-                >
+                <motion.div className="lg:col-span-3" variants={fadeInUp}>
                   <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0 }}>
                     <iframe
                       src={feature.iframe}
-                      style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 0 }}
+                      style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        height: '100%',
+                        border: 0,
+                      }}
                       allowFullScreen
                       allowTransparency
                     ></iframe>
@@ -136,10 +143,10 @@ const FeatureSections = () => {
               </div>
             </div>
           </motion.section>
-        );
+        )
       })}
     </>
-  );
-};
+  )
+}
 
-export default FeatureSections;
+export default FeatureSections

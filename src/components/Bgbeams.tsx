@@ -1,7 +1,7 @@
-"use client";
-import React from "react";
-import { BackgroundBeams } from "./ui/background-beams";
-import FeatureSearchBar from "./featurebar";
+'use client'
+import React from 'react'
+import { BackgroundBeams } from './ui/background-beams'
+import FeatureSearchBar from './featurebar'
 
 export function BackgroundBeamsDemo() {
   return (
@@ -9,5 +9,5 @@ export function BackgroundBeamsDemo() {
       <BackgroundBeams />
       <FeatureSearchBar />
     </div>
-  );
+  )
 }

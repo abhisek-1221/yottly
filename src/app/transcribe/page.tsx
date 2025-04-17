@@ -1,25 +1,34 @@
-"use client"
+'use client'
 
-import { useState, useEffect, use } from "react"
+import { useState, useEffect, use } from 'react'
 
 // Extend the Window interface to include onYouTubeIframeAPIReady
 declare global {
   interface Window {
-    onYouTubeIframeAPIReady: () => void;
+    onYouTubeIframeAPIReady: () => void
   }
 }
-import { motion } from "framer-motion"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Card, CardContent } from "@/components/ui/card"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Clock, Eye, ThumbsUp, Calendar, ChevronDown, ChevronUp, Loader2, CircleCheckBig, Download } from "lucide-react"
-import type React from "react"
-import Header from "@/components/hsr/header"
-import FeatureCard from "@/components/hsr/FeatureCard"
-import { formatDate, formatNumber } from "@/lib/youtube"
-import { useChat } from "ai/react"
-
+import { motion } from 'framer-motion'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Card, CardContent } from '@/components/ui/card'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import {
+  Clock,
+  Eye,
+  ThumbsUp,
+  Calendar,
+  ChevronDown,
+  ChevronUp,
+  Loader2,
+  CircleCheckBig,
+  Download,
+} from 'lucide-react'
+import type React from 'react'
+import Header from '@/components/hsr/header'
+import FeatureCard from '@/components/hsr/FeatureCard'
+import { formatDate, formatNumber } from '@/lib/youtube'
+import { useChat } from 'ai/react'
 
 interface VideoDetails {
   id: string
@@ -38,16 +47,15 @@ interface VideoDetails {
 }
 
 export default function Home() {
-  const [videoUrl, setVideoUrl] = useState("")
+  const [videoUrl, setVideoUrl] = useState('')
   const [transcriptData, setTranscriptData] = useState<any[]>([])
   const [videoDetails, setVideoDetails] = useState<VideoDetails | null>(null)
   const [loading, setLoading] = useState(false)
   const [showFullDescription, setShowFullDescription] = useState(false)
   const [showSuccess, setShowSuccess] = useState(false)
-  const [searchQuery, setSearchQuery] = useState("")
+  const [searchQuery, setSearchQuery] = useState('')
   const [player, setPlayer] = useState<any>(null)
   const [isYouTubeApiReady, setIsYouTubeApiReady] = useState(false)
-
 
   // const prompt = ""
   // const { messages , input , setInput , handleSubmit} = useChat(
@@ -70,9 +78,9 @@ export default function Home() {
     e.preventDefault()
     setLoading(true)
     try {
-      const videoResponse = await fetch("/api/videoDetail", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      const videoResponse = await fetch('/api/videoDetail', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ videoUrl }),
       })
       const videoData = await videoResponse.json()
@@ -80,15 +88,14 @@ export default function Home() {
         setVideoDetails(videoData.video)
       }
 
-      const transcriptResponse = await fetch("/api/transcribe", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      const transcriptResponse = await fetch('/api/transcribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ videoUrl }),
       })
       const transcriptData = await transcriptResponse.json()
 
       if (transcriptData.transcript) {
-
         if (transcriptData.transcript.segments) {
           const formattedTranscript = transcriptData.transcript.segments.map((segment: any) => ({
             text: segment.text,
@@ -100,8 +107,8 @@ export default function Home() {
           setTranscriptData([
             {
               text: transcriptData.transcript.fullTranscript,
-              startTime: "0:00",
-              endTime: "0:00",
+              startTime: '0:00',
+              endTime: '0:00',
             },
           ])
         }
@@ -113,22 +120,22 @@ export default function Home() {
         setTranscriptData([])
       }
     } catch (error) {
-      console.error("Error fetching data:", error)
+      console.error('Error fetching data:', error)
       setTranscriptData([])
     }
     setLoading(false)
   }
 
-  const fullTranscript = transcriptData.map((entry) => entry.text).join(" ")  
-  const filteredTranscripts = transcriptData.filter((entry) => 
+  const fullTranscript = transcriptData.map((entry) => entry.text).join(' ')
+  const filteredTranscripts = transcriptData.filter((entry) =>
     entry?.text?.toLowerCase().includes(searchQuery?.toLowerCase())
   )
- 
+
   const handleDownload = () => {
-    const element = document.createElement("a")
-    const file = new Blob([fullTranscript], {type: 'text/plain'})
+    const element = document.createElement('a')
+    const file = new Blob([fullTranscript], { type: 'text/plain' })
     element.href = URL.createObjectURL(file)
-    element.download = `transcript-${videoDetails?.title || "video"}.txt`
+    element.download = `transcript-${videoDetails?.title || 'video'}.txt`
     document.body.appendChild(element)
     element.click()
     document.body.removeChild(element)
@@ -136,13 +143,13 @@ export default function Home() {
 
   const handleTimestampedDownload = () => {
     const formattedTranscript = transcriptData
-      .map(entry => `[${entry.startTime} - ${entry.endTime}]\n${entry.text}\n`)
+      .map((entry) => `[${entry.startTime} - ${entry.endTime}]\n${entry.text}\n`)
       .join('\n')
-    
-    const element = document.createElement("a")
-    const file = new Blob([formattedTranscript], {type: 'text/plain'})
+
+    const element = document.createElement('a')
+    const file = new Blob([formattedTranscript], { type: 'text/plain' })
     element.href = URL.createObjectURL(file)
-    element.download = `timestamped-transcript-${videoDetails?.title || "video"}.txt`
+    element.download = `timestamped-transcript-${videoDetails?.title || 'video'}.txt`
     document.body.appendChild(element)
     element.click()
     document.body.removeChild(element)
@@ -161,18 +168,17 @@ export default function Home() {
   // const generateAI = async (e: React.FormEvent<HTMLFormElement>, prompt : string) => {
   //   e.preventDefault();
   //   try {
-  //     // Convert Transcript from api/transcript to gemini summarize api on prequel basis 
+  //     // Convert Transcript from api/transcript to gemini summarize api on prequel basis
   //     const aiTranscript = await fetch("/api/chat", {
   //       method : "POST",
   //       headers: { "Content-Type": "application/json" },
-  //       body: JSON.stringify({ 
+  //       body: JSON.stringify({
   //         model : "llama-3.1-8b-instant",
   //         system: `${prompt}`
   //        }),
-        
 
   //     })
-      
+
   //   } catch (error: any) {
   //     error("Error fetching data:", error)
   //   }
@@ -181,7 +187,7 @@ export default function Home() {
     <>
       <script src="https://www.youtube.com/iframe_api" />
       <div className="min-h-screen bg-zinc-950 text-white p-4 flex items-center justify-center">
-        <Card 
+        <Card
           className={`w-full max-w-6xl bg-black border-zinc-800 shadow-xl shadow-stone-600 rounded-2xl 2xl:scale-150 ${
             videoDetails && transcriptData.length > 0 ? 'scale-90 2xl:scale-125' : ''
           }`}
@@ -193,17 +199,11 @@ export default function Home() {
             {/* Main Content Area */}
             <div className="flex-1 flex flex-col pb-20">
               {/* Welcome Message - Only shown initially */}
-              {!videoDetails && (
-                <FeatureCard type="transcribe" />
-              )}
+              {!videoDetails && <FeatureCard type="transcribe" />}
 
               {/* Video Details and Transcript */}
               {videoDetails && (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="space-y-3"
-                >
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-3">
                   {/* Video Info Card */}
                   <Card className="bg-gradient-to-br from-stone-700 via-transparent to-gray-900 border-zinc-700">
                     <CardContent className="p-4">
@@ -246,7 +246,9 @@ export default function Home() {
                             </span>
                           </div>
                           <div>
-                            <p className={`text-zinc-400 ${showFullDescription ? "" : "line-clamp-2"}`}>
+                            <p
+                              className={`text-zinc-400 ${showFullDescription ? '' : 'line-clamp-2'}`}
+                            >
                               {videoDetails.description}
                             </p>
                             <Button
@@ -255,9 +257,13 @@ export default function Home() {
                               className="mt-2 p-0 h-auto text-zinc-400 hover:text-white"
                             >
                               {showFullDescription ? (
-                                <>Show less <ChevronUp className="w-4 h-4 ml-1" /></>
+                                <>
+                                  Show less <ChevronUp className="w-4 h-4 ml-1" />
+                                </>
                               ) : (
-                                <>Show more <ChevronDown className="w-4 h-4 ml-1" /></>
+                                <>
+                                  Show more <ChevronDown className="w-4 h-4 ml-1" />
+                                </>
                               )}
                             </Button>
                           </div>
@@ -285,7 +291,7 @@ export default function Home() {
                                 <Download className="h-4 w-4 text-zinc-400 hover:text-white" />
                               </Button>
                             </div>
-                            
+
                             {/* Search Input */}
                             <div className="relative">
                               <Input
@@ -296,7 +302,7 @@ export default function Home() {
                                 className="w-full bg-zinc-800/50 border-zinc-700 focus:border-zinc-600 rounded-lg"
                               />
                             </div>
-                      
+
                             <ScrollArea className="h-[350px]">
                               <div className="space-y-3">
                                 {filteredTranscripts.map((entry, index) => (
@@ -315,7 +321,7 @@ export default function Home() {
                                     <p className="text-sm">{entry.text}</p>
                                   </motion.div>
                                 ))}
-                                
+
                                 {/* No results message */}
                                 {filteredTranscripts.length === 0 && (
                                   <div className="text-center py-4 text-zinc-500">
@@ -349,8 +355,8 @@ export default function Home() {
                           </ScrollArea>
                         </CardContent>
                       </Card>
-                    </div>    
-                    )}
+                    </div>
+                  )}
                 </motion.div>
               )}
             </div>
@@ -381,7 +387,7 @@ export default function Home() {
                       Got Transcript
                     </>
                   ) : (
-                    "Get Transcript"
+                    'Get Transcript'
                   )}
                 </Button>
               </form>

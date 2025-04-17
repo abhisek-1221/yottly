@@ -1,5 +1,5 @@
-import { Button } from "./button"
-import React from "react"
+import { Button } from './button'
+import React from 'react'
 
 export default function AnalyzeButton({ onClick }: { onClick?: () => void }) {
   return (
@@ -12,4 +12,3 @@ export default function AnalyzeButton({ onClick }: { onClick?: () => void }) {
     </Button>
   )
 }
-

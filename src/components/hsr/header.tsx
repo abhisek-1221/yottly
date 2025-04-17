@@ -6,19 +6,28 @@ import { Undo2 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 
 const Header = () => {
-    const router = useRouter()
+  const router = useRouter()
   return (
     <div className="flex items-center space-x-2 mb-6">
-            <div className="bg-zinc-800 p-2 rounded-lg">
-            <img className='w-5 h-5' src="https://img.icons8.com/arcade/64/youtube-play.png" alt="youtube-play"/>
-            </div>
-            <span className="text-sm text-zinc-400">Yottly</span>
-            <div className="ml-auto">
-              <Button variant="ghost" size="icon" className="rounded-full" onClick={() => router.push("/dashboard")}>
-                <Undo2 className="w-5 h-5" />
-              </Button>
-            </div>
-          </div>
+      <div className="bg-zinc-800 p-2 rounded-lg">
+        <img
+          className="w-5 h-5"
+          src="https://img.icons8.com/arcade/64/youtube-play.png"
+          alt="youtube-play"
+        />
+      </div>
+      <span className="text-sm text-zinc-400">Yottly</span>
+      <div className="ml-auto">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="rounded-full"
+          onClick={() => router.push('/dashboard')}
+        >
+          <Undo2 className="w-5 h-5" />
+        </Button>
+      </div>
+    </div>
   )
 }
 

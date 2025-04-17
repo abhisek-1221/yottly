@@ -1,11 +1,22 @@
-"use client"
+'use client'
 
-import { useState, useEffect } from "react"
-import { Input } from "@/components/ui/input"
-import { motion, AnimatePresence } from "framer-motion"
-import { Search, Send, BarChart2, Globe, Video, PlaneTakeoff, AudioLines, ChartSpline, Volleyball, Captions } from "lucide-react"
-import useDebounce from "../app/hooks/use-debounce"
-import { useRouter } from "next/navigation"
+import { useState, useEffect } from 'react'
+import { Input } from '@/components/ui/input'
+import { motion, AnimatePresence } from 'framer-motion'
+import {
+  Search,
+  Send,
+  BarChart2,
+  Globe,
+  Video,
+  PlaneTakeoff,
+  AudioLines,
+  ChartSpline,
+  Volleyball,
+  Captions,
+} from 'lucide-react'
+import useDebounce from '../app/hooks/use-debounce'
+import { useRouter } from 'next/navigation'
 
 interface Action {
   id: string
@@ -14,7 +25,7 @@ interface Action {
   description?: string
   short?: string
   end?: string
-  route?: string; 
+  route?: string
 }
 
 interface SearchResult {
@@ -23,62 +34,61 @@ interface SearchResult {
 
 const allActions = [
   {
-    id: "1",
-    label: "Analyze Playlist",
+    id: '1',
+    label: 'Analyze Playlist',
     icon: <ChartSpline className="h-4 w-4 text-orange-500" />,
-    description: "v3-api",
-    short: "⌘K",
-    end: "Active",
-    route: "/analyze",
+    description: 'v3-api',
+    short: '⌘K',
+    end: 'Active',
+    route: '/analyze',
   },
   {
-    id: "2",
-    label: "Summarize AI Workspace",
+    id: '2',
+    label: 'Summarize AI Workspace',
     icon: <Volleyball className="h-4 w-4 text-blue-500" />,
-    description: "Groq 2.0",
-    short: "",
-    end: "Active",
-    route: "/summarize",
+    description: 'Groq 2.0',
+    short: '',
+    end: 'Active',
+    route: '/summarize',
   },
   {
-    id: "3",
-    label: "Transcribe Video",
+    id: '3',
+    label: 'Transcribe Video',
     icon: <Captions className="h-4 w-4 text-yellow-500" />,
-    description: "v3-api",
-    short: "",
-    end: "Active",
-    route: "/transcribe",
+    description: 'v3-api',
+    short: '',
+    end: 'Active',
+    route: '/transcribe',
   },
   {
-    id: "4",
-    label: "Channel Stats",
+    id: '4',
+    label: 'Channel Stats',
     icon: <Video className="h-4 w-4 text-green-500" />,
-    description: "Data API",
-    short: "",
-    end: "Coming Soon",
-    route: "/stats",
+    description: 'Data API',
+    short: '',
+    end: 'Coming Soon',
+    route: '/stats',
   },
   {
-    id: "5",
-    label: "Compare Videos",
+    id: '5',
+    label: 'Compare Videos',
     icon: <Globe className="h-4 w-4 text-purple-500" />,
-    description: "ExaAI",
-    short: "",
-    end: "Coming Soon",
-    route: "/compare",
+    description: 'ExaAI',
+    short: '',
+    end: 'Coming Soon',
+    route: '/compare',
   },
 ]
 
 function FeatureSearchBar({ actions = allActions }: { actions?: Action[] }) {
-  const [query, setQuery] = useState("")
+  const [query, setQuery] = useState('')
   const [result, setResult] = useState<SearchResult | null>(null)
   const [isFocused, setIsFocused] = useState(false)
   const [isTyping, setIsTyping] = useState(false)
   const [selectedAction, setSelectedAction] = useState<Action | null>(null)
   const debouncedQuery = useDebounce(query, 200)
 
-  const router = useRouter();
-
+  const router = useRouter()
 
   useEffect(() => {
     if (!isFocused) {
@@ -105,15 +115,15 @@ function FeatureSearchBar({ actions = allActions }: { actions?: Action[] }) {
     setIsTyping(true)
   }
 
-    const handleActionClick = (route: string) => {
-    router.push(route);
-    };
+  const handleActionClick = (route: string) => {
+    router.push(route)
+  }
 
-  const container = { 
+  const container = {
     hidden: { opacity: 0, height: 0 },
     show: {
       opacity: 1,
-      height: "auto",
+      height: 'auto',
       transition: {
         height: {
           duration: 0.4,
@@ -163,7 +173,6 @@ function FeatureSearchBar({ actions = allActions }: { actions?: Action[] }) {
     <div className="w-full max-w-xl sm:scale-125">
       <div className="fixed inset-x-0 flex flex-col justify-start items-center">
         <div className="w-full max-w-sm sticky top-0 bg-background z-10 pt-1 pb-1">
-          
           <div className="relative">
             <Input
               type="text"
@@ -224,7 +233,9 @@ function FeatureSearchBar({ actions = allActions }: { actions?: Action[] }) {
                       <div className="flex items-center gap-2 justify-between">
                         <div className="flex items-center gap-2">
                           <span className="text-gray-500">{action.icon}</span>
-                          <span className="text-sm font-medium text-gray-900 dark:text-gray-100">{action.label}</span>
+                          <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                            {action.label}
+                          </span>
                           <span className="text-xs text-gray-400">{action.description}</span>
                         </div>
                       </div>
@@ -251,4 +262,3 @@ function FeatureSearchBar({ actions = allActions }: { actions?: Action[] }) {
 }
 
 export default FeatureSearchBar
-

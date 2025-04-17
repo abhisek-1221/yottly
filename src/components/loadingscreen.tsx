@@ -1,5 +1,5 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React from 'react'
+import { motion } from 'framer-motion'
 
 const LoadingScreen = () => {
   // Variants for container animation
@@ -9,7 +9,7 @@ const LoadingScreen = () => {
         staggerChildren: 0.1,
       },
     },
-  };
+  }
 
   // Variants for dots animation
   const dotVariants = {
@@ -23,10 +23,10 @@ const LoadingScreen = () => {
       transition: {
         duration: 2,
         repeat: Infinity,
-        ease: "easeInOut",
+        ease: 'easeInOut',
       },
     },
-  };
+  }
 
   // Variants for the text reveal
   const textVariants = {
@@ -37,10 +37,10 @@ const LoadingScreen = () => {
       transition: {
         duration: 2,
         repeat: Infinity,
-        ease: "easeInOut",
+        ease: 'easeInOut',
       },
     },
-  };
+  }
 
   // Variants for the pulsing circle
   const pulseVariants = {
@@ -51,16 +51,16 @@ const LoadingScreen = () => {
       transition: {
         duration: 2,
         repeat: Infinity,
-        ease: "easeInOut",
+        ease: 'easeInOut',
       },
     },
-  };
+  }
 
   return (
     <div className="fixed inset-0 bg-background flex items-center justify-center">
       {/* Background gradient effect */}
       <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-blue-100 to-blue-50 opacity-50" />
-      
+
       {/* Main content container */}
       <motion.div
         className="relative z-10 flex flex-col items-center gap-8"
@@ -103,7 +103,7 @@ const LoadingScreen = () => {
         </motion.div>
 
         {/* Additional animated elements */}
-        <motion.div 
+        <motion.div
           className="absolute -z-10"
           animate={{
             rotate: 360,
@@ -111,16 +111,22 @@ const LoadingScreen = () => {
           transition={{
             duration: 8,
             repeat: Infinity,
-            ease: "linear",
+            ease: 'linear',
           }}
         >
           <div className="w-48 h-48 border-4 border-blue-200 rounded-full" />
-          <div className="absolute top-0 w-48 h-48 border-4 border-blue-300 rounded-full" style={{ transform: 'rotate(45deg)' }} />
-          <div className="absolute top-0 w-48 h-48 border-4 border-blue-400 rounded-full" style={{ transform: 'rotate(90deg)' }} />
+          <div
+            className="absolute top-0 w-48 h-48 border-4 border-blue-300 rounded-full"
+            style={{ transform: 'rotate(45deg)' }}
+          />
+          <div
+            className="absolute top-0 w-48 h-48 border-4 border-blue-400 rounded-full"
+            style={{ transform: 'rotate(90deg)' }}
+          />
         </motion.div>
       </motion.div>
     </div>
-  );
-};
+  )
+}
 
-export default LoadingScreen;
+export default LoadingScreen

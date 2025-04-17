@@ -1,12 +1,6 @@
-import { Icons } from "../icons";
+import { Icons } from '../icons'
 
-const icons = [
-  Icons.ycombinator,
-  Icons.openaiLogo,
-  Icons.googleLogo,
-  Icons.lyft,
-  Icons.microsoft,
-];
+const icons = [Icons.ycombinator, Icons.openaiLogo, Icons.googleLogo, Icons.lyft, Icons.microsoft]
 
 export const TrustedBy = () => {
   return (
@@ -28,5 +22,5 @@ export const TrustedBy = () => {
         </div>
       </div>
     </section>
-  );
-};
+  )
+}
