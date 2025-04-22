@@ -62,6 +62,34 @@ Yottly is a **free and open-source** SaaS app that enhances YouTube content anal
    http://localhost:3000
    ```
 
+### Using Docker
+
+Alternatively, you can run the application using Docker. You'll need a `.env.local` file in the project root containing your necessary API keys (e.g., `GOOGLE_API_KEY`, `GROQ_API_KEY`).
+
+1.  **Build the Docker image:**
+    ```sh
+    docker build -t yottly .
+    ```
+2.  **Run the container:**
+    ```sh
+    # Ensure .env.local exists in the current directory
+    docker run -p 3000:3000 --env-file .env.local yottly
+    ```
+    - _Note: Some features might require specific API keys in your `.env.local` file._
+
+### Using Docker Compose
+
+You can also use Docker Compose for easier management (recommended). Ensure you have a `.env.local` file as described above.
+
+1.  **Start the services:**
+    ```sh
+    docker-compose up -d
+    ```
+2.  **Stop the services:**
+    ```sh
+    docker-compose down
+    ```
+
 ## 🤝 Contribute
 
 Yottly is **open-source**! We welcome contributions to improve features, fix bugs, and enhance performance.
