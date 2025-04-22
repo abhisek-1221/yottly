@@ -51,7 +51,7 @@ export const formatDuration = (seconds: number): string => {
 }
 
 export const formatNumber = (num: number): string => {
-  return new Intl.NumberFormat('en-US', { notation: 'compact' }).format(num)
+  return new Intl.NumberFormat('en-US ', { notation: 'compact' }).format(num)
 }
 
 export const formatDate = (dateString: string) => {
