@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import { getCache, setCache } from '@/lib/cache'
 
 const YOUTUBE_API_BASE_URL = 'https://www.googleapis.com/youtube/v3'
 const YOUTUBE_API_KEY = process.env.NEXT_PUBLIC_YOUTUBE_API_KEY
@@ -49,7 +50,14 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Invalid YouTube URL' }, { status: 400 })
     }
 
-    // Fetch video details from YouTube API
+    // Check cache first
+    const cacheKey = `video:${videoId}`
+    const cachedData = await getCache(cacheKey)
+    if (cachedData) {
+      return NextResponse.json({ video: cachedData })
+    }
+
+    // Fetch from YouTube API if not in cache
     const response = await fetch(
       `${YOUTUBE_API_BASE_URL}/videos?part=contentDetails,snippet,statistics&id=${videoId}&key=${YOUTUBE_API_KEY}`
     )
@@ -80,6 +88,9 @@ export async function POST(req: Request) {
       viewCount: parseInt(item.statistics.viewCount, 10),
       likeCount: parseInt(item.statistics.likeCount, 10),
     }
+
+    // Store in cache
+    await setCache(cacheKey, videoDetails)
 
     return NextResponse.json({ video: videoDetails })
   } catch (error) {

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { Innertube } from 'youtubei.js/web'
+import { getCache, setCache } from '@/lib/cache'
 
 export async function POST(request: Request) {
   try {
@@ -10,6 +11,12 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Invalid YouTube URL' }, { status: 400 })
     }
 
+    const cacheKey = `transcript:${videoId}`
+    const cachedData = await getCache(cacheKey)
+    if (cachedData) {
+      return NextResponse.json({ transcript: cachedData })
+    }
+
     const youtube = await Innertube.create({
       lang: 'en',
       location: 'IN',
@@ -17,6 +24,9 @@ export async function POST(request: Request) {
     })
 
     const transcript = await fetchTranscript(youtube, videoId)
+
+    await setCache(cacheKey, transcript)
+
     return NextResponse.json({ transcript })
   } catch (error) {
     console.error('Error in transcript route:', error)

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { PlaylistDetails, VideoItem, parseDuration } from '@/lib/youtube'
+import { getCache, setCache } from '@/lib/cache'
 
 const YOUTUBE_API_BASE_URL = 'https://www.googleapis.com/youtube/v3'
 const YOUTUBE_API_KEY = process.env.NEXT_PUBLIC_YOUTUBE_API_KEY
@@ -113,21 +114,56 @@ export async function GET(req: Request) {
   }
 
   try {
+    const cacheKey = `playlist:${playlistId}`
+    try {
+      const cachedData = await getCache(cacheKey)
+      if (
+        cachedData &&
+        typeof cachedData === 'object' &&
+        'playlistDetails' in cachedData &&
+        'videos' in cachedData
+      ) {
+        return NextResponse.json(cachedData)
+      }
+    } catch (cacheError) {
+      console.error('Cache retrieval error:', cacheError)
+    }
+
+    // Fetch fresh data if cache miss or error
     const playlistDetails = await fetchPlaylistDetails(playlistId)
     const videoIds = await fetchPlaylistVideoIds(playlistId)
     const { videos, totalDuration } = await fetchVideoDetails(videoIds)
 
-    return NextResponse.json({
+    const response = {
       playlistDetails,
       videos,
       totalDuration,
       totalVideos: videos.length,
-    })
+    }
+
+    // Attempt to cache but don't block on cache errors
+    try {
+      await setCache(cacheKey, response)
+    } catch (cacheError) {
+      console.error('Cache storage error:', cacheError)
+    }
+
+    return NextResponse.json(response)
   } catch (error) {
     console.error('Error fetching playlist data:', error)
-    if (error instanceof Error && error.message === 'Invalid playlist ID') {
-      return NextResponse.json({ error: 'Invalid playlist ID' }, { status: 400 })
+
+    if (error instanceof Error) {
+      if (error.message === 'Invalid playlist ID') {
+        return NextResponse.json({ error: 'Invalid playlist ID' }, { status: 400 })
+      }
+      if (error.message.includes('HTTP error!')) {
+        return NextResponse.json({ error: 'YouTube API error' }, { status: 503 })
+      }
     }
-    return NextResponse.json({ error: 'Failed to fetch playlist data' }, { status: 500 })
+
+    return NextResponse.json(
+      { error: 'An unexpected error occurred while fetching playlist data' },
+      { status: 500 }
+    )
   }
 }
