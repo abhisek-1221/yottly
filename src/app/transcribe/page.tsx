@@ -165,24 +165,6 @@ export default function Home() {
     }
   }
 
-  // const generateAI = async (e: React.FormEvent<HTMLFormElement>, prompt : string) => {
-  //   e.preventDefault();
-  //   try {
-  //     // Convert Transcript from api/transcript to gemini summarize api on prequel basis
-  //     const aiTranscript = await fetch("/api/chat", {
-  //       method : "POST",
-  //       headers: { "Content-Type": "application/json" },
-  //       body: JSON.stringify({
-  //         model : "llama-3.1-8b-instant",
-  //         system: `${prompt}`
-  //        }),
-
-  //     })
-
-  //   } catch (error: any) {
-  //     error("Error fetching data:", error)
-  //   }
-
   return (
     <>
       <script src="https://www.youtube.com/iframe_api" />

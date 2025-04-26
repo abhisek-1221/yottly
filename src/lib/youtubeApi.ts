@@ -28,6 +28,8 @@ export interface RecentVideo {
   uploadTime: string
   thumbnail: string
   videoId: string
+  duration: number
+  likeCount: number
 }
 
 // Video related interfaces
@@ -165,23 +167,23 @@ export async function fetchRecentVideos(channelId: string, maxResults = 5): Prom
     return []
   }
 
-  // Get video IDs to fetch statistics
+  // Get video IDs to fetch statistics and content details
   const videoIds = videosData.items.map((item: any) => item.snippet.resourceId.videoId).join(',')
 
-  const statsResponse = await fetch(
-    `${YOUTUBE_API_BASE_URL}/videos?part=statistics&id=${videoIds}&key=${YOUTUBE_API_KEY}`
+  const videoDetailsResponse = await fetch(
+    `${YOUTUBE_API_BASE_URL}/videos?part=statistics,contentDetails&id=${videoIds}&key=${YOUTUBE_API_KEY}`
   )
 
-  if (!statsResponse.ok) {
-    throw new Error('Failed to fetch video statistics')
+  if (!videoDetailsResponse.ok) {
+    throw new Error('Failed to fetch video details')
   }
 
-  const statsData = await statsResponse.json()
+  const videoDetailsData = await videoDetailsResponse.json()
 
   // Map video stats to video items
   return videosData.items.map((item: any) => {
     const videoId = item.snippet.resourceId.videoId
-    const stats = statsData.items.find((stat: any) => stat.id === videoId)
+    const details = videoDetailsData.items.find((detail: any) => detail.id === videoId)
     const publishedDate = new Date(item.snippet.publishedAt)
     const now = new Date()
     const diffTime = Math.abs(now.getTime() - publishedDate.getTime())
@@ -197,10 +199,12 @@ export async function fetchRecentVideos(channelId: string, maxResults = 5): Prom
 
     return {
       title: item.snippet.title,
-      views: parseInt(stats?.statistics.viewCount || '0'),
+      views: parseInt(details?.statistics.viewCount || '0'),
       uploadTime,
       thumbnail: item.snippet.thumbnails.high?.url || item.snippet.thumbnails.default?.url,
       videoId: videoId,
+      duration: parseDuration(details?.contentDetails.duration || 'PT0S'),
+      likeCount: parseInt(details?.statistics.likeCount || '0'),
     }
   })
 }

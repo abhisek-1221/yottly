@@ -64,7 +64,17 @@ export function VideoCard({ video, searchQuery }: VideoCardProps) {
               <Calendar className="w-3 h-3 mr-1 text-red-500" />
               <span>{new Date(video.publishedAt).toLocaleDateString()}</span>
             </Badge>
-            <Button variant="secondary" className="flex items-center space-x-1 hover:bg-blue-950">
+            <Button
+              variant="secondary"
+              className="flex items-center space-x-1 hover:bg-blue-950"
+              onClick={() =>
+                window.open(
+                  `https://youtube.com/watch?v=${video.id}`,
+                  '_blank',
+                  'noopener,noreferrer'
+                )
+              }
+            >
               <ExternalLink className="w-3 h-3" />
             </Button>
           </div>

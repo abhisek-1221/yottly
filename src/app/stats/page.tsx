@@ -407,9 +407,9 @@ export default function StatsPage() {
                                   publishedAt: new Date(
                                     Date.now() - parseInt(video.uploadTime) * 24 * 60 * 60 * 1000
                                   ).toISOString(),
-                                  duration: 0,
+                                  duration: video.duration,
                                   viewCount: video.views,
-                                  likeCount: 0,
+                                  likeCount: video.likeCount,
                                 }}
                                 searchQuery=""
                               />
