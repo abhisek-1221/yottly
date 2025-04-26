@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { YoutubeTranscript } from 'youtube-transcript'
+import { extractVideoId } from '@/lib/youtubeApi'
 
 export async function POST(request: Request) {
   try {
@@ -26,9 +27,4 @@ export async function POST(request: Request) {
   }
 }
 
-// Helper function to extract video ID from a YouTube URL
-function extractVideoId(url: string): string | null {
-  const regex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/
-  const match = url.match(regex)
-  return match ? match[1] : null
-}
+// Using extractVideoId from youtubeApi.ts
