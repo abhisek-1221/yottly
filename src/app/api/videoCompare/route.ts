@@ -1,13 +1,5 @@
 import { NextResponse } from 'next/server'
-import { formatNumber, parseDuration, formatDate } from '@/lib/youtube'
-import {
-  YOUTUBE_API_BASE_URL,
-  YOUTUBE_API_KEY,
-  VideoData,
-  extractVideoId,
-  fetchVideoData,
-  formatDurationForDisplay,
-} from '@/lib/youtubeApi'
+import { extractVideoId, fetchVideoData } from '@/lib/youtubeApi'
 
 // All YouTube API related functions have been moved to youtubeApi.ts
 

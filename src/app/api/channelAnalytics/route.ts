@@ -1,11 +1,5 @@
 import { NextResponse } from 'next/server'
-import { formatNumber } from '@/lib/youtube'
 import {
-  YOUTUBE_API_BASE_URL,
-  YOUTUBE_API_KEY,
-  ChannelData,
-  ViewData,
-  RecentVideo,
   extractChannelId,
   getChannelIdFromUsername,
   fetchChannelData,
