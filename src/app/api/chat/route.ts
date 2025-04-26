@@ -1,7 +1,7 @@
 import { groq } from '@ai-sdk/groq'
 import { streamText, smoothStream } from 'ai'
 
-export const maxDuration = 120
+export const maxDuration = 60
 
 export async function POST(req: Request) {
   const { messages, model, system } = await req.json()
