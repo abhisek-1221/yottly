@@ -11,10 +11,13 @@ import {
   Volleyball,
   List,
   Download,
+  BarChart2,
+  PieChart,
+  Activity,
 } from 'lucide-react'
 
 interface FeatureCardProps {
-  type: 'analyze' | 'transcribe' | 'summarize'
+  type: 'analyze' | 'transcribe' | 'summarize' | 'compare'
 }
 
 const object = {
@@ -56,6 +59,19 @@ const object = {
     fh3: 'Export and Share',
     fc3: 'Export to text, share with others',
     icons: [Volleyball, List, Download],
+  },
+  compare: {
+    heading: 'Video Comparison',
+    subheading: 'Compare any two YouTube videos',
+    value: 'with detailed analytics and insights.',
+    caption: 'Enter two YouTube URLs below to start comparing',
+    fh1: 'Engagement Stats',
+    fc1: 'Compare views, likes, and comments',
+    fh2: 'Visual Analysis',
+    fc2: 'See distribution and ratios',
+    fh3: 'Deep Insights',
+    fc3: 'Get detailed engagement metrics',
+    icons: [BarChart2, PieChart, Activity],
   },
 }
 
