@@ -75,7 +75,7 @@ export default function StatsPage() {
           {/* Main Content Area */}
           <div className="flex-1 flex flex-col pb-20">
             {/* Welcome Message - Only shown initially */}
-            {!channelData && <FeatureCard type="analyze" />}
+            {!channelData && <FeatureCard type="stats" />}
 
             {/* Analysis Results - Shown after data fetch */}
             {channelData && (

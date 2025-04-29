@@ -17,7 +17,7 @@ import {
 } from 'lucide-react'
 
 interface FeatureCardProps {
-  type: 'analyze' | 'transcribe' | 'summarize' | 'compare'
+  type: 'analyze' | 'transcribe' | 'summarize' | 'compare' | 'stats'
 }
 
 const object = {
@@ -71,6 +71,19 @@ const object = {
     fc2: 'See distribution and ratios',
     fh3: 'Deep Insights',
     fc3: 'Get detailed engagement metrics',
+    icons: [BarChart2, PieChart, Activity],
+  },
+  stats: {
+    heading: 'Channel Analytics',
+    subheading: 'Deep dive into channel statistics',
+    value: 'with AI-powered insights and trends.',
+    caption: 'Enter your YouTube channel URL below to analyze performance',
+    fh1: 'Engagement Metrics',
+    fc1: 'Track views, subs, and revenue',
+    fh2: 'Content Analysis',
+    fc2: 'Compare shorts vs long form',
+    fh3: 'Growth Trends',
+    fc3: 'View historical performance',
     icons: [BarChart2, PieChart, Activity],
   },
 }

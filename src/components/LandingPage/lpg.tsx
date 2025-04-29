@@ -1,20 +1,8 @@
 'use client'
 
 import Link from 'next/link'
-import {
-  ArrowRight,
-  VideoIcon,
-  BookOpen,
-  ListVideo,
-  Brain,
-  Play,
-  Youtube,
-  Menu,
-  X,
-  ChevronRight,
-} from 'lucide-react'
+import { Play, Menu, X, ChevronRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useInView } from 'framer-motion'
 import { useRef, useState } from 'react'

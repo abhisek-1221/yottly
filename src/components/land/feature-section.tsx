@@ -48,7 +48,7 @@ const features = [
       'https://www.tella.tv/video/cm7rgr3ol00000bjr8mg6hctz/embed?b=0&title=0&a=0&loop=1&autoPlay=true&t=0&muted=1&wt=0',
     cta: 'Try Summarizer',
     href: '/summarize',
-    reverse: false,
+    reverse: false, // First feature - Left
   },
   {
     id: 'feature-transcript',
@@ -61,7 +61,7 @@ const features = [
       'https://www.tella.tv/video/cm7rswzd7001o0ajo8y7l2y67/embed?b=0&title=0&a=0&loop=1&autoPlay=true&t=0&muted=1&wt=0',
     cta: 'Get Transcripts',
     href: '/transcribe',
-    reverse: true,
+    reverse: true, // Second feature - Right
   },
   {
     id: 'feature-playlist',
@@ -74,7 +74,33 @@ const features = [
       'https://www.tella.tv/video/cm7r9hfdf00070bl758xld16r/embed?b=0&title=0&a=0&loop=1&autoPlay=true&t=0&muted=1&wt=0',
     cta: 'Analyze Playlist',
     href: '/playlist',
-    reverse: false,
+    reverse: false, // Third feature - Left
+  },
+  {
+    id: 'feature-compare',
+    header: 'Compare Videos',
+    name: 'In-Depth Video Comparison',
+    description:
+      'Compare multiple YouTube videos side by side. Analyze engagement metrics, view/like ratios, comment activity, and visual similarities. Make data-driven content decisions with comprehensive comparison insights.',
+    icon: ListVideo,
+    iframe:
+      'https://www.tella.tv/video/cma27w1cx000b0clc0y8a6jn8/embed?b=0&title=0&a=0&loop=0&t=0&muted=0&wt=0',
+    cta: 'Compare Videos',
+    href: '/compare',
+    reverse: true, // Fourth feature - Right
+  },
+  {
+    id: 'feature-stats',
+    header: 'Channel Stats',
+    name: 'Channel Analytics & Insights',
+    description:
+      'Deep dive into YouTube channel analytics with AI-powered insights. Understand content performance, audience engagement, and growth opportunities for your channel.',
+    icon: List,
+    iframe:
+      'https://www.tella.tv/video/cma27glga000w0bjx472zajj2/embed?b=0&title=0&a=0&loop=1&autoPlay=true&t=0&muted=1&wt=0',
+    cta: 'Analyze Channel',
+    href: '/stats',
+    reverse: false, // Fifth feature - Left
   },
 ]
 
