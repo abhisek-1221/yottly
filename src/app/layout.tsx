@@ -3,6 +3,7 @@ import { ThemeProvider } from '@/components/theme-provider'
 
 import localFont from 'next/font/local'
 import './globals.css'
+import Metrics from './metrics'
 
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
@@ -30,6 +31,7 @@ export default function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
           {children}
+          <Metrics />
         </ThemeProvider>
       </body>
     </html>
