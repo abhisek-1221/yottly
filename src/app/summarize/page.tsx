@@ -21,6 +21,8 @@ import {
   Download,
   Copy,
   Check,
+  Volume2,
+  Volume,
 } from 'lucide-react'
 import type React from 'react'
 import Markdown from 'react-markdown'
@@ -71,6 +73,8 @@ export default function Home() {
   const [selectedLLM, setSelectedLLM] = useState('')
   const [summary, setSummary] = useState('')
   const [hasCopied, setHasCopied] = useState(false)
+  const [isPlaying, setIsPlaying] = useState(false)
+  const audioRef = useRef<HTMLAudioElement | null>(null)
 
   const abortControllerRef = useRef<AbortController | null>(null)
   const scrollContainerRef = useRef<HTMLDivElement>(null)
@@ -349,6 +353,78 @@ export default function Home() {
     setTimeout(() => setHasCopied(false), 2000)
   }
 
+  const handleTextToSpeech = async () => {
+    try {
+      if (isPlaying && audioRef.current) {
+        audioRef.current.pause()
+        setIsPlaying(false)
+        return
+      }
+
+      toast({
+        title: 'Processing',
+        description: 'Converting text to speech...',
+        variant: 'default',
+      })
+
+      const response = await fetch('/api/text-to-speech', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: summary }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to convert text to speech')
+      }
+
+      // Convert base64 to audio
+      const audioContent = data.audioContent
+      const audioBlob = new Blob([Buffer.from(audioContent, 'base64')], { type: 'audio/mp3' })
+      const audioUrl = URL.createObjectURL(audioBlob)
+
+      if (audioRef.current) {
+        audioRef.current.src = audioUrl
+        audioRef.current.play()
+        setIsPlaying(true)
+      } else {
+        const audio = new Audio(audioUrl)
+        audio.onended = () => {
+          setIsPlaying(false)
+          URL.revokeObjectURL(audioUrl)
+        }
+        audioRef.current = audio
+        audio.play()
+        setIsPlaying(true)
+      }
+
+      toast({
+        title: 'Success',
+        description: 'Audio playback started',
+        variant: 'default',
+      })
+    } catch (error: any) {
+      console.error('Text-to-Speech Error:', error)
+      toast({
+        title: 'Error',
+        description: error.message || 'Failed to convert text to speech',
+        variant: 'destructive',
+      })
+      setIsPlaying(false)
+    }
+  }
+
+  // Cleanup audio on unmount
+  useEffect(() => {
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause()
+        audioRef.current = null
+      }
+    }
+  }, [])
+
   return (
     <div className="min-h-screen bg-zinc-950 text-white p-4 flex items-center justify-center">
       <Card
@@ -435,6 +511,18 @@ export default function Home() {
                           <h3 className="text-lg font-semibold">Full Summary</h3>
                           {summary && (
                             <div className="flex gap-2">
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={handleTextToSpeech}
+                                className="hover:bg-zinc-800 rounded-full"
+                              >
+                                {isPlaying ? (
+                                  <Volume2 className="h-4 w-4 text-green-400" />
+                                ) : (
+                                  <Volume className="h-4 w-4 text-zinc-400 hover:text-white" />
+                                )}
+                              </Button>
                               <Button
                                 variant="ghost"
                                 size="icon"
