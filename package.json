@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@ai-sdk/groq": "^1.1.7",
+    "@google-cloud/text-to-speech": "^6.1.0",
     "@lobehub/icons": "^1.76.0",
     "@microsoft/clarity": "^1.0.0",
     "@radix-ui/react-scroll-area": "^1.2.3",
