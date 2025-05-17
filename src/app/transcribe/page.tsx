@@ -30,6 +30,7 @@ import Header from '@/components/hsr/header'
 import FeatureCard from '@/components/hsr/FeatureCard'
 import { formatDate, formatNumber } from '@/lib/youtube'
 import { useChat } from 'ai/react'
+import { FancyButton } from '@/components/ui/fancy-button'
 
 interface VideoDetails {
   id: string
@@ -379,25 +380,15 @@ export default function Home() {
                   placeholder="Enter YouTube video URL..."
                   className="flex-1 bg-transparent shadow-md shadow-gray-700 border-zinc-700 rounded-full"
                 />
-                <Button
-                  type="submit"
-                  disabled={loading}
-                  className="px-6 rounded-full bg-red-700 hover:bg-red-500 text-white"
-                >
-                  {loading ? (
-                    <>
-                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                      Loading...
-                    </>
-                  ) : showSuccess ? (
-                    <>
-                      <CircleCheckBig className="w-4 h-4 mr-2 text-green-400" />
-                      Got Transcript
-                    </>
-                  ) : (
-                    'Get Transcript'
-                  )}
-                </Button>
+                <FancyButton
+                  onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+                    e.preventDefault()
+                    handleSubmissiom(e as any)
+                  }}
+                  loading={loading}
+                  success={showSuccess}
+                  label="Get Transcript"
+                />
               </form>
             </div>
           </CardContent>

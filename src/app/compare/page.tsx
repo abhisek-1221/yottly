@@ -21,6 +21,7 @@ import {
   Cell,
   ResponsiveContainer,
 } from 'recharts'
+import { FancyButton } from '@/components/ui/fancy-button'
 
 interface PieDataEntry {
   name: string
@@ -440,35 +441,35 @@ const YouTubeComparison = () => {
 
           {/* Input Area - Always visible at the bottom */}
           <div className="absolute bottom-0 left-0 right-0 p-6 bg-black border-t border-zinc-800 rounded-b-2xl">
-            <form onSubmit={handleComparison} className="flex space-x-2 w-2/3 mx-auto">
-              <Input
-                type="text"
-                placeholder="Enter first YouTube URL..."
-                value={firstVideoUrl}
-                onChange={(e) => setFirstVideoUrl(e.target.value)}
-                className="flex-1 bg-transparent shadow-md shadow-gray-700 border-zinc-700 rounded-full"
-              />
-              <Input
-                type="text"
-                placeholder="Enter second YouTube URL..."
-                value={secondVideoUrl}
-                onChange={(e) => setSecondVideoUrl(e.target.value)}
-                className="flex-1 bg-transparent shadow-md shadow-gray-700 border-zinc-700 rounded-full"
-              />
-              <Button
-                type="submit"
-                disabled={loading}
-                className="px-6 rounded-full bg-red-700 hover:bg-red-500 text-white"
-              >
-                {loading ? (
-                  <>
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    Loading...
-                  </>
-                ) : (
-                  'Compare Videos'
-                )}
-              </Button>
+            <form onSubmit={handleComparison} className="flex flex-col space-y-2 w-2/3 mx-auto">
+              <div className="flex space-x-2">
+                <Input
+                  type="text"
+                  value={firstVideoUrl}
+                  onChange={(e) => setFirstVideoUrl(e.target.value)}
+                  placeholder="Enter first YouTube video URL..."
+                  className="flex-1 bg-transparent shadow-md shadow-gray-700 border-zinc-700 rounded-full"
+                />
+                <ArrowRight className="w-6 h-6 text-gray-400" />
+                <Input
+                  type="text"
+                  value={secondVideoUrl}
+                  onChange={(e) => setSecondVideoUrl(e.target.value)}
+                  placeholder="Enter second YouTube video URL..."
+                  className="flex-1 bg-transparent shadow-md shadow-gray-700 border-zinc-700 rounded-full"
+                />
+              </div>
+              <div className="flex justify-center">
+                <FancyButton
+                  onClick={(e) => {
+                    e.preventDefault()
+                    handleComparison(e)
+                  }}
+                  loading={loading}
+                  success={!!comparisonData}
+                  label="Compare Videos"
+                />
+              </div>
             </form>
           </div>
         </CardContent>

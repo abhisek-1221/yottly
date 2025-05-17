@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent } from '@/components/ui/card'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import { FancyButton } from '@/components/ui/fancy-button'
 import {
   Eye,
   ThumbsUp,
@@ -629,25 +630,15 @@ export default function Home() {
                 placeholder="Enter YouTube video URL..."
                 className="flex-1 bg-transparent shadow-md shadow-gray-700 border-zinc-700 rounded-full"
               />
-              <Button
-                type="submit"
-                disabled={loading}
-                className="px-6 rounded-full bg-red-700 hover:bg-red-500 text-white"
-              >
-                {loading ? (
-                  <>
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    Summarizing...
-                  </>
-                ) : showSuccess ? (
-                  <>
-                    <CircleCheckBig className="w-4 h-4 mr-2 text-green-400" />
-                    Video Summarized
-                  </>
-                ) : (
-                  'Summarize'
-                )}
-              </Button>
+              <FancyButton
+                onClick={(e) => {
+                  e.preventDefault()
+                  handleSubmission(e)
+                }}
+                loading={loading}
+                success={showSuccess}
+                label="Get Summary"
+              />
             </form>
           </div>
         </CardContent>
