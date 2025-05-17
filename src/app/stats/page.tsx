@@ -24,6 +24,7 @@ import { VideoCard } from '@/components/VideoCard'
 import Header from '@/components/hsr/header'
 import FeatureCard from '@/components/hsr/FeatureCard'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import { FancyButton } from '@/components/ui/fancy-button'
 
 const COLORS = ['#f3f4f6', '#ef4444']
 
@@ -429,25 +430,20 @@ export default function StatsPage() {
             <form onSubmit={handleSubmit} className="flex space-x-2 w-2/3 mx-auto">
               <Input
                 type="text"
-                placeholder="Enter YouTube channel URL..."
                 value={channelUrl}
                 onChange={(e) => setChannelUrl(e.target.value)}
+                placeholder="Enter YouTube channel URL..."
                 className="flex-1 bg-transparent shadow-md shadow-gray-700 border-zinc-700 rounded-full"
               />
-              <Button
-                type="submit"
-                disabled={isLoading}
-                className="px-6 rounded-full bg-red-700 hover:bg-red-500 text-white"
-              >
-                {isLoading ? (
-                  <>
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    Loading...
-                  </>
-                ) : (
-                  'Analyze Channel'
-                )}
-              </Button>
+              <FancyButton
+                onClick={(e) => {
+                  e.preventDefault()
+                  handleSubmit(e)
+                }}
+                loading={isLoading}
+                success={!!channelData}
+                label="Get Stats"
+              />
             </form>
           </div>
         </CardContent>
