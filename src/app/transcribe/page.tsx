@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, use } from 'react'
+import { useToast } from '@/hooks/use-toast'
 
 // Extend the Window interface to include onYouTubeIframeAPIReady
 declare global {
@@ -47,6 +48,7 @@ interface VideoDetails {
 }
 
 export default function Home() {
+  const { toast } = useToast()
   const [videoUrl, setVideoUrl] = useState('')
   const [transcriptData, setTranscriptData] = useState<any[]>([])
   const [videoDetails, setVideoDetails] = useState<VideoDetails | null>(null)
@@ -84,6 +86,11 @@ export default function Home() {
         body: JSON.stringify({ videoUrl }),
       })
       const videoData = await videoResponse.json()
+
+      if (!videoResponse.ok) {
+        throw new Error(videoData.error || 'Failed to fetch video details')
+      }
+
       if (videoData.video) {
         setVideoDetails(videoData.video)
       }
@@ -94,6 +101,10 @@ export default function Home() {
         body: JSON.stringify({ videoUrl }),
       })
       const transcriptData = await transcriptResponse.json()
+
+      if (!transcriptResponse.ok) {
+        throw new Error(transcriptData.error || 'Failed to fetch transcript')
+      }
 
       if (transcriptData.transcript) {
         if (transcriptData.transcript.segments) {
@@ -113,15 +124,30 @@ export default function Home() {
           ])
         }
         setShowSuccess(true)
+        toast({
+          title: 'Success',
+          description: 'Transcript fetched successfully',
+          variant: 'default',
+        })
         setTimeout(() => {
           setShowSuccess(false)
-        }, 4000) // Reset after 4 seconds
+        }, 4000)
       } else {
         setTranscriptData([])
+        toast({
+          title: 'Warning',
+          description: 'No transcript data available for this video',
+          variant: 'destructive',
+        })
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error fetching data:', error)
       setTranscriptData([])
+      toast({
+        title: 'Error',
+        description: error.message || 'Failed to fetch transcript',
+        variant: 'destructive',
+      })
     }
     setLoading(false)
   }

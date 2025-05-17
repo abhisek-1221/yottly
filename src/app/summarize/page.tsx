@@ -33,6 +33,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { useToast } from '@/hooks/use-toast'
 
 import { DeepSeek, Gemma, Meta, Mistral } from '@lobehub/icons'
 
@@ -53,6 +54,7 @@ interface VideoDetails {
 }
 
 export default function Home() {
+  const { toast } = useToast()
   const [videoUrl, setVideoUrl] = useState('')
   const [transcriptData, setTranscriptData] = useState<any[]>([])
   const [videoDetails, setVideoDetails] = useState<VideoDetails | null>(null)
@@ -69,102 +71,125 @@ export default function Home() {
   const abortControllerRef = useRef<AbortController | null>(null)
   const scrollContainerRef = useRef<HTMLDivElement>(null)
 
-  const streamSummary = useCallback(async (fullTranscript: string) => {
-    setIsSummarizing(true)
-    const userMessage = {
-      id: Date.now().toString(),
-      role: 'user' as const,
-      content: `Summarize this transcript: ${fullTranscript}`,
-    }
-    setMessages((prev) => [...prev, userMessage])
-
-    try {
-      abortControllerRef.current = new AbortController()
-      const response = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          messages: [userMessage],
-          model: selectedLLM,
-          system:
-            'You are an AI assistant that provides clear, concise summaries with key insights. Present information in a natural, conversational way while maintaining professionalism. Focus on extracting and organizing main points, themes, and notable moments. Do not write here is the summary of the transcript or the video',
-        }),
-        signal: abortControllerRef.current.signal,
-      })
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch summary')
+  const streamSummary = useCallback(
+    async (fullTranscript: string) => {
+      setIsSummarizing(true)
+      const userMessage = {
+        id: Date.now().toString(),
+        role: 'user' as const,
+        content: `Summarize this transcript: ${fullTranscript}`,
       }
+      setMessages((prev) => [...prev, userMessage])
 
-      const reader = response.body?.getReader()
-
-      if (!reader) {
-        throw new Error('Response body is not readable')
-      }
-
-      let streamedSummary = ''
-      const decoder = new TextDecoder()
-      let buffer = ''
-
-      const updateSummary = (newContent: string) => {
-        streamedSummary += newContent
-        setSummary(streamedSummary)
-        setMessages((prev) => {
-          const lastMessage = prev[prev.length - 1]
-          if (lastMessage && lastMessage.role === 'assistant') {
-            return [...prev.slice(0, -1), { ...lastMessage, content: streamedSummary }]
-          } else {
-            return [
-              ...prev,
-              { id: Date.now().toString(), role: 'assistant', content: streamedSummary },
-            ]
-          }
+      try {
+        abortControllerRef.current = new AbortController()
+        const response = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            messages: [userMessage],
+            model: selectedLLM,
+            system:
+              'You are an AI assistant that provides clear, concise summaries with key insights. Present information in a natural, conversational way while maintaining professionalism. Focus on extracting and organizing main points, themes, and notable moments. Do not write here is the summary of the transcript or the video',
+          }),
+          signal: abortControllerRef.current.signal,
         })
-      }
 
-      while (true) {
-        const { done, value } = await reader.read()
-        if (done) break
+        if (!response.ok) {
+          throw new Error('Failed to generate summary')
+        }
 
-        buffer += decoder.decode(value, { stream: true })
-        const lines = buffer.split('\n')
-        buffer = lines.pop() || ''
+        const reader = response.body?.getReader()
 
-        for (const line of lines) {
-          if (line.startsWith('0:')) {
-            const content = JSON.parse(line.slice(2))
-            updateSummary(content)
+        if (!reader) {
+          throw new Error('Response body is not readable')
+        }
+
+        let streamedSummary = ''
+        const decoder = new TextDecoder()
+        let buffer = ''
+
+        const updateSummary = (newContent: string) => {
+          streamedSummary += newContent
+          setSummary(streamedSummary)
+          setMessages((prev) => {
+            const lastMessage = prev[prev.length - 1]
+            if (lastMessage && lastMessage.role === 'assistant') {
+              return [...prev.slice(0, -1), { ...lastMessage, content: streamedSummary }]
+            } else {
+              return [
+                ...prev,
+                { id: Date.now().toString(), role: 'assistant', content: streamedSummary },
+              ]
+            }
+          })
+        }
+
+        while (true) {
+          const { done, value } = await reader.read()
+          if (done) break
+
+          buffer += decoder.decode(value, { stream: true })
+          const lines = buffer.split('\n')
+          buffer = lines.pop() || ''
+
+          for (const line of lines) {
+            if (line.startsWith('0:')) {
+              const content = JSON.parse(line.slice(2))
+              updateSummary(content)
+            }
           }
         }
-      }
 
-      if (buffer) {
-        const content = JSON.parse(buffer.slice(2))
-        updateSummary(content)
+        if (buffer) {
+          const content = JSON.parse(buffer.slice(2))
+          updateSummary(content)
+        }
+
+        toast({
+          title: 'Success',
+          description: 'Summary generated successfully',
+          variant: 'default',
+        })
+      } catch (error: any) {
+        if (error.name === 'AbortError') {
+          console.log('Fetch aborted')
+          toast({
+            title: 'Info',
+            description: 'Summary generation was cancelled',
+            variant: 'default',
+          })
+        } else {
+          console.error('Error:', error)
+          setMessages((prev) => [
+            ...prev,
+            {
+              id: Date.now().toString(),
+              role: 'assistant',
+              content: 'An error occurred while generating the summary.',
+            },
+          ])
+          toast({
+            title: 'Error',
+            description: error.message || 'Failed to generate summary',
+            variant: 'destructive',
+          })
+        }
+      } finally {
+        setIsSummarizing(false)
       }
-    } catch (error: any) {
-      if (error.name === 'AbortError') {
-        console.log('Fetch aborted')
-      } else {
-        console.error('Error:', error)
-        setMessages((prev) => [
-          ...prev,
-          {
-            id: Date.now().toString(),
-            role: 'assistant',
-            content: 'An error occurred while generating the summary.',
-          },
-        ])
-      }
-    } finally {
-      setIsSummarizing(false)
-    }
-  }, [])
+    },
+    [selectedLLM, toast]
+  )
 
   const handleSubmission = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!selectedLLM) {
-      alert('Please select an LLM model first')
+      toast({
+        title: 'Warning',
+        description: 'Please select an LLM model first',
+        variant: 'destructive',
+      })
       return
     }
 
@@ -180,6 +205,11 @@ export default function Home() {
         body: JSON.stringify({ videoUrl }),
       })
       const videoData = await videoResponse.json()
+
+      if (!videoResponse.ok) {
+        throw new Error(videoData.error || 'Failed to fetch video details')
+      }
+
       if (videoData.video) {
         setVideoDetails(videoData.video)
       }
@@ -192,17 +222,21 @@ export default function Home() {
 
       const transcriptData = await response.json()
 
+      if (!response.ok) {
+        throw new Error(transcriptData.error || 'Failed to fetch transcript')
+      }
+
       // Add error handling for transcript
       if (!transcriptData?.transcript?.fullTranscript) {
-        throw new Error('No transcript data received')
+        throw new Error('No transcript data available for this video')
       }
 
       const fullTranscript = transcriptData.transcript.fullTranscript
       console.log('Transcript length:', fullTranscript.length) // Debug log
 
       // If transcript is too long, chunk it
-      if (fullTranscript.length > 20000) {
-        const chunks = chunkTranscript(fullTranscript, 20000)
+      if (fullTranscript.length > 70000) {
+        const chunks = chunkTranscript(fullTranscript, 70000)
         setTranscriptData(chunks)
 
         // Summarize each chunk
@@ -220,13 +254,10 @@ export default function Home() {
 
       await new Promise((resolve) => setTimeout(resolve, 100))
 
-      // I used it to Trigger summary generation
-      await streamSummary(fullTranscript)
-
       setTimeout(() => {
         setShowSuccess(false)
       }, 4000)
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error:', error)
       setMessages((prev) => [
         ...prev,
@@ -236,6 +267,11 @@ export default function Home() {
           content: 'Error processing transcript. Please try again.',
         },
       ])
+      toast({
+        title: 'Error',
+        description: error.message || 'Failed to process video',
+        variant: 'destructive',
+      })
     } finally {
       setLoading(false)
     }

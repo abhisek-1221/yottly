@@ -19,8 +19,10 @@ import { Toast } from '@/components/searchbar/toast'
 import { VideoCard } from '@/components/VideoCard'
 import Header from '@/components/hsr/header'
 import FeatureCard from '@/components/hsr/FeatureCard'
+import { useToast } from '@/hooks/use-toast'
 
 export default function PlaylistAnalyzer() {
+  const { toast } = useToast()
   const [playlistUrl, setplaylistUrl] = useState('')
   const [playlistData, setPlaylistData] = useState<{
     playlistDetails: PlaylistDetails
@@ -49,6 +51,11 @@ export default function PlaylistAnalyzer() {
       setPlaylistData(data)
       setRangeEnd(data.totalVideos.toString())
       setState('success')
+      toast({
+        title: 'Success',
+        description: 'Playlist analysis completed successfully',
+        variant: 'default',
+      })
 
       setTimeout(() => {
         setState('initial')
@@ -56,6 +63,11 @@ export default function PlaylistAnalyzer() {
     } catch (error: any) {
       console.error('Error analyzing playlist:', error)
       setError(error.message)
+      toast({
+        title: 'Error',
+        description: error.message || 'Failed to analyze playlist',
+        variant: 'destructive',
+      })
 
       setTimeout(() => {
         setState('initial')
