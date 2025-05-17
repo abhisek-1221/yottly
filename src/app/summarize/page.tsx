@@ -18,6 +18,9 @@ import {
   Bot,
   Sparkles,
   Brain,
+  Download,
+  Copy,
+  Check,
 } from 'lucide-react'
 import type React from 'react'
 import Markdown from 'react-markdown'
@@ -67,6 +70,7 @@ export default function Home() {
   >([])
   const [selectedLLM, setSelectedLLM] = useState('')
   const [summary, setSummary] = useState('')
+  const [hasCopied, setHasCopied] = useState(false)
 
   const abortControllerRef = useRef<AbortController | null>(null)
   const scrollContainerRef = useRef<HTMLDivElement>(null)
@@ -318,6 +322,33 @@ export default function Home() {
     }
   }, [])
 
+  const handleDownload = () => {
+    const element = document.createElement('a')
+    const file = new Blob([summary], { type: 'text/plain' })
+    element.href = URL.createObjectURL(file)
+    element.download = `summary-${videoDetails?.title || 'video'}.txt`
+    document.body.appendChild(element)
+    element.click()
+    document.body.removeChild(element)
+
+    toast({
+      title: 'Success',
+      description: 'Summary downloaded successfully',
+      variant: 'default',
+    })
+  }
+
+  const handleCopy = async () => {
+    await navigator.clipboard.writeText(summary)
+    setHasCopied(true)
+    toast({
+      title: 'Success',
+      description: 'Summary copied to clipboard',
+      variant: 'default',
+    })
+    setTimeout(() => setHasCopied(false), 2000)
+  }
+
   return (
     <div className="min-h-screen bg-zinc-950 text-white p-4 flex items-center justify-center">
       <Card
@@ -400,7 +431,33 @@ export default function Home() {
                   <div>
                     <Card className="bg-gradient-to-br from-stone-700 via-transparent to-gray-900 border-zinc-700">
                       <CardContent className="p-4">
-                        <h3 className="text-lg font-semibold mb-4">Full Summary</h3>
+                        <div className="flex justify-between items-center mb-4">
+                          <h3 className="text-lg font-semibold">Full Summary</h3>
+                          {summary && (
+                            <div className="flex gap-2">
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={handleCopy}
+                                className="hover:bg-zinc-800 rounded-full"
+                              >
+                                {hasCopied ? (
+                                  <Check className="h-4 w-4 text-green-400" />
+                                ) : (
+                                  <Copy className="h-4 w-4 text-zinc-400 hover:text-white" />
+                                )}
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={handleDownload}
+                                className="hover:bg-zinc-800 rounded-full"
+                              >
+                                <Download className="h-4 w-4 text-zinc-400 hover:text-white" />
+                              </Button>
+                            </div>
+                          )}
+                        </div>
                         <ScrollArea className="h-[400px] overflow-y-auto">
                           <div>
                             {messages.map((m) => (
