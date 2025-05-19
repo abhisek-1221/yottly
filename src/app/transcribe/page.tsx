@@ -60,17 +60,12 @@ export default function Home() {
   const [player, setPlayer] = useState<any>(null)
   const [isYouTubeApiReady, setIsYouTubeApiReady] = useState(false)
 
-  // const prompt = ""
-  // const { messages , input , setInput , handleSubmit} = useChat(
-  // )
-
   useEffect(() => {
     // Declare the onYouTubeIframeAPIReady callback
     window.onYouTubeIframeAPIReady = () => {
       setIsYouTubeApiReady(true)
     }
 
-    // Load the YouTube IFrame API script
     const tag = document.createElement('script')
     tag.src = 'https://www.youtube.com/iframe_api'
     const firstScriptTag = document.getElementsByTagName('script')[0]
@@ -101,46 +96,146 @@ export default function Home() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ videoUrl }),
       })
-      const transcriptData = await transcriptResponse.json()
 
-      if (!transcriptResponse.ok) {
-        throw new Error(transcriptData.error || 'Failed to fetch transcript')
-      }
-
-      if (transcriptData.transcript) {
-        if (transcriptData.transcript.segments) {
-          const formattedTranscript = transcriptData.transcript.segments.map((segment: any) => ({
-            text: segment.text,
-            startTime: segment.startTime,
-            endTime: segment.endTime,
-          }))
-          setTranscriptData(formattedTranscript)
-        } else if (transcriptData.transcript.fullTranscript) {
-          setTranscriptData([
-            {
-              text: transcriptData.transcript.fullTranscript,
-              startTime: '0:00',
-              endTime: '0:00',
-            },
-          ])
-        }
-        setShowSuccess(true)
+      // Handle rate limit exceeded
+      if (transcriptResponse.status === 429) {
+        const data = await transcriptResponse.json()
         toast({
-          title: 'Success',
-          description: 'Transcript fetched successfully',
-          variant: 'default',
-        })
-        setTimeout(() => {
-          setShowSuccess(false)
-        }, 4000)
-      } else {
-        setTranscriptData([])
-        toast({
-          title: 'Warning',
-          description: 'No transcript data available for this video',
+          title: 'Rate Limit Exceeded',
+          description: `Too many requests. Please try again in ${Math.ceil((data.reset - Date.now()) / 1000)} seconds.`,
           variant: 'destructive',
         })
+        setLoading(false)
+        return
       }
+
+      // Handle server busy
+      if (transcriptResponse.status === 503) {
+        toast({
+          title: 'Server Busy',
+          description: 'Our servers are currently busy. Please try again in a few moments.',
+          variant: 'destructive',
+        })
+        setLoading(false)
+        return
+      }
+
+      // Handle accepted but processing (202 status)
+      if (transcriptResponse.status === 202) {
+        const data = await transcriptResponse.json()
+
+        // Handle queued status
+        if (data.status === 'queued') {
+          toast({
+            title: 'Request Queued',
+            description: `Your request is in queue position ${data.position}. Please wait...`,
+            variant: 'default',
+          })
+
+          // Start polling for queue status
+          let attempts = 0
+          const pollInterval = setInterval(async () => {
+            attempts++
+            if (attempts > 20) {
+              // Give up after ~2 minutes
+              clearInterval(pollInterval)
+              toast({
+                title: 'Taking longer than expected',
+                description: 'Please try again in a moment.',
+                variant: 'destructive',
+              })
+              setLoading(false)
+              return
+            }
+
+            const statusRes = await fetch(`/api/transcribe?jobId=${data.jobId}`)
+            if (statusRes.ok) {
+              const statusData = await statusRes.json()
+
+              // Update toast message with current queue position
+              if (statusData.status === 'waiting' && statusData.position) {
+                toast({
+                  title: 'Request Queued',
+                  description: `Your request is in queue position ${statusData.position}. Please wait...`,
+                  variant: 'default',
+                })
+              }
+
+              // Handle completed job
+              if (statusData.status === 'completed') {
+                clearInterval(pollInterval)
+
+                // Process the transcript
+                handleTranscriptData(statusData.transcript)
+                setLoading(false)
+
+                toast({
+                  title: 'Success',
+                  description: 'Transcript fetched successfully',
+                  variant: 'default',
+                })
+              }
+            }
+          }, 6000) // Check every 6 seconds
+
+          return
+        }
+
+        // Handle processing status
+        if (data.status === 'processing') {
+          toast({
+            title: 'Processing',
+            description: 'Your transcript is being generated. Please wait...',
+            variant: 'default',
+          })
+
+          // Start polling for processing status
+          let attempts = 0
+          const pollInterval = setInterval(async () => {
+            attempts++
+            if (attempts > 15) {
+              // Give up after ~1.5 minutes
+              clearInterval(pollInterval)
+              toast({
+                title: 'Taking longer than expected',
+                description: 'Please try again in a moment.',
+                variant: 'destructive',
+              })
+              setLoading(false)
+              return
+            }
+
+            const statusRes = await fetch(`/api/transcribe?jobId=${data.jobId}`)
+            if (statusRes.ok) {
+              const statusData = await statusRes.json()
+              if (statusData.status === 'completed') {
+                clearInterval(pollInterval)
+
+                // Process the transcript
+                handleTranscriptData(statusData.transcript)
+                setLoading(false)
+
+                toast({
+                  title: 'Success',
+                  description: 'Transcript fetched successfully',
+                  variant: 'default',
+                })
+              }
+            }
+          }, 6000) // Check every 6 seconds
+
+          return
+        }
+      }
+
+      if (!transcriptResponse.ok) {
+        const errorData = await transcriptResponse.json()
+        throw new Error(errorData.error || 'Failed to fetch transcript')
+      }
+
+      const transcriptData = await transcriptResponse.json()
+
+      handleTranscriptData(transcriptData.transcript)
     } catch (error: any) {
       console.error('Error fetching data:', error)
       setTranscriptData([])
@@ -151,6 +246,32 @@ export default function Home() {
       })
     }
     setLoading(false)
+  }
+
+  // Helper function to process transcript data
+  const handleTranscriptData = (transcript: any) => {
+    if (!transcript) return
+
+    if (transcript.segments) {
+      const formattedTranscript = transcript.segments.map((segment: any) => ({
+        text: segment.text,
+        startTime: segment.startTime,
+        endTime: segment.endTime,
+      }))
+      setTranscriptData(formattedTranscript)
+    } else if (transcript.fullTranscript) {
+      setTranscriptData([
+        {
+          text: transcript.fullTranscript,
+          startTime: '0:00',
+          endTime: '0:00',
+        },
+      ])
+    }
+    setShowSuccess(true)
+    setTimeout(() => {
+      setShowSuccess(false)
+    }, 4000)
   }
 
   const fullTranscript = transcriptData.map((entry) => entry.text).join(' ')
