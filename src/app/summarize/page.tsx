@@ -104,6 +104,17 @@ export default function Home() {
           signal: abortControllerRef.current.signal,
         })
 
+        if (response.status === 429) {
+          const data = await response.json()
+          toast({
+            title: 'Rate Limit Exceeded',
+            description: `Too many requests. Please try again in ${Math.ceil((data.reset - Date.now()) / 1000)} seconds.`,
+            variant: 'destructive',
+          })
+          setIsSummarizing(false)
+          return
+        }
+
         if (!response.ok) {
           throw new Error('Failed to generate summary')
         }
@@ -374,11 +385,22 @@ export default function Home() {
         body: JSON.stringify({ text: summary }),
       })
 
-      const data = await response.json()
+      if (response.status === 429) {
+        const data = await response.json()
+        toast({
+          title: 'Rate Limit Exceeded',
+          description: `Too many requests. Please try again in ${Math.ceil((data.reset - Date.now()) / 1000)} seconds.`,
+          variant: 'destructive',
+        })
+        return
+      }
 
       if (!response.ok) {
+        const data = await response.json()
         throw new Error(data.error || 'Failed to convert text to speech')
       }
+
+      const data = await response.json()
 
       // Convert base64 to audio
       const audioContent = data.audioContent

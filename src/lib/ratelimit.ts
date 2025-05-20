@@ -7,3 +7,17 @@ export const transcribeRateLimiter = new Ratelimit({
   analytics: true,
   prefix: 'ratelimit:transcribe',
 })
+
+export const chatRateLimiter = new Ratelimit({
+  redis,
+  limiter: Ratelimit.slidingWindow(50, '1 m'),
+  analytics: true,
+  prefix: 'ratelimit:chat',
+})
+
+export const ttsRateLimiter = new Ratelimit({
+  redis,
+  limiter: Ratelimit.slidingWindow(20, '1 m'),
+  analytics: true,
+  prefix: 'ratelimit:tts',
+})
