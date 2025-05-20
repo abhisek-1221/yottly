@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { TextToSpeechClient } from '@google-cloud/text-to-speech'
+import { ttsRateLimiter } from '@/lib/ratelimit'
 
-// Initialize the client with credentials
 const client = new TextToSpeechClient({
   credentials: {
     client_email: process.env.GOOGLE_CLOUD_CLIENT_EMAIL,
@@ -12,6 +12,40 @@ const client = new TextToSpeechClient({
 
 export async function POST(req: Request) {
   try {
+    const ip = req.headers.get('x-forwarded-for') || 'anonymous'
+
+    let rateLimitResult
+    try {
+      rateLimitResult = await ttsRateLimiter.limit(ip)
+    } catch (error) {
+      console.error('Rate limiter error:', error)
+      return NextResponse.json(
+        { error: 'Service temporarily unavailable. Please try again in a moment.' },
+        { status: 503 }
+      )
+    }
+
+    const { success, limit, remaining, reset } = rateLimitResult
+
+    if (!success) {
+      return NextResponse.json(
+        {
+          error: 'Rate limit exceeded. Please try again later.',
+          limit,
+          remaining: 0,
+          reset,
+        },
+        {
+          status: 429,
+          headers: {
+            'X-RateLimit-Limit': limit.toString(),
+            'X-RateLimit-Remaining': '0',
+            'X-RateLimit-Reset': reset.toString(),
+          },
+        }
+      )
+    }
+
     const { text } = await req.json()
 
     if (!text) {
@@ -41,7 +75,14 @@ export async function POST(req: Request) {
 
     const audioBase64 = Buffer.from(response.audioContent as Uint8Array).toString('base64')
 
-    return NextResponse.json({ audioContent: audioBase64 })
+    return NextResponse.json({
+      audioContent: audioBase64,
+      rateLimit: {
+        limit,
+        remaining,
+        reset,
+      },
+    })
   } catch (error: any) {
     console.error('Text-to-Speech Error:', error)
     return NextResponse.json(
