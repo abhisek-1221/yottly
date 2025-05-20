@@ -11,6 +11,13 @@ const nextConfig = {
       },
     ],
   },
+  webpack: (config, { isServer }) => {
+    // Suppress warnings about missing package.json in platform-specific SWC binaries
+    config.infrastructureLogging = {
+      level: 'error',
+    }
+    return config
+  },
 };
 
 export default nextConfig;

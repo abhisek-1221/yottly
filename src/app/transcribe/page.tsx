@@ -60,17 +60,12 @@ export default function Home() {
   const [player, setPlayer] = useState<any>(null)
   const [isYouTubeApiReady, setIsYouTubeApiReady] = useState(false)
 
-  // const prompt = ""
-  // const { messages , input , setInput , handleSubmit} = useChat(
-  // )
-
   useEffect(() => {
     // Declare the onYouTubeIframeAPIReady callback
     window.onYouTubeIframeAPIReady = () => {
       setIsYouTubeApiReady(true)
     }
 
-    // Load the YouTube IFrame API script
     const tag = document.createElement('script')
     tag.src = 'https://www.youtube.com/iframe_api'
     const firstScriptTag = document.getElementsByTagName('script')[0]
@@ -101,46 +96,26 @@ export default function Home() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ videoUrl }),
       })
-      const transcriptData = await transcriptResponse.json()
 
-      if (!transcriptResponse.ok) {
-        throw new Error(transcriptData.error || 'Failed to fetch transcript')
-      }
-
-      if (transcriptData.transcript) {
-        if (transcriptData.transcript.segments) {
-          const formattedTranscript = transcriptData.transcript.segments.map((segment: any) => ({
-            text: segment.text,
-            startTime: segment.startTime,
-            endTime: segment.endTime,
-          }))
-          setTranscriptData(formattedTranscript)
-        } else if (transcriptData.transcript.fullTranscript) {
-          setTranscriptData([
-            {
-              text: transcriptData.transcript.fullTranscript,
-              startTime: '0:00',
-              endTime: '0:00',
-            },
-          ])
-        }
-        setShowSuccess(true)
+      // Handle rate limit exceeded
+      if (transcriptResponse.status === 429) {
+        const data = await transcriptResponse.json()
         toast({
-          title: 'Success',
-          description: 'Transcript fetched successfully',
-          variant: 'default',
-        })
-        setTimeout(() => {
-          setShowSuccess(false)
-        }, 4000)
-      } else {
-        setTranscriptData([])
-        toast({
-          title: 'Warning',
-          description: 'No transcript data available for this video',
+          title: 'Rate Limit Exceeded',
+          description: `Too many requests. Please try again in ${Math.ceil((data.reset - Date.now()) / 1000)} seconds.`,
           variant: 'destructive',
         })
+        setLoading(false)
+        return
       }
+
+      if (!transcriptResponse.ok) {
+        const errorData = await transcriptResponse.json()
+        throw new Error(errorData.error || 'Failed to fetch transcript')
+      }
+
+      const transcriptData = await transcriptResponse.json()
+      handleTranscriptData(transcriptData.transcript)
     } catch (error: any) {
       console.error('Error fetching data:', error)
       setTranscriptData([])
@@ -151,6 +126,32 @@ export default function Home() {
       })
     }
     setLoading(false)
+  }
+
+  // Helper function to process transcript data
+  const handleTranscriptData = (transcript: any) => {
+    if (!transcript) return
+
+    if (transcript.segments) {
+      const formattedTranscript = transcript.segments.map((segment: any) => ({
+        text: segment.text,
+        startTime: segment.startTime,
+        endTime: segment.endTime,
+      }))
+      setTranscriptData(formattedTranscript)
+    } else if (transcript.fullTranscript) {
+      setTranscriptData([
+        {
+          text: transcript.fullTranscript,
+          startTime: '0:00',
+          endTime: '0:00',
+        },
+      ])
+    }
+    setShowSuccess(true)
+    setTimeout(() => {
+      setShowSuccess(false)
+    }, 4000)
   }
 
   const fullTranscript = transcriptData.map((entry) => entry.text).join(' ')
