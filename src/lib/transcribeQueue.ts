@@ -5,8 +5,19 @@ const connection = {
   host: process.env.UPSTASH_REDIS_HOST!,
   port: parseInt(process.env.UPSTASH_REDIS_PORT || '6379'),
   password: process.env.UPSTASH_REDIS_PASSWORD!,
-  enableReadyCheck: false,
-  maxRetriesPerRequest: null,
+  enableReadyCheck: true,
+  maxRetriesPerRequest: 3,
+  retryStrategy: (times: number) => {
+    const delay = Math.min(times * 50, 2000)
+    return delay
+  },
+  reconnectOnError: (err: Error) => {
+    const targetError = 'READONLY'
+    if (err.message.includes(targetError)) {
+      return true
+    }
+    return false
+  },
 }
 
 export const transcribeQueue = new Queue('transcribe', { connection })

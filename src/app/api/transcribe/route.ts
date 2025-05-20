@@ -11,7 +11,18 @@ export async function POST(request: Request) {
   try {
     const ip = request.headers.get('x-forwarded-for') || 'anonymous'
 
-    const { success, limit, remaining, reset } = await transcribeRateLimiter.limit(ip)
+    let rateLimitResult
+    try {
+      rateLimitResult = await transcribeRateLimiter.limit(ip)
+    } catch (error) {
+      console.error('Rate limiter error:', error)
+      return NextResponse.json(
+        { error: 'Service temporarily unavailable. Please try again in a moment.' },
+        { status: 503 }
+      )
+    }
+
+    const { success, limit, remaining, reset } = rateLimitResult
 
     if (!success) {
       return NextResponse.json(
@@ -57,7 +68,17 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'No videoUrl provided' }, { status: 400 })
     }
 
-    const job = await transcribeQueue.add('transcribe-job', { videoUrl })
+    const job = await transcribeQueue.add(
+      'transcribe-job',
+      { videoUrl },
+      {
+        attempts: 3,
+        backoff: {
+          type: 'exponential',
+          delay: 1000,
+        },
+      }
+    )
 
     const position = await getPositionInQueue(job.id)
 
@@ -96,6 +117,14 @@ export async function POST(request: Request) {
     })
   } catch (error: any) {
     console.error('Error in transcript route:', error)
+
+    if (error.code === 'ECONNRESET' || error.code === 'ECONNREFUSED') {
+      return NextResponse.json(
+        { error: 'Service temporarily unavailable. Please try again in a moment.' },
+        { status: 503 }
+      )
+    }
+
     return NextResponse.json(
       { error: error.message || 'Failed to fetch transcript' },
       { status: 500 }
