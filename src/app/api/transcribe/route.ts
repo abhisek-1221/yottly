@@ -1,11 +1,48 @@
 import { NextResponse } from 'next/server'
 import { transcribeRateLimiter } from '@/lib/ratelimit'
-import {
-  transcribeQueue,
-  transcribeQueueEvents,
-  isQueueOverloaded,
-  getPositionInQueue,
-} from '@/lib/transcribeQueue'
+import { Innertube } from 'youtubei.js/web'
+
+function formatTimestamp(ms: number): string {
+  const seconds = Math.floor(ms / 1000)
+  const minutes = Math.floor(seconds / 60)
+  const remainingSeconds = seconds % 60
+  return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`
+}
+
+function extractVideoId(url: string): string | null {
+  const regex =
+    /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/
+  const match = url.match(regex)
+  return match ? match[1] : null
+}
+
+async function fetchTranscript(youtube: any, videoId: string) {
+  try {
+    const info = await youtube.getInfo(videoId)
+    const transcriptData = await info.getTranscript()
+
+    const segments = transcriptData.transcript.content.body.initial_segments.map(
+      (segment: any) => ({
+        text: segment.snippet.text,
+        startTime: formatTimestamp(parseInt(segment.start_ms)),
+        endTime: formatTimestamp(parseInt(segment.end_ms)),
+      })
+    )
+
+    const fullTranscript: string = segments
+      .map((segment: { text: string }) => segment.text)
+      .join(' ')
+      .trim()
+
+    return {
+      segments,
+      fullTranscript,
+    }
+  } catch (error) {
+    console.error('Error fetching transcript:', error)
+    throw error
+  }
+}
 
 export async function POST(request: Request) {
   try {
@@ -43,72 +80,26 @@ export async function POST(request: Request) {
       )
     }
 
-    const overloaded = await isQueueOverloaded()
-    if (overloaded) {
-      return NextResponse.json(
-        {
-          error: 'Server is busy. Please try again later.',
-          limit,
-          remaining,
-          reset,
-        },
-        {
-          status: 503,
-          headers: {
-            'X-RateLimit-Limit': limit.toString(),
-            'X-RateLimit-Remaining': remaining.toString(),
-            'X-RateLimit-Reset': reset.toString(),
-          },
-        }
-      )
-    }
-
     const { videoUrl } = await request.json()
     if (!videoUrl) {
       return NextResponse.json({ error: 'No videoUrl provided' }, { status: 400 })
     }
 
-    const job = await transcribeQueue.add(
-      'transcribe-job',
-      { videoUrl },
-      {
-        attempts: 3,
-        backoff: {
-          type: 'exponential',
-          delay: 1000,
-        },
-      }
-    )
-
-    const position = await getPositionInQueue(job.id)
-
-    if (position && position > 1) {
-      return NextResponse.json(
-        {
-          status: 'queued',
-          jobId: job.id,
-          position,
-          message: `Your request is in queue position ${position}. Please wait...`,
-        },
-        { status: 202 }
-      )
+    const videoId = extractVideoId(videoUrl)
+    if (!videoId) {
+      return NextResponse.json({ error: 'Invalid YouTube URL' }, { status: 400 })
     }
 
-    const result = await job.waitUntilFinished(transcribeQueueEvents, 45000)
+    const youtube = await Innertube.create({
+      lang: 'en',
+      location: 'IN',
+      retrieve_player: false,
+    })
 
-    if (!result) {
-      return NextResponse.json(
-        {
-          status: 'processing',
-          jobId: job.id,
-          message: 'Transcript processing. Try again in a moment.',
-        },
-        { status: 202 }
-      )
-    }
+    const transcript = await fetchTranscript(youtube, videoId)
 
     return NextResponse.json({
-      transcript: result,
+      transcript,
       rateLimit: {
         limit,
         remaining,
@@ -130,35 +121,4 @@ export async function POST(request: Request) {
       { status: 500 }
     )
   }
-}
-
-export async function GET(request: Request) {
-  const url = new URL(request.url)
-  const jobId = url.searchParams.get('jobId')
-
-  if (!jobId) {
-    return NextResponse.json({ error: 'No jobId provided' }, { status: 400 })
-  }
-
-  const job = await transcribeQueue.getJob(jobId)
-
-  if (!job) {
-    return NextResponse.json({ error: 'Job not found' }, { status: 404 })
-  }
-
-  const state = await job.getState()
-  const position = state === 'waiting' ? await getPositionInQueue(jobId as string) : null
-
-  if (state === 'completed') {
-    const result = await job.getResult()
-    return NextResponse.json({ status: 'completed', transcript: result })
-  }
-
-  return NextResponse.json({
-    status: state,
-    position,
-    message: position
-      ? `Your request is in queue position ${position}. Please wait...`
-      : 'Job still processing. Try again in a moment.',
-  })
 }
