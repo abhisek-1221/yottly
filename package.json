@@ -35,7 +35,6 @@
     "lucide-react": "^0.474.0",
     "motion": "^12.4.2",
     "next": "14.2.26",
-    "next-auth": "^4.24.11",
     "next-themes": "^0.4.4",
     "react": "^18",
     "react-dom": "^18",
@@ -49,6 +48,8 @@
     "zod": "^3.24.4"
   },
   "devDependencies": {
+    "@babel/core": "^7.26.10",
+    "@babel/runtime": "^7.26.10",
     "@types/node": "^20.17.16",
     "@types/react": "^18",
     "@types/react-dom": "^18",
