@@ -19,28 +19,85 @@ function extractVideoId(url: string): string | null {
 async function fetchTranscript(youtube: any, videoId: string) {
   try {
     const info = await youtube.getInfo(videoId)
+
+    // Check if video info was retrieved successfully
+    if (!info) {
+      throw new Error('Failed to retrieve video information')
+    }
+
     const transcriptData = await info.getTranscript()
 
-    const segments = transcriptData.transcript.content.body.initial_segments.map(
-      (segment: any) => ({
-        text: segment.snippet.text,
-        startTime: formatTimestamp(parseInt(segment.start_ms)),
-        endTime: formatTimestamp(parseInt(segment.end_ms)),
-      })
-    )
+    // Check if transcript data exists
+    if (!transcriptData || !transcriptData.transcript) {
+      throw new Error('No transcript available for this video')
+    }
 
-    const fullTranscript: string = segments
+    // Check if transcript content exists
+    if (!transcriptData.transcript.content || !transcriptData.transcript.content.body) {
+      throw new Error('Transcript content is not available')
+    }
+
+    const segments = transcriptData.transcript.content.body.initial_segments
+
+    // Check if segments exist
+    if (!segments || !Array.isArray(segments) || segments.length === 0) {
+      throw new Error('No transcript segments found for this video')
+    }
+
+    const processedSegments = segments.map((segment: any) => ({
+      text: segment.snippet.text,
+      startTime: formatTimestamp(parseInt(segment.start_ms)),
+      endTime: formatTimestamp(parseInt(segment.end_ms)),
+    }))
+
+    const fullTranscript: string = processedSegments
       .map((segment: { text: string }) => segment.text)
       .join(' ')
       .trim()
 
+    // Check if we got actual transcript content
+    if (!fullTranscript || fullTranscript.length === 0) {
+      throw new Error('Transcript appears to be empty')
+    }
+
     return {
-      segments,
+      segments: processedSegments,
       fullTranscript,
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error fetching transcript:', error)
-    throw error
+
+    // Provide more specific error messages based on the error type
+    if (error.message?.includes('CompositeVideoPrimaryInfo')) {
+      throw new Error(
+        'This video may have restricted access or the YouTube parser needs updating. Please try a different video.'
+      )
+    }
+
+    if (error.message?.includes('Transcript is disabled')) {
+      throw new Error('Transcripts are disabled for this video')
+    }
+
+    if (error.message?.includes('No transcript available')) {
+      throw new Error(
+        'No transcript is available for this video. The video may not have captions enabled.'
+      )
+    }
+
+    if (error.message?.includes('Private video') || error.message?.includes('Video unavailable')) {
+      throw new Error('This video is private or unavailable')
+    }
+
+    if (
+      error.message?.includes('No transcript available') ||
+      error.message?.includes('Transcript content is not available') ||
+      error.message?.includes('No transcript segments found') ||
+      error.message?.includes('Transcript appears to be empty')
+    ) {
+      throw error
+    }
+
+    throw new Error(`Failed to fetch transcript: ${error.message || 'Unknown error occurred'}`)
   }
 }
 
@@ -90,13 +147,43 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Invalid YouTube URL' }, { status: 400 })
     }
 
-    const youtube = await Innertube.create({
-      lang: 'en',
-      location: 'IN',
-      retrieve_player: false,
-    })
+    // Try creating Innertube with retry logic for parsing issues
+    let youtube
+    let transcript
+    let lastError
 
-    const transcript = await fetchTranscript(youtube, videoId)
+    for (let attempt = 1; attempt <= 2; attempt++) {
+      try {
+        youtube = await Innertube.create({
+          lang: 'en',
+          location: 'IN',
+          retrieve_player: false,
+        })
+
+        transcript = await fetchTranscript(youtube, videoId)
+        break // Success, exit retry loop
+      } catch (error: any) {
+        lastError = error
+        console.log(`Attempt ${attempt} failed:`, error.message)
+
+        // If it's a CompositeVideoPrimaryInfo error and we have another attempt, wait and retry
+        if (attempt < 2 && error.message?.includes('CompositeVideoPrimaryInfo')) {
+          console.log('Retrying due to YouTube parser issue...')
+          await new Promise((resolve) => setTimeout(resolve, 1000)) // Wait 1 second
+          continue
+        }
+
+        throw error
+      }
+    }
+
+    if (!transcript) {
+      throw lastError || new Error('Failed to fetch transcript after retries')
+    }
+
+    if (!transcript || !transcript.fullTranscript) {
+      throw new Error('Failed to extract transcript from video')
+    }
 
     return NextResponse.json({
       transcript,
