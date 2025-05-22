@@ -162,6 +162,12 @@ export default function Home() {
           updateSummary(content)
         }
 
+        if (!streamedSummary || streamedSummary.trim().length === 0) {
+          throw new Error(
+            'No summary was generated. Please try again later or try a different video'
+          )
+        }
+
         toast({
           title: 'Success',
           description: 'Summary generated successfully',
@@ -239,18 +245,27 @@ export default function Home() {
       })
 
       const transcriptData = await response.json()
+      console.log('Transcript API response:', {
+        ok: response.ok,
+        status: response.status,
+        hasTranscript: !!transcriptData?.transcript,
+      })
 
       if (!response.ok) {
         throw new Error(transcriptData.error || 'Failed to fetch transcript')
       }
 
-      // Add error handling for transcript
       if (!transcriptData?.transcript?.fullTranscript) {
-        throw new Error('No transcript data available for this video')
+        const errorMsg = transcriptData?.error || 'No transcript data available for this video'
+        throw new Error(errorMsg)
+      }
+
+      if (transcriptData.transcript.fullTranscript.trim().length < 50) {
+        throw new Error('Transcript is too short to generate a meaningful summary')
       }
 
       const fullTranscript = transcriptData.transcript.fullTranscript
-      console.log('Transcript length:', fullTranscript.length) // Debug log
+      console.log('Transcript length:', fullTranscript.length)
 
       // Handle large transcripts intelligently
       if (fullTranscript.length > 50000) {
@@ -278,17 +293,42 @@ export default function Home() {
       }, 4000)
     } catch (error: any) {
       console.error('Error:', error)
+
+      // Specific handling for YouTube.js parsing errors
+      let errorMessage = error.message || 'Failed to process video'
+      let errorTitle = 'Error'
+
+      if (
+        error.message?.includes('CompositeVideoPrimaryInfo') ||
+        error.message?.includes('parser needs updating')
+      ) {
+        errorTitle = 'Video Processing Issue'
+        errorMessage =
+          'This video cannot be processed due to YouTube parser limitations. Please try a different video or try again later.'
+      } else if (
+        error.message?.includes('No transcript available') ||
+        error.message?.includes('Transcripts are disabled')
+      ) {
+        errorTitle = 'No Transcript Available'
+        errorMessage =
+          'This video does not have captions/transcripts available. Please try a video that has captions enabled.'
+      } else if (error.message?.includes('private') || error.message?.includes('unavailable')) {
+        errorTitle = 'Video Unavailable'
+        errorMessage = 'This video is private or unavailable. Please try a public video.'
+      }
+
       setMessages((prev) => [
         ...prev,
         {
           id: Date.now().toString(),
           role: 'assistant',
-          content: 'Error processing transcript. Please try again.',
+          content: `❌ ${errorMessage}`,
         },
       ])
+
       toast({
-        title: 'Error',
-        description: error.message || 'Failed to process video',
+        title: errorTitle,
+        description: errorMessage,
         variant: 'destructive',
       })
     } finally {
