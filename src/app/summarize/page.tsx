@@ -13,12 +13,6 @@ import {
   Calendar,
   ChevronDown,
   ChevronUp,
-  Loader2,
-  CircleCheckBig,
-  Cpu,
-  Bot,
-  Sparkles,
-  Brain,
   Download,
   Copy,
   Check,
@@ -75,6 +69,8 @@ export default function Home() {
   const [summary, setSummary] = useState('')
   const [hasCopied, setHasCopied] = useState(false)
   const [isPlaying, setIsPlaying] = useState(false)
+  const [processingProgress, setProcessingProgress] = useState({ current: 0, total: 0 })
+  const [chunkSummaries, setChunkSummaries] = useState<string[]>([])
   const audioRef = useRef<HTMLAudioElement | null>(null)
 
   const abortControllerRef = useRef<AbortController | null>(null)
@@ -218,6 +214,8 @@ export default function Home() {
       setIsSummarizing(false)
       setSummary('')
       setMessages([])
+      setProcessingProgress({ current: 0, total: 0 })
+      setChunkSummaries([])
 
       const videoResponse = await fetch('/api/videoDetail', {
         method: 'POST',
@@ -254,17 +252,18 @@ export default function Home() {
       const fullTranscript = transcriptData.transcript.fullTranscript
       console.log('Transcript length:', fullTranscript.length) // Debug log
 
-      // If transcript is too long, chunk it
-      if (fullTranscript.length > 70000) {
-        const chunks = chunkTranscript(fullTranscript, 70000)
-        setTranscriptData(chunks)
-
-        // Summarize each chunk
-        let completeSummary = ''
-        for (const chunk of chunks) {
-          const chunkSummary = await streamSummary(chunk)
-          completeSummary += chunkSummary + '\n\n'
-        }
+      // Handle large transcripts intelligently
+      if (fullTranscript.length > 50000) {
+        console.log(
+          `Large transcript detected (${fullTranscript.length} chars), processing in chunks...`
+        )
+        toast({
+          title: 'Processing Large Transcript',
+          description: `Transcript is ${Math.round(fullTranscript.length / 1000)}k characters. Breaking into chunks for better processing.`,
+          variant: 'default',
+        })
+        setTranscriptData([fullTranscript]) // Keep original for display
+        await processLargeTranscript(fullTranscript)
       } else {
         setTranscriptData([fullTranscript])
         await streamSummary(fullTranscript)
@@ -297,26 +296,253 @@ export default function Home() {
     }
   }
 
-  // Add this helper function to chunk large transcripts
-  const chunkTranscript = (text: string, maxLength: number): string[] => {
+  // Smart chunking with semantic boundaries and overlap
+  const chunkTranscript = (text: string, maxLength: number = 50000): string[] => {
     const chunks: string[] = []
+    const overlapLength = Math.floor(maxLength * 0.1) // 10% overlap
+
+    // First, try to split by double newlines (paragraphs)
+    const paragraphs = text.split('\n\n').filter((p) => p.trim())
+
+    let currentChunk = ''
     let start = 0
 
-    while (start < text.length) {
-      // Find the last period before maxLength
-      let end = start + maxLength
-      if (end > text.length) end = text.length
+    for (const paragraph of paragraphs) {
+      // If single paragraph is too long, split it further
+      if (paragraph.length > maxLength) {
+        if (currentChunk) {
+          chunks.push(currentChunk.trim())
+          currentChunk = ''
+        }
 
-      if (end < text.length) {
-        const lastPeriod = text.lastIndexOf('. ', end)
-        if (lastPeriod > start) end = lastPeriod + 1
+        // Split long paragraph by sentences
+        const sentences = paragraph.split(/(?<=[.!?])\s+/)
+        for (const sentence of sentences) {
+          if (currentChunk.length + sentence.length > maxLength) {
+            if (currentChunk) {
+              chunks.push(currentChunk.trim())
+              // Add overlap from previous chunk
+              const words = currentChunk.split(' ')
+              const overlapWords = words.slice(-Math.floor(overlapLength / 5))
+              currentChunk = overlapWords.join(' ') + ' '
+            }
+          }
+          currentChunk += sentence + ' '
+        }
+      } else if (currentChunk.length + paragraph.length > maxLength) {
+        // Current paragraph would exceed limit, save current chunk
+        if (currentChunk) {
+          chunks.push(currentChunk.trim())
+          // Add overlap from previous chunk
+          const words = currentChunk.split(' ')
+          const overlapWords = words.slice(-Math.floor(overlapLength / 5))
+          currentChunk = overlapWords.join(' ') + ' ' + paragraph + '\n\n'
+        } else {
+          currentChunk = paragraph + '\n\n'
+        }
+      } else {
+        currentChunk += paragraph + '\n\n'
       }
-
-      chunks.push(text.slice(start, end).trim())
-      start = end
     }
 
-    return chunks
+    if (currentChunk.trim()) {
+      chunks.push(currentChunk.trim())
+    }
+
+    return chunks.filter((chunk) => chunk.length > 100) // Filter out very small chunks
+  }
+
+  // Process multiple chunks with progress tracking
+  const processLargeTranscript = async (fullTranscript: string) => {
+    const chunks = chunkTranscript(fullTranscript)
+    setProcessingProgress({ current: 0, total: chunks.length })
+    setChunkSummaries([])
+
+    const chunkSummaries: string[] = []
+
+    // Process chunks with controlled concurrency (max 2 at a time to avoid rate limits)
+    const processBatch = async (batchChunks: string[], startIndex: number) => {
+      const promises = batchChunks.map(async (chunk, index) => {
+        try {
+          const chunkSummary = await summarizeChunk(chunk, startIndex + index)
+          return { index: startIndex + index, summary: chunkSummary }
+        } catch (error) {
+          console.error(`Error processing chunk ${startIndex + index}:`, error)
+          return {
+            index: startIndex + index,
+            summary: `Error processing chunk ${startIndex + index + 1}: ${error}`,
+          }
+        }
+      })
+
+      return Promise.all(promises)
+    }
+
+    // Process in batches of 2
+    const batchSize = 2
+    for (let i = 0; i < chunks.length; i += batchSize) {
+      const batch = chunks.slice(i, i + batchSize)
+      const results = await processBatch(batch, i)
+
+      results.forEach((result) => {
+        chunkSummaries[result.index] = result.summary
+        setChunkSummaries([...chunkSummaries])
+        setProcessingProgress((prev) => ({ ...prev, current: prev.current + 1 }))
+      })
+    }
+
+    // Now create a final synthesis
+    await synthesizeFinalSummary(chunkSummaries)
+  }
+
+  // Summarize individual chunk
+  const summarizeChunk = async (chunk: string, chunkIndex: number): Promise<string> => {
+    const response = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        messages: [
+          {
+            id: Date.now().toString(),
+            role: 'user',
+            content: `Summarize this part of a video transcript (Part ${chunkIndex + 1}). Focus on key points and main themes: ${chunk}`,
+          },
+        ],
+        model: selectedLLM,
+        system:
+          'You are an AI assistant that provides clear, concise summaries. Extract key points, themes, and important information from this transcript segment. Keep it focused and informative.',
+      }),
+    })
+
+    if (response.status === 429) {
+      const data = await response.json()
+      throw new Error(`Rate limit: retry in ${Math.ceil((data.reset - Date.now()) / 1000)}s`)
+    }
+
+    if (!response.ok) {
+      throw new Error('Failed to generate chunk summary')
+    }
+
+    const reader = response.body?.getReader()
+    if (!reader) throw new Error('Response body not readable')
+
+    let summary = ''
+    const decoder = new TextDecoder()
+    let buffer = ''
+
+    while (true) {
+      const { done, value } = await reader.read()
+      if (done) break
+
+      buffer += decoder.decode(value, { stream: true })
+      const lines = buffer.split('\n')
+      buffer = lines.pop() || ''
+
+      for (const line of lines) {
+        if (line.startsWith('0:')) {
+          summary += JSON.parse(line.slice(2))
+        }
+      }
+    }
+
+    if (buffer && buffer.startsWith('0:')) {
+      summary += JSON.parse(buffer.slice(2))
+    }
+
+    return summary
+  }
+
+  // Create final comprehensive summary from all chunk summaries
+  const synthesizeFinalSummary = async (chunkSummaries: string[]) => {
+    const combinedSummaries = chunkSummaries
+      .map((summary, index) => `## Part ${index + 1}\n${summary}`)
+      .join('\n\n')
+
+    setIsSummarizing(true)
+    const userMessage = {
+      id: Date.now().toString(),
+      role: 'user' as const,
+      content: `Create a comprehensive, cohesive summary from these individual summaries of different parts of a video: ${combinedSummaries}`,
+    }
+    setMessages([userMessage])
+
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messages: [userMessage],
+          model: selectedLLM,
+          system:
+            'You are an AI assistant that creates cohesive, comprehensive summaries. Synthesize the provided part summaries into one flowing, well-structured summary that captures the main themes, key points, and overall narrative of the entire video. Organize it logically and remove redundancies.',
+        }),
+      })
+
+      if (!response.ok) throw new Error('Failed to generate final summary')
+
+      const reader = response.body?.getReader()
+      if (!reader) throw new Error('Response body not readable')
+
+      let streamedSummary = ''
+      const decoder = new TextDecoder()
+      let buffer = ''
+
+      const updateSummary = (newContent: string) => {
+        streamedSummary += newContent
+        setSummary(streamedSummary)
+        setMessages((prev) => {
+          const lastMessage = prev[prev.length - 1]
+          if (lastMessage && lastMessage.role === 'assistant') {
+            return [...prev.slice(0, -1), { ...lastMessage, content: streamedSummary }]
+          } else {
+            return [
+              ...prev,
+              { id: Date.now().toString(), role: 'assistant', content: streamedSummary },
+            ]
+          }
+        })
+      }
+
+      while (true) {
+        const { done, value } = await reader.read()
+        if (done) break
+
+        buffer += decoder.decode(value, { stream: true })
+        const lines = buffer.split('\n')
+        buffer = lines.pop() || ''
+
+        for (const line of lines) {
+          if (line.startsWith('0:')) {
+            updateSummary(JSON.parse(line.slice(2)))
+          }
+        }
+      }
+
+      if (buffer && buffer.startsWith('0:')) {
+        updateSummary(JSON.parse(buffer.slice(2)))
+      }
+    } catch (error: any) {
+      console.error('Error synthesizing final summary:', error)
+      // Fallback: just combine the chunk summaries
+      const fallbackSummary = chunkSummaries.join('\n\n---\n\n')
+      setSummary(fallbackSummary)
+      setMessages([
+        {
+          id: Date.now().toString(),
+          role: 'assistant',
+          content: fallbackSummary,
+        },
+      ])
+    } finally {
+      setIsSummarizing(false)
+      setProcessingProgress({ current: 0, total: 0 })
+
+      toast({
+        title: 'Success',
+        description: `Comprehensive summary created from ${chunkSummaries.length} chunks`,
+        variant: 'default',
+      })
+    }
   }
 
   const scrollToBottom = useCallback(() => {
@@ -531,7 +757,24 @@ export default function Home() {
                     <Card className="bg-gradient-to-br from-stone-700 via-transparent to-gray-900 border-zinc-700">
                       <CardContent className="p-4">
                         <div className="flex justify-between items-center mb-4">
-                          <h3 className="text-lg font-semibold">Full Summary</h3>
+                          <div className="flex items-center gap-3">
+                            <h3 className="text-lg font-semibold">Full Summary</h3>
+                            {processingProgress.total > 0 && (
+                              <div className="flex items-center gap-2 text-sm text-zinc-400">
+                                <div className="w-24 bg-zinc-800 rounded-full h-2">
+                                  <div
+                                    className="bg-gradient-to-r from-blue-500 to-purple-500 h-2 rounded-full transition-all duration-300"
+                                    style={{
+                                      width: `${(processingProgress.current / processingProgress.total) * 100}%`,
+                                    }}
+                                  />
+                                </div>
+                                <span>
+                                  {processingProgress.current}/{processingProgress.total} chunks
+                                </span>
+                              </div>
+                            )}
+                          </div>
                           {summary && (
                             <div className="flex gap-2">
                               <Button
@@ -571,6 +814,38 @@ export default function Home() {
                         </div>
                         <ScrollArea className="h-[400px] overflow-y-auto">
                           <div>
+                            {/* Show intermediate chunk summaries during processing */}
+                            {processingProgress.total > 0 && chunkSummaries.length > 0 && (
+                              <div className="mb-4 space-y-2">
+                                <h4 className="text-sm font-medium text-zinc-400 mb-2">
+                                  Processing Chunks:
+                                </h4>
+                                {chunkSummaries.map((chunkSummary, index) => (
+                                  <div
+                                    key={index}
+                                    className="bg-zinc-800/50 rounded-lg p-3 border-l-2 border-blue-500"
+                                  >
+                                    <div className="text-xs text-zinc-400 mb-1">
+                                      Chunk {index + 1}
+                                    </div>
+                                    <div className="text-sm text-zinc-300">
+                                      <Markdown remarkPlugins={[remarkGfm]}>
+                                        {chunkSummary}
+                                      </Markdown>
+                                    </div>
+                                  </div>
+                                ))}
+                                {processingProgress.current < processingProgress.total && (
+                                  <div className="bg-zinc-800/30 rounded-lg p-3 border-l-2 border-zinc-600 animate-pulse">
+                                    <div className="text-xs text-zinc-500">
+                                      Processing chunk {processingProgress.current + 1}...
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
+                            )}
+
+                            {/* Final summary */}
                             {messages.map((m) => (
                               <div
                                 key={m.id}
@@ -657,9 +932,13 @@ export default function Home() {
                   e.preventDefault()
                   handleSubmission(e)
                 }}
-                loading={loading}
+                loading={loading || isSummarizing}
                 success={showSuccess}
-                label="Get Summary"
+                label={
+                  processingProgress.total > 0
+                    ? `Processing ${processingProgress.current}/${processingProgress.total}`
+                    : 'Get Summary'
+                }
               />
             </form>
           </div>
