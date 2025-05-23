@@ -1,19 +1,17 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Input } from '@/components/ui/input'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Search,
   Send,
-  BarChart2,
   Globe,
   Video,
-  PlaneTakeoff,
-  AudioLines,
   ChartSpline,
   Volleyball,
   Captions,
+  HelpCircle,
 } from 'lucide-react'
 import useDebounce from '../app/hooks/use-debounce'
 import { useRouter } from 'next/navigation'
@@ -78,6 +76,15 @@ const allActions = [
     end: 'Beta Version',
     route: '/compare',
   },
+  {
+    id: '6',
+    label: 'Quiz Generator',
+    icon: <HelpCircle className="h-4 w-4 text-pink-500" />,
+    description: 'AI Powered',
+    short: '',
+    end: 'New',
+    route: '/quiz',
+  },
 ]
 
 function FeatureSearchBar({ actions = allActions }: { actions?: Action[] }) {
@@ -86,6 +93,8 @@ function FeatureSearchBar({ actions = allActions }: { actions?: Action[] }) {
   const [isFocused, setIsFocused] = useState(false)
   const [isTyping, setIsTyping] = useState(false)
   const [selectedAction, setSelectedAction] = useState<Action | null>(null)
+  const [canScroll, setCanScroll] = useState(false)
+  const scrollContainerRef = useRef<HTMLDivElement>(null)
   const debouncedQuery = useDebounce(query, 200)
 
   const router = useRouter()
@@ -109,6 +118,19 @@ function FeatureSearchBar({ actions = allActions }: { actions?: Action[] }) {
 
     setResult({ actions: filteredActions })
   }, [debouncedQuery, isFocused])
+
+  useEffect(() => {
+    const checkScroll = () => {
+      if (scrollContainerRef.current) {
+        const { scrollHeight, clientHeight } = scrollContainerRef.current
+        setCanScroll(scrollHeight > clientHeight)
+      }
+    }
+
+    checkScroll()
+    window.addEventListener('resize', checkScroll)
+    return () => window.removeEventListener('resize', checkScroll)
+  }, [result])
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value)
@@ -221,31 +243,39 @@ function FeatureSearchBar({ actions = allActions }: { actions?: Action[] }) {
                 animate="show"
                 exit="exit"
               >
-                <motion.ul>
-                  {result.actions.map((action) => (
-                    <motion.li
-                      key={action.id}
-                      className="px-3 py-2 flex items-center justify-between hover:bg-gray-200 dark:hover:bg-zinc-900  cursor-pointer rounded-md"
-                      variants={item}
-                      layout
-                      onClick={() => action.route && handleActionClick(action.route)}
-                    >
-                      <div className="flex items-center gap-2 justify-between">
-                        <div className="flex items-center gap-2">
-                          <span className="text-gray-500">{action.icon}</span>
-                          <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                            {action.label}
-                          </span>
-                          <span className="text-xs text-gray-400">{action.description}</span>
+                <div
+                  ref={scrollContainerRef}
+                  className="max-h-[calc(5*2.75rem)] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 hover:scrollbar-thumb-gray-400 dark:hover:scrollbar-thumb-gray-500 relative"
+                >
+                  <motion.ul className="py-1">
+                    {result.actions.map((action) => (
+                      <motion.li
+                        key={action.id}
+                        className="px-3 py-2.5 flex items-center justify-between hover:bg-gray-200 dark:hover:bg-zinc-900 cursor-pointer rounded-md mx-1"
+                        variants={item}
+                        layout
+                        onClick={() => action.route && handleActionClick(action.route)}
+                      >
+                        <div className="flex items-center gap-2 justify-between">
+                          <div className="flex items-center gap-2">
+                            <span className="text-gray-500">{action.icon}</span>
+                            <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                              {action.label}
+                            </span>
+                            <span className="text-xs text-gray-400">{action.description}</span>
+                          </div>
                         </div>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs text-gray-400">{action.short}</span>
-                        <span className="text-xs text-gray-400 text-right">{action.end}</span>
-                      </div>
-                    </motion.li>
-                  ))}
-                </motion.ul>
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs text-gray-400">{action.short}</span>
+                          <span className="text-xs text-gray-400 text-right">{action.end}</span>
+                        </div>
+                      </motion.li>
+                    ))}
+                  </motion.ul>
+                  {canScroll && (
+                    <div className="absolute bottom-0 left-0 right-0 h-6 bg-gradient-to-t from-white dark:from-black to-transparent pointer-events-none" />
+                  )}
+                </div>
                 <div className="mt-2 px-3 py-2 border-t border-gray-100 dark:border-gray-800">
                   <div className="flex items-center justify-between text-xs text-gray-500">
                     <span>Press ⌘K to open commands</span>
