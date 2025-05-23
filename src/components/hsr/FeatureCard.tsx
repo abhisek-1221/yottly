@@ -17,7 +17,7 @@ import {
 } from 'lucide-react'
 
 interface FeatureCardProps {
-  type: 'analyze' | 'transcribe' | 'summarize' | 'compare' | 'stats'
+  type: 'analyze' | 'transcribe' | 'summarize' | 'compare' | 'stats' | 'quiz'
 }
 
 const object = {
@@ -84,6 +84,19 @@ const object = {
     fc2: 'Compare shorts vs long form',
     fh3: 'Growth Trends',
     fc3: 'View historical performance',
+    icons: [BarChart2, PieChart, Activity],
+  },
+  quiz: {
+    heading: 'Quiz Generator',
+    subheading: 'Generate interactive quizzes from videos',
+    value: 'with AI-powered multiple choice questions.',
+    caption: 'Enter YouTube video URL to create an interactive quiz',
+    fh1: 'Smart Questions',
+    fc1: 'Generate MCQs from video content',
+    fh2: 'Interactive Quiz',
+    fc2: 'Take quiz with instant scoring',
+    fh3: 'Export Results',
+    fc3: 'Download quiz and share results',
     icons: [BarChart2, PieChart, Activity],
   },
 }
