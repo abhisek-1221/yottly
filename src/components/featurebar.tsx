@@ -69,21 +69,21 @@ const allActions = [
   },
   {
     id: '5',
-    label: 'Compare Videos',
-    icon: <Globe className="h-4 w-4 text-purple-500" />,
-    description: 'ExaAI',
-    short: '',
-    end: 'Beta Version',
-    route: '/compare',
-  },
-  {
-    id: '6',
     label: 'Quiz Generator',
     icon: <HelpCircle className="h-4 w-4 text-pink-500" />,
     description: 'AI Powered',
     short: '',
     end: 'New',
     route: '/quiz',
+  },
+  {
+    id: '6',
+    label: 'Compare Videos',
+    icon: <Globe className="h-4 w-4 text-purple-500" />,
+    description: 'ExaAI',
+    short: '',
+    end: 'Beta Version',
+    route: '/compare',
   },
 ]
 
@@ -95,9 +95,35 @@ function FeatureSearchBar({ actions = allActions }: { actions?: Action[] }) {
   const [selectedAction, setSelectedAction] = useState<Action | null>(null)
   const [canScroll, setCanScroll] = useState(false)
   const scrollContainerRef = useRef<HTMLDivElement>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
   const debouncedQuery = useDebounce(query, 200)
 
   const router = useRouter()
+
+  // Keyboard shortcuts handler
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      // Command/Ctrl + K to open dropdown
+      if ((event.metaKey || event.ctrlKey) && event.key === 'k') {
+        event.preventDefault()
+        if (inputRef.current) {
+          inputRef.current.focus()
+          setIsFocused(true)
+        }
+      }
+
+      // Escape to close dropdown and reset
+      if (event.key === 'Escape') {
+        event.preventDefault()
+        handleReset()
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [])
 
   useEffect(() => {
     if (!isFocused) {
@@ -139,6 +165,29 @@ function FeatureSearchBar({ actions = allActions }: { actions?: Action[] }) {
 
   const handleActionClick = (route: string) => {
     router.push(route)
+    handleReset() // Reset after navigation
+  }
+
+  // Reset function to return to initial state
+  const handleReset = () => {
+    setQuery('')
+    setIsFocused(false)
+    setResult(null)
+    setSelectedAction(null)
+    setIsTyping(false)
+    if (inputRef.current) {
+      inputRef.current.blur()
+    }
+  }
+
+  // Reset selectedAction when focusing the input
+  const handleFocus = () => {
+    setSelectedAction(null)
+    setIsFocused(true)
+  }
+
+  const handleBlur = () => {
+    setTimeout(() => setIsFocused(false), 200)
   }
 
   const container = {
@@ -185,12 +234,6 @@ function FeatureSearchBar({ actions = allActions }: { actions?: Action[] }) {
     },
   }
 
-  // Reset selectedAction when focusing the input
-  const handleFocus = () => {
-    setSelectedAction(null)
-    setIsFocused(true)
-  }
-
   return (
     <div className="w-full max-w-xl sm:scale-125">
       <div className="fixed inset-x-0 flex flex-col justify-start items-center">
@@ -202,8 +245,9 @@ function FeatureSearchBar({ actions = allActions }: { actions?: Action[] }) {
               value={query}
               onChange={handleInputChange}
               onFocus={handleFocus}
-              onBlur={() => setTimeout(() => setIsFocused(false), 200)}
+              onBlur={handleBlur}
               className="pl-3 pr-9 py-1.5 h-9 text-sm rounded-lg focus-visible:ring-offset-0"
+              ref={inputRef}
             />
             <div className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4">
               <AnimatePresence mode="popLayout">
