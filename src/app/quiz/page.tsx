@@ -66,6 +66,112 @@ interface UserAnswer {
   selectedOption: number
 }
 
+// Skeleton Components
+const VideoSkeleton = () => (
+  <Card className="bg-gradient-to-br from-stone-700 via-transparent to-gray-900 border-zinc-700">
+    <CardContent className="p-4">
+      <div className="flex items-center justify-center mb-4">
+        <div className="flex items-center gap-2">
+          <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce"></div>
+          <div
+            className="w-2 h-2 bg-blue-400 rounded-full animate-bounce"
+            style={{ animationDelay: '0.1s' }}
+          ></div>
+          <div
+            className="w-2 h-2 bg-blue-400 rounded-full animate-bounce"
+            style={{ animationDelay: '0.2s' }}
+          ></div>
+          <span className="text-sm text-zinc-400 ml-2">Loading video details...</span>
+        </div>
+      </div>
+      <div className="grid md:grid-cols-[1fr,2fr] gap-4">
+        <div className="aspect-video relative overflow-hidden rounded-lg bg-gradient-to-r from-zinc-800 via-zinc-700 to-zinc-800 bg-[length:200%_100%] animate-[shimmer_2s_infinite]"></div>
+        <div className="space-y-3">
+          <div className="h-6 bg-gradient-to-r from-zinc-800 via-zinc-700 to-zinc-800 bg-[length:200%_100%] animate-[shimmer_2s_infinite] rounded"></div>
+          <div className="h-4 bg-gradient-to-r from-zinc-800 via-zinc-700 to-zinc-800 bg-[length:200%_100%] animate-[shimmer_2s_infinite] rounded w-2/3"></div>
+          <div className="flex flex-wrap gap-2">
+            <div className="h-6 bg-gradient-to-r from-zinc-800 via-zinc-700 to-zinc-800 bg-[length:200%_100%] animate-[shimmer_2s_infinite] rounded-full w-24"></div>
+            <div className="h-6 bg-gradient-to-r from-zinc-800 via-zinc-700 to-zinc-800 bg-[length:200%_100%] animate-[shimmer_2s_infinite] rounded-full w-20"></div>
+            <div className="h-6 bg-gradient-to-r from-zinc-800 via-zinc-700 to-zinc-800 bg-[length:200%_100%] animate-[shimmer_2s_infinite] rounded-full w-16"></div>
+          </div>
+          <div className="space-y-2">
+            <div className="h-4 bg-gradient-to-r from-zinc-800 via-zinc-700 to-zinc-800 bg-[length:200%_100%] animate-[shimmer_2s_infinite] rounded"></div>
+            <div className="h-4 bg-gradient-to-r from-zinc-800 via-zinc-700 to-zinc-800 bg-[length:200%_100%] animate-[shimmer_2s_infinite] rounded w-4/5"></div>
+          </div>
+        </div>
+      </div>
+    </CardContent>
+  </Card>
+)
+
+const QuizSkeleton = ({ questionsCount = 3 }: { questionsCount?: number }) => (
+  <Card className="bg-gradient-to-br from-stone-700 via-transparent to-gray-900 border-zinc-700">
+    <CardContent className="p-4">
+      <div className="flex justify-between items-center mb-4">
+        <div className="flex items-center gap-3">
+          <div className="h-6 bg-gradient-to-r from-zinc-800 via-zinc-700 to-zinc-800 bg-[length:200%_100%] animate-[shimmer_2s_infinite] rounded w-32"></div>
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce"></div>
+            <div
+              className="w-2 h-2 bg-blue-400 rounded-full animate-bounce"
+              style={{ animationDelay: '0.1s' }}
+            ></div>
+            <div
+              className="w-2 h-2 bg-blue-400 rounded-full animate-bounce"
+              style={{ animationDelay: '0.2s' }}
+            ></div>
+            <span className="text-sm text-zinc-400 ml-1">Generating quiz...</span>
+          </div>
+        </div>
+        <div className="flex gap-2">
+          <div className="w-8 h-8 bg-gradient-to-r from-zinc-800 via-zinc-700 to-zinc-800 bg-[length:200%_100%] animate-[shimmer_2s_infinite] rounded-full"></div>
+          <div className="w-8 h-8 bg-gradient-to-r from-zinc-800 via-zinc-700 to-zinc-800 bg-[length:200%_100%] animate-[shimmer_2s_infinite] rounded-full"></div>
+          <div className="w-8 h-8 bg-gradient-to-r from-zinc-800 via-zinc-700 to-zinc-800 bg-[length:200%_100%] animate-[shimmer_2s_infinite] rounded-full"></div>
+        </div>
+      </div>
+
+      <ScrollArea className="h-[400px] overflow-y-auto">
+        <div className="space-y-6">
+          {Array.from({ length: questionsCount }).map((_, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1, duration: 0.3 }}
+              className="p-4 rounded-lg border border-zinc-700 bg-zinc-800/30"
+            >
+              <div className="flex items-start gap-2 mb-3">
+                <div className="bg-gradient-to-r from-zinc-800 via-zinc-700 to-zinc-800 bg-[length:200%_100%] animate-[shimmer_2s_infinite] text-transparent text-sm px-2 py-1 rounded-full font-medium w-8 h-6">
+                  {index + 1}
+                </div>
+                <div className="h-5 bg-gradient-to-r from-zinc-800 via-zinc-700 to-zinc-800 bg-[length:200%_100%] animate-[shimmer_2s_infinite] rounded flex-1"></div>
+              </div>
+
+              <div className="space-y-2">
+                {Array.from({ length: 4 }).map((_, optionIndex) => (
+                  <div
+                    key={optionIndex}
+                    className="w-full p-3 rounded-md border border-zinc-600 bg-zinc-700/50"
+                  >
+                    <div className="flex items-center gap-2">
+                      <div className="h-4 bg-gradient-to-r from-zinc-800 via-zinc-700 to-zinc-800 bg-[length:200%_100%] animate-[shimmer_2s_infinite] rounded w-4"></div>
+                      <div className="h-4 bg-gradient-to-r from-zinc-800 via-zinc-700 to-zinc-800 bg-[length:200%_100%] animate-[shimmer_2s_infinite] rounded flex-1"></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </ScrollArea>
+
+      <div className="flex justify-center mt-4">
+        <div className="h-10 bg-gradient-to-r from-zinc-800 via-zinc-700 to-zinc-800 bg-[length:200%_100%] animate-[shimmer_2s_infinite] rounded w-32"></div>
+      </div>
+    </CardContent>
+  </Card>
+)
+
 export default function QuizPage() {
   const { toast } = useToast()
   const [videoUrl, setVideoUrl] = useState('')
@@ -420,10 +526,82 @@ export default function QuizPage() {
           {/* Main Content Area */}
           <div className="flex-1 flex flex-col pb-16 sm:pb-20 md:pb-24 lg:pb-28">
             {/* Welcome Message - Only shown initially */}
-            {!videoDetails && <FeatureCard type="quiz" />}
+            {!videoDetails && !loading && <FeatureCard type="quiz" />}
 
-            {/* Video Details and Quiz */}
-            {videoDetails && (
+            {/* Loading Skeleton */}
+            {loading && (
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-3">
+                <VideoSkeleton />
+              </motion.div>
+            )}
+
+            {/* Generating Quiz Skeleton */}
+            {isGenerating && videoDetails && (
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-3">
+                {/* Video Info Card */}
+                <Card className="bg-gradient-to-br from-stone-700 via-transparent to-gray-900 border-zinc-700">
+                  <CardContent className="p-4">
+                    <div className="grid md:grid-cols-[1fr,2fr] gap-4">
+                      <div className="aspect-video relative overflow-hidden rounded-lg">
+                        <img
+                          src={
+                            videoDetails.thumbnails.maxres?.url || videoDetails.thumbnails.high?.url
+                          }
+                          alt={videoDetails.title}
+                          className="object-cover w-full h-full"
+                        />
+                      </div>
+                      <div className="space-y-3">
+                        <h2 className="text-xl font-bold">{videoDetails.title}</h2>
+                        <p className="text-zinc-400">{videoDetails.channelTitle}</p>
+                        <div className="flex flex-wrap gap-2">
+                          <span className="flex items-center gap-1 bg-zinc-800 px-2 py-1 rounded-full text-sm">
+                            <Calendar className="w-4 h-4 text-yellow-600" />
+                            {formatDate(videoDetails.publishedAt)}
+                          </span>
+                          <span className="flex items-center gap-1 bg-zinc-800 px-2 py-1 rounded-full text-sm">
+                            <Eye className="w-4 h-4 text-blue-400" />
+                            {formatNumber(videoDetails.viewCount)} views
+                          </span>
+                          <span className="flex items-center gap-1 bg-zinc-800 px-2 py-1 rounded-full text-sm">
+                            <ThumbsUp className="w-4 h-4 text-green-500" />
+                            {formatNumber(videoDetails.likeCount)} likes
+                          </span>
+                        </div>
+                        <div>
+                          <p
+                            className={`text-zinc-400 ${showFullDescription ? '' : 'line-clamp-2'}`}
+                          >
+                            {videoDetails.description}
+                          </p>
+                          <Button
+                            variant="ghost"
+                            onClick={() => setShowFullDescription(!showFullDescription)}
+                            className="mt-2 p-0 h-auto text-zinc-400 hover:text-white"
+                          >
+                            {showFullDescription ? (
+                              <>
+                                Show less <ChevronUp className="w-4 h-4 ml-1" />
+                              </>
+                            ) : (
+                              <>
+                                Show more <ChevronDown className="w-4 h-4 ml-1" />
+                              </>
+                            )}
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Quiz Generating Skeleton */}
+                <QuizSkeleton questionsCount={parseInt(numQuestions)} />
+              </motion.div>
+            )}
+
+            {/* Video Details and Quiz - Only show when not loading/generating */}
+            {videoDetails && !loading && !isGenerating && (
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-3">
                 {/* Video Info Card */}
                 <Card className="bg-gradient-to-br from-stone-700 via-transparent to-gray-900 border-zinc-700">
