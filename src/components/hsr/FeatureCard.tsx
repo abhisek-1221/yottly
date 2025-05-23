@@ -93,46 +93,50 @@ const FeatureCard = ({ type }: FeatureCardProps) => {
   const [Icon1, Icon2, Icon3] = [...content.icons]
 
   return (
-    <div className="text-center my-12">
-      <div className="bg-zinc-800 w-12 h-12 rounded-lg flex items-center justify-center mx-auto mb-6">
+    <div className="text-center my-6 sm:my-8 md:my-10 lg:my-12">
+      <div className="bg-zinc-800 w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-lg flex items-center justify-center mx-auto mb-4 sm:mb-5 md:mb-6">
         <img
-          className="w-8 h-8"
+          className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8"
           src="https://img.icons8.com/arcade/64/youtube-play.png"
           alt="youtube-play"
         />
       </div>
-      <h1 className="text-2xl font-semibold mb-2">{content.heading}</h1>
-      <h2 className="text-xl text-zinc-400 mb-4">{content.subheading}</h2>
-      <p className="text-sm text-zinc-500 mb-8">
+      <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-semibold mb-1 sm:mb-2">
+        {content.heading}
+      </h1>
+      <h2 className="text-base sm:text-lg md:text-xl lg:text-2xl text-zinc-400 mb-2 sm:mb-3 md:mb-4">
+        {content.subheading}
+      </h2>
+      <p className="text-xs sm:text-sm md:text-base text-zinc-500 mb-4 sm:mb-6 md:mb-8 px-2 sm:px-4">
         {content.caption}
         <br />
         {content.value}
       </p>
 
       {/* Feature Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-[8rem] px-10 w-3/4 ml-32">
-        <Card className="bg-gradient-to-br from-stone-700 via-transparent to-gray-900 border-zinc-700 p-4">
-          <div className="flex space-x-3 mt-2">
-            <Icon1 className="w-5 h-5 mb-1" />
-            <h3 className="font-medium mb-1">{content.fh1}</h3>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 mt-8 sm:mt-12 md:mt-16 lg:mt-32 px-4 sm:px-6 md:px-8 lg:px-10 w-full sm:w-5/6 md:w-4/5 lg:w-3/4 mx-auto">
+        <Card className="bg-gradient-to-br from-stone-700 via-transparent to-gray-900 border-zinc-700 p-3 sm:p-4">
+          <div className="flex space-x-2 sm:space-x-3 mt-1 sm:mt-2">
+            <Icon1 className="w-4 h-4 sm:w-5 sm:h-5 mb-1 flex-shrink-0" />
+            <h3 className="font-medium mb-1 text-sm sm:text-base">{content.fh1}</h3>
           </div>
-          <p className="text-xs text-zinc-400">{content.fc1}</p>
+          <p className="text-xs sm:text-sm text-zinc-400 ml-6 sm:ml-8">{content.fc1}</p>
         </Card>
 
-        <Card className="bg-gradient-to-br from-stone-700 via-transparent to-gray-900 border-zinc-700 p-4">
-          <div className="flex space-x-3 mt-2">
-            <Icon2 className="w-5 h-5 mb-3" />
-            <h3 className="font-medium mb-1">{content.fh2}</h3>
+        <Card className="bg-gradient-to-br from-stone-700 via-transparent to-gray-900 border-zinc-700 p-3 sm:p-4">
+          <div className="flex space-x-2 sm:space-x-3 mt-1 sm:mt-2">
+            <Icon2 className="w-4 h-4 sm:w-5 sm:h-5 mb-1 flex-shrink-0" />
+            <h3 className="font-medium mb-1 text-sm sm:text-base">{content.fh2}</h3>
           </div>
-          <p className="text-xs text-zinc-400">{content.fc2}</p>
+          <p className="text-xs sm:text-sm text-zinc-400 ml-6 sm:ml-8">{content.fc2}</p>
         </Card>
 
-        <Card className="bg-gradient-to-br from-stone-700 via-transparent to-gray-900 border-zinc-700 p-4">
-          <div className="flex space-x-3 mt-2">
-            <Icon3 className="w-5 h-5 mb-3" />
-            <h3 className="font-medium mb-1">{content.fh3}</h3>
+        <Card className="bg-gradient-to-br from-stone-700 via-transparent to-gray-900 border-zinc-700 p-3 sm:p-4 sm:col-span-2 lg:col-span-1">
+          <div className="flex space-x-2 sm:space-x-3 mt-1 sm:mt-2">
+            <Icon3 className="w-4 h-4 sm:w-5 sm:h-5 mb-1 flex-shrink-0" />
+            <h3 className="font-medium mb-1 text-sm sm:text-base">{content.fh3}</h3>
           </div>
-          <p className="text-xs text-zinc-400">{content.fc3}</p>
+          <p className="text-xs sm:text-sm text-zinc-400 ml-6 sm:ml-8">{content.fc3}</p>
         </Card>
       </div>
     </div>

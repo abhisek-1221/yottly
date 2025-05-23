@@ -715,18 +715,18 @@ export default function Home() {
   }, [])
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-white p-4 flex items-center justify-center">
+    <div className="min-h-screen bg-zinc-950 text-white p-2 sm:p-4 lg:p-6 xl:p-8 flex items-center justify-center">
       <Card
-        className={`w-full max-w-6xl bg-black border-zinc-800 shadow-xl shadow-stone-600 rounded-2xl 2xl:scale-150 ${
-          videoDetails && transcriptData.length > 0 ? 'scale-90 2xl:scale-125' : ''
+        className={`w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-4xl xl:max-w-6xl 2xl:max-w-7xl bg-black border-zinc-800 shadow-xl shadow-stone-600 rounded-2xl ${
+          videoDetails && transcriptData.length > 0 ? 'lg:max-w-5xl xl:max-w-6xl 2xl:max-w-7xl' : ''
         }`}
       >
-        <CardContent className="p-6 flex flex-col min-h-[700px] relative">
+        <CardContent className="p-3 sm:p-4 md:p-6 lg:p-8 xl:p-10 flex flex-col min-h-[500px] sm:min-h-[600px] md:min-h-[700px] lg:min-h-[800px] relative">
           {/* Header - Always visible */}
           <Header />
 
           {/* Main Content Area */}
-          <div className="flex-1 flex flex-col pb-20">
+          <div className="flex-1 flex flex-col pb-16 sm:pb-20 md:pb-24 lg:pb-28">
             {/* Welcome Message - Only shown initially */}
             {!videoDetails && <FeatureCard type="summarize" />}
 
@@ -916,11 +916,14 @@ export default function Home() {
           </div>
 
           {/* Input Area - Always visible at the bottom */}
-          <div className="absolute bottom-0 left-0 right-0 p-6 bg-black border-t border-zinc-800 rounded-b-2xl">
-            <form onSubmit={handleSubmission} className="flex space-x-2 w-2/3 mx-auto">
-              <div>
+          <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4 md:p-6 lg:p-8 xl:p-10 bg-black border-t border-zinc-800 rounded-b-2xl">
+            <form
+              onSubmit={handleSubmission}
+              className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 w-full sm:w-5/6 md:w-4/5 lg:w-3/4 xl:w-2/3 mx-auto"
+            >
+              <div className="w-full sm:w-auto">
                 <Select value={selectedLLM} onValueChange={setSelectedLLM}>
-                  <SelectTrigger className="w-[180px]">
+                  <SelectTrigger className="w-full sm:w-[180px]">
                     <SelectValue placeholder="Select LLM" />
                   </SelectTrigger>
                   <SelectContent>
@@ -965,7 +968,7 @@ export default function Home() {
                 value={videoUrl}
                 onChange={(e) => setVideoUrl(e.target.value)}
                 placeholder="Enter YouTube video URL..."
-                className="flex-1 bg-transparent shadow-md shadow-gray-700 border-zinc-700 rounded-full"
+                className="flex-1 bg-transparent shadow-md shadow-gray-700 border-zinc-700 rounded-full text-sm md:text-base"
               />
               <FancyButton
                 onClick={(e) => {
