@@ -84,7 +84,7 @@ const features = [
       'Compare multiple YouTube videos side by side. Analyze engagement metrics, view/like ratios, comment activity, and visual similarities. Make data-driven content decisions with comprehensive comparison insights.',
     icon: ListVideo,
     iframe:
-      'https://www.tella.tv/video/cma27w1cx000b0clc0y8a6jn8/embed?b=0&title=0&a=0&loop=0&t=0&muted=0&wt=0',
+      'https://www.tella.tv/video/cma27w1cx000b0clc0y8a6jn8/embed?b=0&title=0&a=0&loop=1&autoPlay=true&t=0&muted=1&wt=0',
     cta: 'Compare Videos',
     href: '/compare',
     reverse: true, // Fourth feature - Right
@@ -101,6 +101,19 @@ const features = [
     cta: 'Analyze Channel',
     href: '/stats',
     reverse: false, // Fifth feature - Left
+  },
+  {
+    id: 'feature-quiz',
+    header: 'Quiz Generator',
+    name: 'AI-Powered Video Quizzes',
+    description:
+      'Generate quizzes from any YouTube video. Perfect for content creators, educators, students, and anyone looking to test their knowledge.',
+    icon: List,
+    iframe:
+      'https://www.tella.tv/video/cmb0xueqv00000alc7s9y29r7/embed?b=0&title=0&a=0&loop=1&autoPlay=true&t=0&muted=1&wt=0',
+    cta: 'Generate Quizzes',
+    href: '/quiz',
+    reverse: true,
   },
 ]
 
