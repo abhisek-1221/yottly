@@ -760,6 +760,18 @@ export default function QuizPage() {
                             <span className="text-xs">Deepseek R1</span>
                           </div>
                         </SelectItem>
+                        <SelectItem value="meta-llama/llama-4-scout-17b-16e-instruct">
+                          <div className="flex items-center gap-2">
+                            <Meta.Avatar size={16} />
+                            <span className="text-xs">Llama Scout</span>
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="compound-beta">
+                          <div className="flex items-center gap-2">
+                            <Meta.BrandColor size={12} />
+                            <span className="text-xs">Compound Beta</span>
+                          </div>
+                        </SelectItem>
                       </SelectGroup>
                     </SelectContent>
                   </Select>
