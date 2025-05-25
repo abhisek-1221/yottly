@@ -2,13 +2,13 @@
 
 **GenAI AI-Powered YouTube Playlist & Video Analyzer**
 
-Yottly is a **free and open-source** SaaS app that enhances YouTube content analysis using Generative AI. It offers powerful playlist filtering, transcript generation, multilingual translation, and AI-based video summarization.
+Yottly is a **free and open-source** SaaS app that enhances YouTube content analysis using Generative AI. It offers powerful playlist filtering, transcript generation, multilingual translation, AI-based video summarization and Quiz Generator
 
 ![Yottly Screenshot](./src/assets/images/header.png)
 
-## ✨ Features
+## Features
 
-### 🎞 Playlist Analyzer
+### Playlist Analyzer
 
 - Analyze YouTube playlists with **custom filters**:
   - **Playback speed**
@@ -16,14 +16,14 @@ Yottly is a **free and open-source** SaaS app that enhances YouTube content anal
   - **Search within playlist**
 - Get the **total duration** of the playlist after applying filters.
 
-### 📝 Transcript Generator
+### Transcript Generator
 
 - Generate **transcripts with timestamps** for any YouTube video.
 - **Download** transcripts in **TXT** and **SRT** formats.
 - **Search within transcript** for specific keywords.
 - **Multilingual translation** via **Google Translate API** _(temporarily unavailable due to high traffic)_.
 
-### 🔍 AI-Powered Video Summarizer
+### AI-Powered Video Summarizer
 
 - Summarize YouTube videos using **state-of-the-art AI models**:
   - Deepseek R1 Distilled
@@ -32,15 +32,32 @@ Yottly is a **free and open-source** SaaS app that enhances YouTube content anal
   - Gemini 2.0
   - Mixtral-8x7B
 
-## 🛠 Tech Stack
+### Integrated Quiz Portal
 
-- [Next.js](https://nextjs.org/)
-- [TypeScript](https://www.typescriptlang.org/)
-- [Shadcn](https://ui.shadcn.com/)
-- [Vercel AI SDK](https://sdk.vercel.ai/)
-- [Google YouTube v3 API](https://developers.google.com/youtube/v3)
-- [Google Translate API](https://cloud.google.com/translate) _(temporarily unavailable due to high traffic)_
-- [Groq Cloud](https://groq.com/)
+* Auto-generate interactive quizzes based on the video content.
+* Great for **learning and self-assessment**.
+
+### Channel Stats
+
+* View key stats for any YouTube channel:
+
+  * Subscriber count
+  * Total views
+  * Average video length
+  * Estimated Revenue
+
+## Tech Stack
+
+* [Next.js](https://nextjs.org/)
+* [TypeScript](https://www.typescriptlang.org/)
+* [Shadcn](https://ui.shadcn.com/)
+* [Vercel AI SDK](https://sdk.vercel.ai/)
+* [Google YouTube v3 API](https://developers.google.com/youtube/v3)
+* [Google Translate API](https://cloud.google.com/translate) *(temporarily unavailable due to high traffic)*
+* [Groq Cloud](https://groq.com/)
+* [Docker](https://www.docker.com/)
+* [Upstash Redis](https://upstash.com/)
+
 
 ## 🚀 Get Started
 
@@ -64,7 +81,7 @@ Yottly is a **free and open-source** SaaS app that enhances YouTube content anal
 
 ### Using Docker
 
-Alternatively, you can run the application using Docker. You'll need a `.env.local` file in the project root containing your necessary API keys (e.g., `GOOGLE_API_KEY`, `GROQ_API_KEY`).
+Alternatively, you can run the application using Docker. You'll need a `.env.local` file in the project root containing your necessary API keys (e.g., `GOOGLE_API_KEY`, `GROQ_API_KEY`, `UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN`).
 
 1.  **Build the Docker image:**
     ```sh
@@ -90,7 +107,7 @@ You can also use Docker Compose for easier management (recommended). Ensure you 
     docker-compose down
     ```
 
-## 🤝 Contribute
+## Contribute
 
 Yottly is **open-source**! We welcome contributions to improve features, fix bugs, and enhance performance.
 
@@ -100,7 +117,7 @@ Yottly is **open-source**! We welcome contributions to improve features, fix bug
 4. Push to branch (`git push origin feature-name`)
 5. Open a Pull Request
 
-## ⭐ Star the Repo
+## Star the Repo
 
 If you find **Yottly** useful, don't forget to **star ⭐ the repository** on GitHub!
 
