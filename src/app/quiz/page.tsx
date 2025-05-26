@@ -75,7 +75,7 @@ export default function QuizPage() {
   const [showFullDescription, setShowFullDescription] = useState(false)
   const [showSuccess, setShowSuccess] = useState(false)
   const [isGenerating, setIsGenerating] = useState(false)
-  const [selectedLLM, setSelectedLLM] = useState('')
+  const [selectedLLM, setSelectedLLM] = useState('llama3-70b-8192')
   const [numQuestions, setNumQuestions] = useState('5')
   const [quiz, setQuiz] = useState<QuizQuestion[]>([])
   const [userAnswers, setUserAnswers] = useState<UserAnswer[]>([])
@@ -760,7 +760,7 @@ export default function QuizPage() {
                             <span className="text-xs">Deepseek R1</span>
                           </div>
                         </SelectItem>
-                        <SelectItem value="meta-llama/llama-4-scout-17b-16e-instruct">
+                        <SelectItem value="llama-4-scout-17b-16e-instruct">
                           <div className="flex items-center gap-2">
                             <Meta.Avatar size={16} />
                             <span className="text-xs">Llama Scout</span>
