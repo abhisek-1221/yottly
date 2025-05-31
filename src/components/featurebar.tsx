@@ -60,12 +60,12 @@ const allActions = [
   },
   {
     id: '4',
-    label: 'Channel Stats',
-    icon: <Video className="h-4 w-4 text-green-500" />,
-    description: 'v3-API',
+    label: 'AI Agent',
+    icon: <Globe className="h-4 w-4 text-purple-500" />,
+    description: 'Groq Inc',
     short: '',
-    end: 'Beta Version',
-    route: '/stats',
+    end: 'Active',
+    route: '/chat',
   },
   {
     id: '5',
@@ -78,6 +78,15 @@ const allActions = [
   },
   {
     id: '6',
+    label: 'Channel Stats',
+    icon: <Video className="h-4 w-4 text-green-500" />,
+    description: 'v3-API',
+    short: '',
+    end: 'Beta Version',
+    route: '/stats',
+  },
+  {
+    id: '7',
     label: 'Compare Videos',
     icon: <Globe className="h-4 w-4 text-purple-500" />,
     description: 'ExaAI',

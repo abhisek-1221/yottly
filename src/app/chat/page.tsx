@@ -281,7 +281,7 @@ Answer questions based on this transcript. Do not use the transcript word in the
                       <h2 className="text-3xl font-bold text-white">Chat with YouTube Videos</h2>
                       <p className="text-red-300/80 max-w-md mx-auto">
                         Enter a YouTube URL to start chatting about the video content. I'll help you
-                        understand and explore the transcript.
+                        understand and explore the content.
                       </p>
                     </div>
 
@@ -341,7 +341,7 @@ Answer questions based on this transcript. Do not use the transcript word in the
                             handleVideoSubmit(e)
                           }}
                           loading={loading}
-                          label="Load Video"
+                          label="Activate Agent"
                         />
                       </div>
                     </form>
