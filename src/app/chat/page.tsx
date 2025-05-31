@@ -18,8 +18,7 @@ import {
   AlertCircle,
 } from 'lucide-react'
 import type React from 'react'
-import Markdown from 'react-markdown'
-import remarkGfm from 'remark-gfm'
+import { Markdown } from '@/components/ui/markdown'
 import { useToast } from '@/hooks/use-toast'
 import Header from '@/components/hsr/header'
 import {
@@ -402,10 +401,7 @@ Answer questions based on this transcript. Be conversational, helpful, and accur
                                 }`}
                               >
                                 {message.role === 'assistant' ? (
-                                  <Markdown
-                                    remarkPlugins={[remarkGfm]}
-                                    className="prose prose-sm prose-invert max-w-none"
-                                  >
+                                  <Markdown className="prose prose-sm prose-invert max-w-none">
                                     {message.content}
                                   </Markdown>
                                 ) : (
