@@ -254,7 +254,13 @@ Answer questions based on this transcript. Do not use the transcript word in the
 
       {/* Main content */}
       <div className="relative z-10 flex items-center justify-center min-h-screen p-4">
-        <Card className="w-full max-w-4xl bg-black/90 backdrop-blur-md border-red-900/30 shadow-2xl shadow-red-900/20 rounded-2xl">
+        <Card
+          className="w-full max-w-4xl bg-black/90 backdrop-blur-md border-red-900/30 shadow-2xl shadow-red-900/40 drop-shadow-2xl rounded-2xl"
+          style={{
+            boxShadow:
+              '0 25px 50px -12px rgba(247, 242, 242, 0.57), 0 0 0 1px rgba(185, 28, 28, 0.1), 0 0 50px rgba(239, 68, 68, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05)',
+          }}
+        >
           <CardContent className="p-6 flex flex-col h-[85vh]">
             {/* Header */}
             <div className="mb-6">
