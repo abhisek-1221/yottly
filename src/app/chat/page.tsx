@@ -13,10 +13,10 @@ import {
   Loader2,
   Youtube,
   MessageSquare,
-  Bot,
+  Blend,
   User,
   Sparkles,
-  AlertCircle,
+  LaptopMinimalCheck,
 } from 'lucide-react'
 import type React from 'react'
 import { Markdown } from '@/components/ui/markdown'
@@ -51,7 +51,7 @@ export default function ChatPage() {
   const scrollAreaRef = useRef<HTMLDivElement>(null)
   const abortControllerRef = useRef<AbortController | null>(null)
 
-  const scrollToBottom = useCallback(() => {
+  const scrollToBlendtom = useCallback(() => {
     if (scrollAreaRef.current) {
       const scrollContainer = scrollAreaRef.current.querySelector(
         '[data-radix-scroll-area-viewport]'
@@ -63,8 +63,8 @@ export default function ChatPage() {
   }, [])
 
   useEffect(() => {
-    scrollToBottom()
-  }, [messages, scrollToBottom])
+    scrollToBlendtom()
+  }, [messages, scrollToBlendtom])
 
   const handleVideoSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -249,7 +249,7 @@ Answer questions based on this transcript. Do not use the transcript word in the
       {/* Radial gradient background */}
       <div className="absolute inset-0">
         <div className="absolute -top-48 -right-48 w-96 h-96 bg-red-600/20 rounded-full blur-3xl" />
-        <div className="absolute -bottom-48 -left-48 w-96 h-96 bg-red-600/20 rounded-full blur-3xl" />
+        <div className="absolute -Blendtom-48 -left-48 w-96 h-96 bg-red-600/20 rounded-full blur-3xl" />
       </div>
 
       {/* Main content */}
@@ -284,71 +284,70 @@ Answer questions based on this transcript. Do not use the transcript word in the
                         understand and explore the content.
                       </p>
                     </div>
-
-                    <form onSubmit={handleVideoSubmit} className="space-y-4">
-                      <div className="flex flex-col sm:flex-row gap-3">
-                        <Select value={selectedLLM} onValueChange={setSelectedLLM}>
-                          <SelectTrigger className="w-full sm:w-[200px] bg-black/50 border-red-900/50 text-red-50 focus:border-red-600 focus:ring-red-600/30">
-                            <SelectValue placeholder="Select LLM" />
-                          </SelectTrigger>
-                          <SelectContent className="bg-black border-red-900/50">
-                            <SelectGroup>
-                              <SelectItem value="gemma2-9b-it">
-                                <div className="flex items-center gap-2">
-                                  <Gemma.Color size={20} />
-                                  <span>Gemma2</span>
-                                </div>
-                              </SelectItem>
-                              <SelectItem value="llama3-70b-8192">
-                                <div className="flex items-center gap-2">
-                                  <Meta size={20} />
-                                  <span>Llama3 70B</span>
-                                </div>
-                              </SelectItem>
-                              <SelectItem value="mixtral-8x7b-32768">
-                                <div className="flex items-center gap-2">
-                                  <Mistral.Color size={20} />
-                                  <span>Mixtral 8x7B</span>
-                                </div>
-                              </SelectItem>
-                              <SelectItem value="deepseek-r1-distill-qwen-32b">
-                                <div className="flex items-center gap-2">
-                                  <DeepSeek.Color size={20} />
-                                  <span>Deepseek R1</span>
-                                </div>
-                              </SelectItem>
-                              <SelectItem value="llama-3.1-8b-instant">
-                                <div className="flex items-center gap-2">
-                                  <Meta.Color size={20} />
-                                  <span>Llama 3.1</span>
-                                </div>
-                              </SelectItem>
-                            </SelectGroup>
-                          </SelectContent>
-                        </Select>
-
-                        <Input
-                          type="text"
-                          value={videoUrl}
-                          onChange={(e) => setVideoUrl(e.target.value)}
-                          placeholder="Enter YouTube video URL..."
-                          className="flex-1 bg-black/50 border-red-900/50 text-red-50 placeholder-red-400/70 focus:border-red-600 focus:ring-red-600/30"
-                        />
-
-                        <FancyButton
-                          onClick={(e) => {
-                            e.preventDefault()
-                            handleVideoSubmit(e)
-                          }}
-                          loading={loading}
-                          label="Activate Agent"
-                        />
-                      </div>
-                    </form>
                   </motion.div>
                 </div>
 
                 <div className="mt-auto pt-4 border-t border-red-900/30">
+                  <form onSubmit={handleVideoSubmit} className="space-y-4">
+                    <div className="flex flex-col sm:flex-row gap-3">
+                      <Select value={selectedLLM} onValueChange={setSelectedLLM}>
+                        <SelectTrigger className="w-full sm:w-[200px] bg-black/50 border-red-900/50 text-red-50 focus:border-red-600 focus:ring-red-600/30">
+                          <SelectValue placeholder="Select LLM" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-black border-red-900/50">
+                          <SelectGroup>
+                            <SelectItem value="gemma2-9b-it">
+                              <div className="flex items-center gap-2">
+                                <Gemma.Color size={20} />
+                                <span>Gemma2</span>
+                              </div>
+                            </SelectItem>
+                            <SelectItem value="llama3-70b-8192">
+                              <div className="flex items-center gap-2">
+                                <Meta size={20} />
+                                <span>Llama3 70B</span>
+                              </div>
+                            </SelectItem>
+                            <SelectItem value="mixtral-8x7b-32768">
+                              <div className="flex items-center gap-2">
+                                <Mistral.Color size={20} />
+                                <span>Mixtral 8x7B</span>
+                              </div>
+                            </SelectItem>
+                            <SelectItem value="deepseek-r1-distill-qwen-32b">
+                              <div className="flex items-center gap-2">
+                                <DeepSeek.Color size={20} />
+                                <span>Deepseek R1</span>
+                              </div>
+                            </SelectItem>
+                            <SelectItem value="llama-3.1-8b-instant">
+                              <div className="flex items-center gap-2">
+                                <Meta.Color size={20} />
+                                <span>Llama 3.1</span>
+                              </div>
+                            </SelectItem>
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+
+                      <Input
+                        type="text"
+                        value={videoUrl}
+                        onChange={(e) => setVideoUrl(e.target.value)}
+                        placeholder="Enter YouTube video URL..."
+                        className="flex-1 bg-black/50 border-red-900/50 text-red-50 placeholder-red-400/70 focus:border-red-600 focus:ring-red-600/30"
+                      />
+
+                      <FancyButton
+                        onClick={(e) => {
+                          e.preventDefault()
+                          handleVideoSubmit(e)
+                        }}
+                        loading={loading}
+                        label="Activate Agent"
+                      />
+                    </div>
+                  </form>
                   <div className="flex items-center justify-center gap-2 text-red-400/60 text-sm">
                     <Sparkles className="h-4 w-4" />
                     <span>Powered by Groq</span>
@@ -388,9 +387,9 @@ Answer questions based on this transcript. Do not use the transcript word in the
                                 {message.role === 'user' ? (
                                   <User className="h-4 w-4 text-white" />
                                 ) : message.role === 'system' ? (
-                                  <AlertCircle className="h-4 w-4 text-white" />
+                                  <LaptopMinimalCheck className="h-4 w-4 text-white" />
                                 ) : (
-                                  <Bot className="h-4 w-4 text-white" />
+                                  <Blend className="h-4 w-4 text-white" />
                                 )}
                               </div>
                               <div
@@ -423,7 +422,7 @@ Answer questions based on this transcript. Do not use the transcript word in the
                         >
                           <div className="flex items-center gap-3 max-w-[80%]">
                             <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-red-700 to-orange-700 flex items-center justify-center">
-                              <Bot className="h-4 w-4 text-white" />
+                              <Blend className="h-4 w-4 text-white" />
                             </div>
                             <div className="rounded-lg px-4 py-2 bg-black/80 border border-red-900/30">
                               <div className="flex items-center gap-2">
@@ -438,7 +437,7 @@ Answer questions based on this transcript. Do not use the transcript word in the
                   </ScrollArea>
                 </div>
 
-                {/* Entire Input Section - Sticks to bottom */}
+                {/* Entire Input Section - Sticks to Blendtom */}
                 <div className="mt-auto border-t border-red-900/30 pt-4 space-y-2">
                   <form onSubmit={handleSendMessage} className="flex gap-2">
                     <Input
