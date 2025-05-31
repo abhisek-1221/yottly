@@ -183,6 +183,33 @@ export default function Home() {
     document.body.removeChild(element)
   }
 
+  const handleSrtDownload = () => {
+    const convertToSrtTime = (timeStr: string) => {
+      const [minutes, seconds] = timeStr.split(':').map(Number)
+      const totalSeconds = minutes * 60 + seconds
+      const hours = Math.floor(totalSeconds / 3600)
+      const mins = Math.floor((totalSeconds % 3600) / 60)
+      const secs = totalSeconds % 60
+      return `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')},000`
+    }
+
+    const srtContent = transcriptData
+      .map((entry, index) => {
+        const startTime = convertToSrtTime(entry.startTime)
+        const endTime = convertToSrtTime(entry.endTime)
+        return `${index + 1}\n${startTime} --> ${endTime}\n${entry.text}\n`
+      })
+      .join('\n')
+
+    const element = document.createElement('a')
+    const file = new Blob([srtContent], { type: 'text/plain' })
+    element.href = URL.createObjectURL(file)
+    element.download = `subtitles-${videoDetails?.title || 'video'}.srt`
+    document.body.appendChild(element)
+    element.click()
+    document.body.removeChild(element)
+  }
+
   const handleTimestampClick = (startTime: string) => {
     if (player) {
       // Convert timestamp (MM:SS) to seconds
@@ -294,14 +321,26 @@ export default function Home() {
                           <div className="flex flex-col space-y-2">
                             <div className="flex justify-between items-center mb-4">
                               <h3 className="text-lg font-semibold">Timestamped Transcript</h3>
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                onClick={handleTimestampedDownload}
-                                className="hover:bg-zinc-800 rounded-full"
-                              >
-                                <Download className="h-4 w-4 text-zinc-400 hover:text-white" />
-                              </Button>
+                              <div className="flex gap-2">
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={handleTimestampedDownload}
+                                  className="hover:bg-zinc-800 rounded-full text-xs"
+                                >
+                                  <Download className="h-3 w-3 mr-1" />
+                                  TXT
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={handleSrtDownload}
+                                  className="hover:bg-zinc-800 rounded-full text-xs"
+                                >
+                                  <Download className="h-3 w-3 mr-1" />
+                                  SRT
+                                </Button>
+                              </div>
                             </div>
 
                             {/* Search Input */}
