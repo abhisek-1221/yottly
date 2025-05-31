@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input'
 import { Card, CardContent } from '@/components/ui/card'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { FancyButton } from '@/components/ui/fancy-button'
+import { Loader } from '@/components/ui/loader'
 import {
   Send,
   Loader2,
@@ -419,9 +420,16 @@ Answer questions based on this transcript. Be conversational, helpful, and accur
                           animate={{ opacity: 1 }}
                           className="flex justify-start"
                         >
-                          <div className="flex items-center gap-2 text-gray-400">
-                            <Loader2 className="h-4 w-4 animate-spin" />
-                            <span className="text-sm">AI is thinking...</span>
+                          <div className="flex items-center gap-3 max-w-[80%]">
+                            <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center">
+                              <Bot className="h-4 w-4 text-white" />
+                            </div>
+                            <div className="rounded-lg px-4 py-2 bg-gray-800">
+                              <div className="flex items-center gap-2">
+                                <Loader variant="wave" size="md" className="text-gray-400" />
+                                <span className="text-gray-400 text-sm">Yottly is thinking...</span>
+                              </div>
+                            </div>
                           </div>
                         </motion.div>
                       )}
